@@ -33,72 +33,72 @@ ___
 
 ### RIA Solutions Group
 
-#### Senior Software Engineer
+- #### Senior Software Engineer
 
-*Since December 2019 until present*
+    *Since December 2019 until present*
 
-- Doing mainly integration work for a client in logistics industry. Apply enterprise integration patters in order to achieve highly flexible and easily maintainable solutions.
-- Main technology stack for integration consisted of Spring Integration and Java EE technologies such as JBoss for the underlying web server, Java EE 8, JMS (ActiveMQ, IBM MQ), JPA (EclipseLink).
-- Participate in architecture design and implementation. Discuss and present technical solution for clients.
+    - Doing mainly integration work for a client in logistics industry. Apply enterprise integration patters in order to achieve highly flexible and easily maintainable solutions.
+    - Main technology stack for integration consisted of Spring Integration and Java EE technologies such as JBoss for the underlying web server, Java EE 8, JMS (ActiveMQ, IBM MQ), JPA (EclipseLink).
+    - Participate in architecture design and implementation. Discuss and present technical solution for clients.
 
-#### Software Engineer/Team Leader
+- #### Software Engineer/Team Leader
 
-*Since August 2019 until November 2019*
+    *Since August 2019 until November 2019*
 
-- Participate in development of cloud based solutions for clients from the logistics industry.
-- Apply domain driven design principles to implement new libraries using micro-service architecture.
-- Implement and maintain multiple services using both event sourcing (Apache Kafka) and REST APIs as a way of communication. The stack of technologies used for service development includes languages which run on JVM, Java 8 and Groovy with usage of Spring Boot and other Spring libraries (Spring MVC, Spring Data, Spring AOC, Spring Batch etc.). It also includes NodeJS with the usage of JavaScript ES6 features.
-- Develop and integrate several features which required handling both relational and non-relational data. The technology stack implies heavy usage of Elasticsearch for indexing and searching huge amount of client data. Besides, several services use MySQL/MariaDB databases for relational data and Apache Cassandra database for non relational data.
-- Work with real-time data streams using Amazon SQS and big data processing using Spring Batch.
-- Participate in front-end development as well, implementing several features visible to the end user. The front-end stack implies usage of HTML5, CSS3, JavaScript with the usage of AngularJS framework.
-- Practice test driven development (TDD), implement unit tests/integration tests for code changes where testing was feasible. Have in-depth experience with Spock framework, as well with JUnit4 and Mochito.
-- Work in agile framework, collaborating with the client and business in story grooming, reviewing story/acceptance criteria and performance metrics.
-- Participate in interviewing new software engineer candidates.
-- Provide mentorship and guidance for new joiners and junior colleagues.
+    - Participate in development of cloud based solutions for clients from the logistics industry.
+    - Apply domain driven design principles to implement new libraries using micro-service architecture.
+    - Implement and maintain multiple services using both event sourcing (Apache Kafka) and REST APIs as a way of communication. The stack of technologies used for service development includes languages which run on JVM, Java 8 and Groovy with usage of Spring Boot and other Spring libraries (Spring MVC, Spring Data, Spring AOC, Spring Batch etc.). It also includes NodeJS with the usage of JavaScript ES6 features.
+    - Develop and integrate several features which required handling both relational and non-relational data. The technology stack implies heavy usage of Elasticsearch for indexing and searching huge amount of client data. Besides, several services use MySQL/MariaDB databases for relational data and Apache Cassandra database for non relational data.
+    - Work with real-time data streams using Amazon SQS and big data processing using Spring Batch.
+    - Participate in front-end development as well, implementing several features visible to the end user. The front-end stack implies usage of HTML5, CSS3, JavaScript with the usage of AngularJS framework.
+    - Practice test driven development (TDD), implement unit tests/integration tests for code changes where testing was feasible. Have in-depth experience with Spock framework, as well with JUnit4 and Mochito.
+    - Work in agile framework, collaborating with the client and business in story grooming, reviewing story/acceptance criteria and performance metrics.
+    - Participate in interviewing new software engineer candidates.
+    - Provide mentorship and guidance for new joiners and junior colleagues.
 
 ### Endava Romania
 
-#### Software Engineer
+- #### Software Engineer
 
-*From August 2017 to September 2019*
+    *From August 2017 to September 2019*
 
-- Develop and maintain multiple full-stack business applications, working in agile teams. During my work the following technologies were used:
-    - Back-end based on Java stack: Java 8, Maven, JAX-WS, JAX-RS, Spring/Spring Boot (Spring Core, Spring MVC, Spring AOP, Spring Security, Spring Data, Spring Batch, Spring Test), Tomcat, JBoss
-    - Persistence: extensively used both SQL (Oracle database with Hibernate JPA, Liquibase for migrations) and noSQL type databases (MarkLogic 8 with JSON documents. For interaction/querying we used server side Javascript).
-    - Front-end: AngularJS (which implies heavy usage of Javascript[ES5])/Angular 4 (TypeScript), HTML5, CSS3 (Sass) + Twitter Bootstrap 3, package-managers (npm, Bower).
-    - Deployment/DevOps: Jenkins, Docker, Maven, Grunt, Gulp, npm
-    - Testing/Unit testing frameworks: JUnit, Mockito, Karma, Jasmin, Protractor, roxy
-    - Dev environments: IntelIJ, WebStorm, VSCode, VIM, MarkLogic query console, SQL Developer
-    - Source control: git
-    - Scripting/automation: Bash, NodeJS,
-    - Other libraries/frameworks: Google Guava, Apache commons, Lombok, Dozer mapper, lodash;
-- Gather requirements from the external clients, actively participate in client and internal agile meetings;
-- Develop REST based Web Services used by third-parties and implement REST end-points;
-- Secure REST end-points using Spring Security. Write and generate documentation for these end-points using Swagger;
-- Initiate extensive refactorings of older functionalities, focus on usage of design patterns;
-- Integrate with the external services which were exposing both REST and SOAP end-points;
-- Create user friendly GUI using HTML, CSS and Javascript, implement single-page front-end applications using Angular;
-- Extensively involved in code reviews (platforms used: BitBucket);
-- Actively involved in release management/product delivery (platforms uses: AWS EC2, AWS S3);
+    - Develop and maintain multiple full-stack business applications, working in agile teams. During my work the following technologies were used:
+        - Back-end based on Java stack: Java 8, Maven, JAX-WS, JAX-RS, Spring/Spring Boot (Spring Core, Spring MVC, Spring AOP, Spring Security, Spring Data, Spring Batch, Spring Test), Tomcat, JBoss
+        - Persistence: extensively used both SQL (Oracle database with Hibernate JPA, Liquibase for migrations) and noSQL type databases (MarkLogic 8 with JSON documents. For interaction/querying we used server side Javascript).
+        - Front-end: AngularJS (which implies heavy usage of Javascript[ES5])/Angular 4 (TypeScript), HTML5, CSS3 (Sass) + Twitter Bootstrap 3, package-managers (npm, Bower).
+        - Deployment/DevOps: Jenkins, Docker, Maven, Grunt, Gulp, npm
+        - Testing/Unit testing frameworks: JUnit, Mockito, Karma, Jasmin, Protractor, roxy
+        - Dev environments: IntelIJ, WebStorm, VSCode, VIM, MarkLogic query console, SQL Developer
+        - Source control: git
+        - Scripting/automation: Bash, NodeJS,
+        - Other libraries/frameworks: Google Guava, Apache commons, Lombok, Dozer mapper, lodash;
+    - Gather requirements from the external clients, actively participate in client and internal agile meetings;
+    - Develop REST based Web Services used by third-parties and implement REST end-points;
+    - Secure REST end-points using Spring Security. Write and generate documentation for these end-points using Swagger;
+    - Initiate extensive refactorings of older functionalities, focus on usage of design patterns;
+    - Integrate with the external services which were exposing both REST and SOAP end-points;
+    - Create user friendly GUI using HTML, CSS and Javascript, implement single-page front-end applications using Angular;
+    - Extensively involved in code reviews (platforms used: BitBucket);
+    - Actively involved in release management/product delivery (platforms uses: AWS EC2, AWS S3);
 - Supervise summer internship attendees
 
 ### Accenture Industrial Software Solutions Romania
 
-### Software Engineer
+- ### Software Engineer
 
-*From May 2015 to July 2017*
+    *From May 2015 to July 2017*
 
-- Develop and maintain a Railway Automation project using C++ (MFC, Boost), Visual Basic and
-Python environments;
-- Work in a regulated environment, the components developed by us where graded between SIL 0 and SIL 2 safety-integrity level;
-- Develop and maintain unit tests using GTEST and GMOCK libraries;
-- Implement regression and UI tests using AutoIT and Python languages;
-- Configure and maintain Jenkins - continuous integration system, develop batch scripts for automatic builds;
-- Write software documentation (use cases, release notes) and testing documentation (test cases);
-- Actively collaborate with clients and other teams;
-- Actively attend Scrum meetings;
-- Supervise summer internship attendees.
-- Other technologies used: IBM Rational Synergy (version control system), IBM Rational Doors (software documentation), PVCS Merant Tracker (bugs and tickets), Citrix, Oracle Virtual Box (virtualization and working remotely on the client's network), AutoIT (used for UI and regression/integration testing), Parasoft Static Analysis for C and C++.
+    - Develop and maintain a Railway Automation project using C++ (MFC, Boost), Visual Basic and
+    Python environments;
+    - Work in a regulated environment, the components developed by us where graded between SIL 0 and SIL 2 safety-integrity level;
+    - Develop and maintain unit tests using GTEST and GMOCK libraries;
+    - Implement regression and UI tests using AutoIT and Python languages;
+    - Configure and maintain Jenkins - continuous integration system, develop batch scripts for automatic builds;
+    - Write software documentation (use cases, release notes) and testing documentation (test cases);
+    - Actively collaborate with clients and other teams;
+    - Actively attend Scrum meetings;
+    - Supervise summer internship attendees.
+    - Other technologies used: IBM Rational Synergy (version control system), IBM Rational Doors (software documentation), PVCS Merant Tracker (bugs and tickets), Citrix, Oracle Virtual Box (virtualization and working remotely on the client's network), AutoIT (used for UI and regression/integration testing), Parasoft Static Analysis for C and C++.
 
 ---
 
