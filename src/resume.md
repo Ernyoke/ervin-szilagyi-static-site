@@ -4,7 +4,7 @@
 
 ---
 
-<img align="right" src="images/small.jpg">
+<img align="right" padding="1em" src="images/small.jpg">
 
 ## About Me
 
@@ -132,8 +132,8 @@ ___
 - **Final grade**: 10/10
 - **Thesis**: WLAN based conference system
 - **Honors**:
-    - *16th Scientific Student Conference of Technical Science - XVI. Műszaki Erdélyi Tudományos Diakköri Konferencia*, Second place in Computer Science and Applied Informatics section with the project of: *"WLAN based Conference System"*.
-    - *XIV Scientific Students' Associations Conference - XIV. Tudományos Diákköri Konferencia (Sapientia TDK)*, First place in Computer Science and Software Development Section section with the project of: "WLAN based Conference System".
+    - *16th Scientific Student Conference of Technical Science - XVI. Műszaki Erdélyi Tudományos Diakköri Konferencia,* Second place in Computer Science and Applied Informatics section with the project of: *"WLAN based Conference System"*.
+    - *XIV Scientific Students' Associations Conference - XIV. Tudományos Diákköri Konferencia (Sapientia TDK),* First place in Computer Science and Software Development Section section with the project of: "WLAN based Conference System".
 
 ---
 
