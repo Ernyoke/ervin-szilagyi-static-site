@@ -1,3 +1,6 @@
 [submodule "ernyoke.github.io"]
 	path = ernyoke.github.io
 	url = git@github.com:Ernyoke/ernyoke.github.io.git
+[submodule ".\\ernyoke.github.io\\"]
+	path = .\\ernyoke.github.io\\
+	url = git@github.com:Ernyoke/ernyoke.github.io.git
