@@ -1,0 +1,1 @@
+python -m ssg ./src ./ernyoke.github.io https://ernyoke.github.io/
