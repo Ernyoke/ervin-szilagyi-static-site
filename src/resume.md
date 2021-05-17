@@ -151,7 +151,7 @@ ___
 - **AWS Certified SysOps Administrator – Associate**
     - valid between April 2021 and May 2024
     - Badge: [verify](https://www.credly.com/badges/466e33cb-32ab-4217-9127-5e8f7e94de0c/public_url)
-- **AWS Certified Devops Engineer – Professional**
+- **AWS Certified DevOps Engineer – Professional**
     - valid between May 2021 and May 2024
     - Badge: [verify](https://www.credly.com/badges/b294e430-9829-4550-bff3-ed5d893ae99e/public_url)
 - **Microsoft Certified: Azure Fundamentals**
