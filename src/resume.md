@@ -8,7 +8,7 @@
 
 ## About Me
 
-Experienced software engineer having a wide interest in distributed back-end systems, decoupled front-ends and cloud based technologies.
+Experienced software engineer having a wide interest in distributed backend systems, decoupled frontend frameworks and cloud based technologies.
 
 ### Contact
 
@@ -19,6 +19,7 @@ Experienced software engineer having a wide interest in distributed back-end sys
 - LinkedIn: [in/szilagyiervin](https://www.linkedin.com/in/szilagyiervin/)
 - Twitter: [@ervin_szilagyi](https://twitter.com/ervin_szilagyi)
 - StackOverflow: [ervin-szilagyi](https://stackoverflow.com/users/7661119/ervin-szilagyi)
+- DevOps StackExchange: [ervin-szilagyi](https://devops.stackexchange.com/users/27214/ervin-szilagyi)
 - GitHub: [ernyoke](https://github.com/Ernyoke)
 
 ### Personal Information
