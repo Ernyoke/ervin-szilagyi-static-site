@@ -144,7 +144,7 @@ ___
     - since January 2021
     - Badge: [verify](https://www.credly.com/badges/d24ba586-7589-488b-ac86-2b5ae49e994a/public_url)
 - **AWS Certified Developer – Associate**
-    - valid between February 2021 and May 2024
+    - valid between February 2021 and August 2024
     - Badge: [verify](https://www.credly.com/badges/d507de98-aa20-425b-9211-15b4918c5308/public_url)
 - **AWS Certified Solutions Architect – Associate**
     - valid between March 2021 and March 2024
@@ -155,6 +155,9 @@ ___
 - **AWS Certified DevOps Engineer – Professional**
     - valid between May 2021 and May 2024
     - Badge: [verify](https://www.credly.com/badges/b294e430-9829-4550-bff3-ed5d893ae99e/public_url)
+- **AWS Certified Solutions Architect – Professional**
+    - valid between August 2021 and August 2024
+    - Badge: [verify](https://www.credly.com/badges/cf39c076-d21f-4cc1-a033-954718fe87d6/public_url)
 - **Microsoft Certified: Azure Fundamentals**
     - since September 2020
     - Badge: [verify](https://www.credly.com/badges/3e2a89c1-0ef3-4a45-9e22-ccd54ac6e0ef/public_url)
