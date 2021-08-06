@@ -40,35 +40,46 @@ My whole journey to get all this certifications took about 8 months, meanwhile I
 ### Developer Associate (DVA-C01)
 
 I started to learn for the Developer certification at the beginning of January this year. I purchased the Stephane Maarek's [Ultimate AWS Certified Developer Associate](https://www.udemy.com/course/aws-certified-developer-associate-dva-c01/) course on Udemy, while I also bought the practice exams from the Jon Bonso on [tutorialsdojo.com](https://tutorialsdojo.com/). Both of these resources are fantastic, I certainly believe that anyone could pass this exam using these 2 resources only.
+
 I took the exam in the middle of February. Being my first AWS exam, I didn't really know what to expect, but it certainly was easier than I anticipated. I finished the exam in about 1 hour with flagging around 15 questions. I spent another 30 minutes by going back and assessing my flagged questions finishing with around 30 minutes left. In the end I achieved a score above 940 from 1000, but this does not really matters as long as it is pass.
 Question wise a got several questions regarding DynamoDB (around 10-ish which is a lot, and yes I had to calculate WCU and RCU). I also had a significant amount of questions regarding API Gateway, Lambda, CloudWatch, so mainly my exam was serverless heavy, which is somewhat expected from a developer exam. 
 
 ### Solutions Architect Associate (SAA-C02)
 
 Finishing my Developer exam I decided to move on and take the Solutions Architect Associate exam. Before starting any course I purchased the practice tests from tutorialsdojo. I took the first test and I got around 70% having only the experience acquired for the dev exam. This means the required knowledge is pretty similar between them, the difference being that the SA requires knowledge about a wider area of products, while the dev exam requires more in-depth knowledge about certain products (like serverless, caching, etc.).
+
 Having a great experience with Stephane Maarek's developer course, I bough the [Solutions Architect](https://www.udemy.com/course/aws-certified-solutions-architect-associate-saa-c02/) one as well. As I expected, this course was also perfect, good enough to get a high score in the exam. Besides having the tutorialdojo practice questions, I got the ones from Neal Davis from [digitalcloud.training](https://digitalcloud.training/). They also worth the money, although I think these ones have way to many questions related to troubleshooting. I was under impression that I'm taking practice exams for the SysOps certification. Nevertheless, they are certainly good for preparation.
 The real exam itself was about what I expected. My set of questions contained a huge number of questions related to storage (S3, EFS, EBS, even Snowball) and a significant amount of questions about RDS. The questions themselves are not that difficult, the challenge is mostly having knowledge about a wide area of products.
 
 ### SysOps – Associate (SOA-C01)
 
 I took the SysOps associate exam in April, 4 weeks after completed my SAA exam. The SOA-C02 was in beta back then, so I went with the SOA-C01 exam, which unfortunately is retired by now (the certificate will be still valid for 3 years). The difference between the SOA-C01 and newer SOA-C02 exam is that the newer has a practice part and has fewer questions for the theory.
+
 For the preparation I used the usual materials (Stephane Maarek, Jon Bonso). I lately noticed that Stephane's Udemy course was update for SOA-C02, so I can recommend that for the newer exam as well.
 About the SOA-C01 exam itself, well it was the hardest from the associate exams. The questions are mainly about troubleshooting, so EC2, IAM roles and policies, CloudWatch were the main topics. Besides, there were many questions about auto-scaling, automation (SSM, CloudWatch Evens/EventBridge) and AWS Organizations.
+
 What I personally noticed that for most of the questions regarding automation there was an answer which suggested using Lambda. Usually this is a distractor, at least for the SysOps exam. This does not apply for the DevOps exam.
 
 ### DevOps Engineer – Professional (DOP-C01)
 
 After finishing with SysOps I finally had to start working on the professional exams, starting with the DevOps one. The learning resources for this exam are a bit scarce, at least compared to what we have for the associate ones. Luckily Stephane Marek has an [Udemy Course](https://www.udemy.com/course/aws-certified-devops-engineer-professional-hands-on/) for this one as well and also tutorialdojo has a set 2 practice exams (150 questions).
+
 The real exam is hard, but is still manageable. The questions are based on real world situations and they can be fairly complex. There can be more than one correct answer from which we have to chose the better one depending on the situation (for example which solution may be the most cost conscious, which requires less maintenance, etc.).
+
 While the area of AWS products touched on the exam is not as wide as what we have in case of Solutions Architect Professional exam, the DevOps exam is really focused and requires a knowing a huge amount of details about every product touched. My exam questions were mainly about services used for SDLC (Code*, CodeCommit, CodeBuild, CodePipeline, CodeDeploy, Jenkins 1-2 questions), services used of automation and IaC (CloudWatch Events/EventBridge, CloudWatch Metrics, SSM, Lambda, ASG, CloudFormation), managed services and containers (Beanstalk, ECS, and I had 2 question related to Kubernetes) and compliance (AWS Config, Trusted Advisor). Working as a Software Engineer I was comfortable dealing with SDLC - CICD products and having experience with microservices/Docker it was relatively easy for me to gather a more in-depth understanding about containerized services. Nevertheless, practice is very important for this exam. Just to give an idea, the exam may ask specifics about build phase from the `buldspec.yml` config file used by CodeBuild. We get experience editing this file and configuring CodeBuild if we do a lot of practice, otherwise I think is impossible to learn and memorize everything required.
+
 In the end I managed to get through this exam achieving a grade of 944/1000 which was way above what I expected. I sat this exam on May, about 5 weeks after my SysOps exam. I felt really burnt out afterwards. I wanted to start moving on to the Solutions Architect Professional, but I felt I had to take a break. 
 
 ### AWS Certified Solutions Architect – Professional (SAP-C01)
 
 As I said, I got my DevOps certification un May, more specifically in the middle of the month. In the upcoming weeks I was not really doing any kind of real preparation for to SAP-CO1 exam until the second part of June, when I felt I have enough energy and motivation to start again.
+
 For the preparation for this exam a decided to shake things up a little bit. I wanted to try out Adrian Cantrill's course on [learn.cantrill.io](https://learn.cantrill.io/p/aws-certified-solutions-architect-professional), since a lot of people were recommending him. This course may be on the pricy side, but it worth the money for sure. It offers 40+ hours of content with lots of advanced practice labs. It was probably the best decision I made for the preparation for the exam.
+
 For the practice tests, as usual, I got the ones from tutorialdojo. Moreover I found some real gems on Neal Davis' digitalcloud.training portal. In hindsight after sitting the exam, personally think these practice questions from Neal are way more representative to what we should expect from the exam, and they can be more challenging than the ones for tutorialdojo.
+
 The actual exam itself was hard, no way to put it otherwise. It is more challenging and more exhausting compared to the DevOps exam. The questions are also based on real-life situations and they can be verbose. Because of this, keeping an eye on the clock can be important, in average we have less than 3 minutes available per question. I personally managed to bomb through the question in 2 hours, spending another 40 minutes on what I flagged. It was not an easy ride. 
+
 In the end I managed to get a score bellow 900 :(, but this should not really matter that much, a pass is a pass.
 
 ## Exam Notes
@@ -86,7 +97,8 @@ While I was studying for all these 5 exams I decided to take some notes. I admit
 
 These are some tips and tricks which worked for me. They might be helpful, although I understand that everyone has its own style and preferences about how to approach exams. Take them with a grain of salt.
 
-Tips and tricks:
+### Tips and tricks:
+
 - Practice exams are really important. They should bring to the light the holes we have in our knowledge, so it is absolutely fine if we fail them.
 - After reading the question in the exam I recommend looking to exclude the wrong answers. In case of the associate exams, usually we can easily exclude 2 possibilities easily from the 4 available. Now we have a higher chance giving a correct answer, having to make a choice between the remaining 2. I also have to note, that in case of professional exams, this may not work. Usually we can exclude 1 wrong answer, but there are cases when even this is impossible. 
 - I do not recommend skipping questions (even in case of the professional exams). Some instructors suggest skipping the more verbose questions, flagging them, answering them in the end. While this is not a bad idea, my problem with this is that usually the lengthier question are not necessary the harder ones. Even if we have a lengthy question, I suggest at least skimming through it and have a selection for the answer. This might be helpful if we get really short in time.
@@ -101,5 +113,7 @@ Tips and tricks:
 ## Disclaimer
 
 This article represents my own opinion and my personal experience accumulated during this past 7-8 months. 
+
 In this article I referenced some payed resources. I am not and I was not endorsed in any way by the authors of those resources. I payed for everything from my pocket. The reason why I referencing them is because I consider those resources essential.
+
 My certifications can be verified at [https://www.credly.com/users/ervin-szilagyi/badges](https://www.credly.com/users/ervin-szilagyi/badges)
