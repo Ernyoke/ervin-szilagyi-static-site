@@ -32,11 +32,17 @@ ___
 
 ## Work Experience
 
+### Accenture
+
+- #### Digital Technology Developer Specialist
+
+    *Since 2021 until present*
+
 ### RIA Solutions Group
 
 - #### Senior Software Engineer
 
-    *Since December 2019 until present*
+    *Since December 2019 until August 2021*
 
     - Doing mainly integration work for a client in logistics industry. Apply enterprise integration patters in order to achieve highly flexible and easily maintainable solutions.
     - Main technology stack for integration consisted of Spring Integration and Java EE technologies such as JBoss for the underlying web server, Java EE 8, JMS (ActiveMQ, IBM MQ), JPA (EclipseLink).
