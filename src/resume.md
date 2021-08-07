@@ -32,11 +32,11 @@ ___
 
 ## Work Experience
 
-### Accenture
+### Accenture Romania
 
 - #### Digital Technology Developer Specialist
 
-    *Since 2021 until present*
+    *Since August 2021 until present*
 
 ### RIA Solutions Group
 
