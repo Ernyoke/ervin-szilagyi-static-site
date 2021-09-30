@@ -34,9 +34,15 @@ ___
 
 ### Accenture Romania
 
-- #### Digital Technology Developer Specialist
+- #### Software Product & Platform Engineering Specialist
 
     *Since August 2021 until present*
+
+    - Cloud/DevOps Engineer working mainly on AWS infrastructure in the automotive industry.
+    - Working with IoC tools such as Terraform.
+    - Supporting a set of Java micro-services, containerized and deployed on ECS Fargate.
+    - Doing cloud automation and monitoring with CloudWatch and Lambda.
+    - Working with RDS database (Postgres), doing migrations and updates.
 
 ### RIA Solutions Group
 
