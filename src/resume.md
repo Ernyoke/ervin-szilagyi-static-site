@@ -39,10 +39,11 @@ ___
     *Since August 2021 until present*
 
     - Cloud/DevOps Engineer working mainly on AWS infrastructure in the automotive industry.
-    - Working with IoC tools such as Terraform.
-    - Supporting a set of Java micro-services, containerized and deployed on ECS Fargate.
-    - Doing cloud automation and monitoring with CloudWatch and Lambda.
-    - Working with RDS database (Postgres), doing migrations and updates.
+    - Assisting in architecting complex end-to-end cloud based solutions for the client needs. These solutions involved designed secure and usable APIs, highly available and secure networks for the relevant services and involvement at the development of the actual service (main technology stack: API Gateway, networking: AWS VPC, Route53, Elastic Load Balancers, AWS Lambda (Python, JavaScript, Go), ECS with Java microservices).
+    - Doing cloud automation and monitoring with CloudWatch/Event Bridge and Lambda.
+    - Developing, architecting and refactoring the cloud based infrastructure using IoC tools such as Terraform.
+    - Supporting a set of ETL jobs. Doing maintenance work, optimizations, monitoring etc. (main technology stack: AWS Batch/AWS Lambda with Python, S3, AWS RDS, Redis)
+    - Managing a set of relational databases deployed on AWS RDS. Planning and leading migrations from older platforms to newer and more up-to-date versions. Building highly-available solutions by implementing replications.
 
 ### RIA Solutions Group
 
