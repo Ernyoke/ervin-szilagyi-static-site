@@ -38,7 +38,7 @@ ___
 
     *Since August 2021 until present*
 
-    - Cloud/DevOps Engineer working mainly on AWS infrastructure in the automotive industry.
+    - Cloud Engineer/Solution Architect working mainly on AWS infrastructure in the automotive industry.
     - Assisting in architecting complex end-to-end cloud based solutions for the client needs. These solutions involved designed secure and usable APIs, highly available and secure networks for the relevant services and involvement at the development of the actual service (main technology stack: API Gateway, networking: AWS VPC, Route53, Elastic Load Balancers, AWS Lambda (Python, JavaScript, Go), ECS with Java microservices).
     - Doing cloud automation and monitoring with CloudWatch/Event Bridge and Lambda.
     - Developing, architecting and refactoring the cloud based infrastructure using IoC tools such as Terraform.

@@ -1,1 +1,1 @@
-python -m ssg ./src ./ernyoke.github.io https://ervinszilagyi.site/
+ssg ./src ./ernyoke.github.io https://ervinszilagyi.site/
