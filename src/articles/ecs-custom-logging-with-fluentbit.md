@@ -22,23 +22,9 @@ Fluent Bit is also fully supported by AWS. For custom log driver setup ECS offer
 
 What we would want to achieve is to deploy a Fargate cluster with an nginx container using Fluent Bit. For being able to do this, we might want to lay down some basic infrastructure first. We need a VPC with a few subnets which do have access to internet. We will use Terraform in this article to easily spin up this infrastructure and also to provide a blueprint for the reader which can be easily reproducible. This article wont go into the inner workings of Terraform and expects the reader to have basic familiarity with its deployment process (or with any kind IoC deployment tool working process).
 
-Building a base VPC with 2 subnets (a public and a private subnet), an Internet Gateway and a NAT Gateway:
+Let's build a base VPC with 4 subnets (2 public and 2 private subnet), an Internet Gateway and a NAT Gateway:
 
 ```Bash
-terraform {
-  required_providers {
-    aws = {
-      source  = "hashicorp/aws"
-      version = "~> 4.0"
-    }
-  }
-}
-
-# Configure the AWS Provider
-provider "aws" {
-  region = "us-east-1"
-}
-
 # Create a VPC
 resource "aws_vpc" "fluent_bit_vpc" {
   cidr_block = "10.0.0.0/16"
@@ -50,8 +36,10 @@ resource "aws_vpc" "fluent_bit_vpc" {
 
 # Create a public subnet
 resource "aws_subnet" "fluent_bit_public_subnet" {
-  vpc_id     = aws_vpc.fluent_bit_vpc.id
-  cidr_block = "10.0.1.0/24"
+  count             = 2
+  availability_zone = element(data.aws_availability_zones.azs.names, count.index)
+  vpc_id            = aws_vpc.fluent_bit_vpc.id
+  cidr_block        = cidrsubnet("10.0.0.0/16", 8, count.index)
 
   tags = {
     Name = "Fluent Bit Public Subnet"
@@ -60,8 +48,10 @@ resource "aws_subnet" "fluent_bit_public_subnet" {
 
 # Create a private subnet
 resource "aws_subnet" "fluent_bit_private_subnet" {
-  vpc_id     = aws_vpc.fluent_bit_vpc.id
-  cidr_block = "10.0.2.0/24"
+  count             = 2
+  availability_zone = element(data.aws_availability_zones.azs.names, count.index)
+  vpc_id            = aws_vpc.fluent_bit_vpc.id
+  cidr_block        = cidrsubnet("10.0.0.0/16", 8, length(aws_subnet.fluent_bit_public_subnet[*]) + count.index)
 
   tags = {
     Name = "Fluent Bit Private Subnet"
@@ -80,7 +70,7 @@ resource "aws_internet_gateway" "fluent_bit_igw" {
 # Create a NAT gateway for the private subnet and place it into the public subnet
 resource "aws_nat_gateway" "fluent_bit_ngw" {
   allocation_id = aws_eip.fluent_bit_ngw_eip.allocation_id
-  subnet_id     = aws_subnet.fluent_bit_public_subnet.id
+  subnet_id     = aws_subnet.fluent_bit_public_subnet[0].id
 
   tags = {
     Name = "Fluent Bit NAT Gateway"
@@ -93,10 +83,14 @@ resource "aws_nat_gateway" "fluent_bit_ngw" {
 
 # Public IP for the NAT gateway
 resource "aws_eip" "fluent_bit_ngw_eip" {
+  tags = {
+    "Name" = "Fluent Bit NAT Gateway IP"
+  }
 }
 
 # Route traffic from the public subnet to the internet gateway
 resource "aws_route_table" "fluent_bit_public_rt" {
+  count  = 2
   vpc_id = aws_vpc.fluent_bit_vpc.id
 
   route {
@@ -110,16 +104,18 @@ resource "aws_route_table" "fluent_bit_public_rt" {
 }
 
 resource "aws_route_table_association" "fluent_bit_public_rta" {
-  subnet_id      = aws_subnet.fluent_bit_public_subnet.id
-  route_table_id = aws_route_table.fluent_bit_public_rt.id
+  count          = 2
+  subnet_id      = aws_subnet.fluent_bit_public_subnet[count.index].id
+  route_table_id = aws_route_table.fluent_bit_public_rt[count.index].id
 }
 
 # Route traffic from the private subnet to the NAT gateway
 resource "aws_route_table" "fluent_bit_private_rt" {
+  count  = 2
   vpc_id = aws_vpc.fluent_bit_vpc.id
 
   route {
-    cidr_block = "10.0.2.0/24"
+    cidr_block = "0.0.0.0/0"
     gateway_id = aws_nat_gateway.fluent_bit_ngw.id
   }
 
@@ -129,7 +125,300 @@ resource "aws_route_table" "fluent_bit_private_rt" {
 }
 
 resource "aws_route_table_association" "fluent_bit_private_rta" {
-  subnet_id      = aws_subnet.fluent_bit_private_subnet.id
-  route_table_id = aws_route_table.fluent_bit_private_rt.id
+  count          = 2
+  subnet_id      = aws_subnet.fluent_bit_private_subnet[count.index].id
+  route_table_id = aws_route_table.fluent_bit_private_rt[count.index].id
 }
 ```
+
+Now that we have a VPC, we need an Application Load Balancer for our ECS cluster. ECS services will be automatically registered to this load balancer. Also, we would want to allow traffic from this load balancer only to the ECS tasks.
+
+```bash
+# Create a Security Group for the Application Load Balancer
+resource "aws_security_group" "fluent_bit_alb_sg" {
+  name        = "fluent-bit-alb-sg"
+  description = "Controls access to the ALB"
+  vpc_id      = aws_vpc.fluent_bit_vpc.id
+
+  ingress {
+    protocol    = "TCP"
+    from_port   = 80
+    to_port     = 80
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+
+  egress {
+    from_port   = 0
+    to_port     = 0
+    protocol    = "-1"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+}
+
+# Create the Application Load Balancer
+resource "aws_alb" "fluent_bit_alb" {
+  name            = "fluent-bit-alb"
+  subnets         = aws_subnet.fluent_bit_public_subnet[*].id
+  security_groups = [aws_security_group.fluent_bit_alb_sg.id]
+}
+
+# Create a HTTP target group for the nginx service
+resource "aws_alb_target_group" "fluent_bit_tg" {
+  name        = "fluent-bit-tg"
+  port        = 80
+  protocol    = "HTTP"
+  vpc_id      = aws_vpc.fluent_bit_vpc.id
+  target_type = "ip"
+}
+
+# Redirect all traffic from the Application Load Balancer to the Target Group
+resource "aws_alb_listener" "fluent_bit_listener" {
+  load_balancer_arn = aws_alb.fluent_bit_alb.id
+  port              = 80
+  protocol          = "HTTP"
+
+  default_action {
+    target_group_arn = aws_alb_target_group.fluent_bit_tg.id
+    type             = "forward"
+  }
+}
+```
+
+Provisioning the ECS cluster:
+
+```bash
+# Allow traffic from the Application Load Balancer to the ECS task
+resource "aws_security_group" "fluent_bit_task_sg" {
+  name        = "fluent-bit-task-sg"
+  description = "Allow inbound access from the ALB only"
+  vpc_id      = aws_vpc.fluent_bit_vpc.id
+
+  ingress {
+    protocol        = "TCP"
+    from_port       = var.container_port
+    to_port         = var.container_port
+    security_groups = [aws_security_group.fluent_bit_alb_sg.id]
+  }
+
+  egress {
+    protocol    = "-1"
+    from_port   = 0
+    to_port     = 0
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+}
+
+# Create ECS cluster
+resource "aws_ecs_cluster" "fluentbit_cluster" {
+  name = "fluent-bit-ecs-cluster"
+}
+
+# Create Fargate service inside the cluster
+resource "aws_ecs_service" "fluent_bit_service" {
+  name            = "fluent-bit-service"
+  cluster         = aws_ecs_cluster.fluentbit_cluster.id
+  task_definition = aws_ecs_task_definition.nginx_fluent_bit.arn
+  desired_count   = 1
+  launch_type     = "FARGATE"
+
+  network_configuration {
+    security_groups = [aws_security_group.fluent_bit_task_sg.id]
+    subnets         = aws_subnet.fluent_bit_private_subnet[*].id
+  }
+
+  load_balancer {
+    target_group_arn = aws_alb_target_group.fluent_bit_tg.id
+    container_name   = "nginx-fluentbit"
+    container_port   = var.container_port
+  }
+
+  depends_on = [aws_alb_listener.fluent_bit_listener]
+}
+```
+
+## Building the Task Definition
+
+In order to deploy a container to, we need to create a ECS task. Each task has task definition, which contains all the properties needed for the container to run, including the location of the image. ECS also supports [sidecar container pattern](https://docs.microsoft.com/en-us/azure/architecture/patterns/sidecar), which would be a outstanding solution for having separation of concerns between the primary container and peripheral task such as log routing.
+
+An example for task definition having an `nginx` container as the primary container and a `fluent bit` container for log routing would be the following ([source](https://docs.aws.amazon.com/AmazonECS/latest/userguide/firelens-example-taskdefs.html)):
+
+```
+{
+    "family": "firelens-example-cloudwatch",
+    "taskRoleArn": "arn:aws:iam::123456789012:role/ecs_task_iam_role",
+    "containerDefinitions": [
+        {
+            "essential": true,
+            "image": "906394416424.dkr.ecr.us-west-2.amazonaws.com/aws-for-fluent-bit:latest",
+            "name": "log_router",
+            "firelensConfiguration": {
+                "type": "fluentbit"
+            },
+            "logConfiguration": {
+                "logDriver": "awslogs",
+                "options": {
+                    "awslogs-group": "firelens-container",
+                    "awslogs-region": "us-west-2",
+                    "awslogs-create-group": "true",
+                    "awslogs-stream-prefix": "firelens"
+                }
+            },
+            "memoryReservation": 50
+         },
+         {
+             "essential": true,
+             "image": "httpd",
+             "name": "app",
+             "logConfiguration": {
+                 "logDriver":"awsfirelens",
+                 "options": {
+                    "Name": "cloudwatch",
+                    "region": "us-west-2",
+                    "log_group_name": "firelens-blog",
+                    "auto_create_group": "true",
+                    "log_stream_prefix": "from-fluent-bit",
+                    "log-driver-buffer-limit": "2097152" 
+                }
+            },
+            "memoryReservation": 100 
+            }
+    ]
+}
+```
+
+We can notice that this task definition contains a Fluent Bit image provided by AWS and it is using FireLens as the log driver. Also, we can notice that Fluent Bit is configured to stream logs into CloudWatch. We may ask, why would we need Fluent Bit in this case, since AWS can transfer container logs to CloudWatch by default. Before integrating with a third party consumer, it would be easier to validate the whole log routing with CloudWatch. Moreover, the CloudWatch plugin can provide cross-account logging, which we wont use at the moment.
+
+The Terraform equivalent of the task definition would be the following:
+
+```
+resource "aws_ecs_task_definition" "nginx_fluent_bit" {
+  family                   = "nginx-fluent-bit"
+  network_mode             = "awsvpc"
+  requires_compatibilities = ["FARGATE"]
+  cpu                      = var.cpu
+  memory                   = var.memory
+
+  container_definitions = templatefile("task.tftpl", {
+    fargate_cpu    = var.cpu
+    fargate_memory = var.memory
+    app_image      = var.img
+    port           = var.container_port
+    aws_region     = var.aws_region
+  })
+
+  execution_role_arn = aws_iam_role.fluent_bit_task_role.arn
+  task_role_arn      = aws_iam_role.fluent_bit_task_role.arn
+}
+```
+
+`task.tfpl` template file:
+
+```
+[
+    {
+    "essential": true,
+    "image": "906394416424.dkr.ecr.us-east-1.amazonaws.com/aws-for-fluent-bit:latest",
+    "name": "fluentbit-log-router",
+    "firelensConfiguration": {
+      "type": "fluentbit"
+    },
+    "logConfiguration": {
+      "logDriver": "awslogs",
+      "options": {
+        "awslogs-group": "firelens-container",
+        "awslogs-region": "${aws_region}",
+        "awslogs-create-group": "true",
+        "awslogs-stream-prefix": "firelens"
+      }
+    },
+    "memoryReservation": 50
+  },
+  {
+    "cpu": ${fargate_cpu},
+    "image": "${app_image}",
+    "memory": ${fargate_memory},
+    "name": "nginx-fluentbit",
+    "networkMode": "awsvpc",
+    "essential": true,
+    "portMappings": [
+      {
+        "containerPort": ${port},
+        "hostPort": ${port}
+      }
+    ],
+    "logConfiguration": {
+      "logDriver": "awsfirelens",
+      "options": {
+        "Name": "cloudwatch",
+        "region": "${aws_region}",
+        "auto_create_group": "true",
+        "log_group_name": "fluent-bit-cloudwatch",
+        "log_stream_prefix": "from-fluent-bit-nginx",
+        "sts_endpoint": "sts.amazonaws.com"
+      }
+    }
+  }
+]
+```
+
+The task definition requires an execution role. This role is assumed by ECS service and it is used while deploying and setting up the container. The task definition can also have an task role. This role is attached to the containers and it provides permission for the running containers themselves. For simplicity, we will use the same role for the task and for the execution roles.
+
+```
+resource "aws_iam_role" "fluent_bit_task_role" {
+  name = "fluent-bit-task-role"
+
+  assume_role_policy = jsonencode({
+    Version = "2012-10-17"
+    Statement = [
+      {
+        Action = "sts:AssumeRole"
+        Effect = "Allow"
+        Principal = {
+          Service = "ecs-tasks.amazonaws.com"
+        }
+      }
+    ]
+  })
+}
+
+resource "aws_iam_policy" "fluent_bit_task_policy" {
+  name        = "fluent_bit_task_policy"
+  path        = "/"
+  description = "Task policy"
+
+  policy = jsonencode({
+    Version = "2012-10-17"
+    Statement = [
+      {
+        Action = [
+          "logs:CreateLogStream",
+          "logs:PutLogEvents",
+          "logs:CreateLogGroup",
+          "ecr:GetAuthorizationToken",
+          "ecr:BatchCheckLayerAvailability",
+          "ecr:GetDownloadUrlForLayer",
+          "ecr:BatchGetImage"
+        ]
+        Effect   = "Allow"
+        Resource = "*"
+      },
+    ]
+  })
+}
+
+resource "aws_iam_role_policy_attachment" "fluent_bit_task_role_attachment" {
+  role       = aws_iam_role.fluent_bit_task_role.id
+  policy_arn = aws_iam_policy.fluent_bit_task_policy.arn
+}
+```
+
+
+
+
+## References
+
+1. Fluent Bit Manual: [https://docs.fluentbit.io/manual](https://docs.fluentbit.io/manual)
+2. Fluent Bit Output Plugins: [https://docs.fluentbit.io/manual/pipeline/outputs](https://docs.fluentbit.io/manual/pipeline/outputs)
+3. Custom log routing: [https://docs.aws.amazon.com/AmazonECS/latest/developerguide/using_firelens.html](https://docs.aws.amazon.com/AmazonECS/latest/developerguide/using_firelens.html)
+4. Sidecar pattern: [https://docs.microsoft.com/en-us/azure/architecture/patterns/sidecar](https://docs.microsoft.com/en-us/azure/architecture/patterns/sidecar)
+5. Example of task definitions for Fluent Bit: [https://docs.aws.amazon.com/AmazonECS/latest/userguide/firelens-example-taskdefs.html](https://docs.aws.amazon.com/AmazonECS/latest/userguide/firelens-example-taskdefs.html)
