@@ -8,15 +8,16 @@ Using `awslogs` with CloudWatch may be fine for most of the use cases, although 
 
 For example:
 
+- we may want to stream logs to S3 directly, bypassing CloudWatch Logs;
 - we may want to use a company-wide log aggregator based on ELK stack (or insert other log aggregator here);
 - we may want to have better searching and traceability compared to what CloudWatch Log Insights offers;
 - we may want to avoid high ingestion price offered by CloudWatch Logs. This might not be as obvious at first, having a huge cluster of microservices with steady log flow may drive the monthly costs up significantly
 
 ## Introduction to FluentBit
 
-At this point we might have taken the decision to store our logs outside of CloudWatch, the next challenge we are facing is how to stream our logs to our aggregator. One option would be to use a log router named [Fluent Bit](https://docs.fluentbit.io/manual). Fluent Bit is a lightweight agent with the sole purpose of gathering log messages from our containers and stream them into a log aggregator. Fluent Bit [plugins](https://docs.fluentbit.io/manual/pipeline/outputs) for integrating with essentially all known log aggregators. Moreover, it can collect logs from several sources in several formats, it can transform this messages offering a seamless integration between a produces service and a consumer (which can be even CloudWatch).
+At this point we might have taken the decision to store our logs outside of CloudWatch. The next challenge we are facing is how to stream our logs to our aggregator. One option would be to use a log router named [Fluent Bit](https://docs.fluentbit.io/manual). Fluent Bit is a lightweight agent with the sole purpose to gather log messages from our containers and stream them into a log aggregator. Fluent Bit provides a set of [plugins](https://docs.fluentbit.io/manual/pipeline/outputs) for integrating with essentially all known log aggregators. Moreover, it can collect logs from several sources in several formats, it can transform this messages offering a seamless integration between a producer service and a consumers (which can be even CloudWatch).
 
-Fluent Bit is also fully supported by AWS. For custom log driver setup ECS offers the [`FireLens`](https://docs.aws.amazon.com/AmazonECS/latest/developerguide/using_firelens.html) log driver. AWS also offers a custom Docker image for Fluent Bit, which will be used further on in this article.
+Fluent Bit is fully supported by AWS ECS and AWS ECS Fargate. AWS provides a custom log driver name [`FireLens`](https://docs.aws.amazon.com/AmazonECS/latest/developerguide/using_firelens.html) for making possible the integration with the FluentBit agent. AWS also offers a custom Docker image for Fluent Bit, which will be used further on in this article.
 
 ## Base Infrastructure Setup
 
@@ -26,7 +27,7 @@ Let's assume we already have a base VPC with 4 subnets (2 public and 2 private s
 
 ## ECS Cluster Setup
 
-As I already mentioned, we need an Application Load Balancer for our ECS cluster. ECS services will be automatically registered to this load balancer. Also, we would want to allow traffic from this load balancer only to the ECS tasks.
+For ECS cluster setup first we need to provision an Application Load Balancer. ECS services will be automatically registered to this load balancer. For security purposes ant follow best practices, we would allow for the running containers to be able to communicate with the load balancer only. To achieve this, we will provision our ECS infrastructure as follows:
 
 ```bash
 # Create a Security Group for the Application Load Balancer
@@ -133,7 +134,7 @@ resource "aws_ecs_service" "fluent_bit_service" {
 
 ## Building the Task Definition
 
-In order to deploy a container to, we need to create a ECS task. Each task has task definition, which contains all the properties needed for the container to run, including the location of the image. ECS also supports [sidecar container pattern](https://docs.microsoft.com/en-us/azure/architecture/patterns/sidecar), which would be a outstanding solution for having separation of concerns between the primary container and peripheral task such as log routing.
+In order to deploy a container to ECS Fargate, we need to create a ECS task. Each ECS task requires a task definition. This task definition contains all the properties needed for the container to run, including the location of the image. ECS also supports [sidecar container pattern](https://docs.microsoft.com/en-us/azure/architecture/patterns/sidecar), which would be a outstanding solution for having separation of concerns between the primary container and peripheral task such as log routing.
 
 An example for task definition having an `nginx` container as the primary container and a `fluent bit` container for log routing would be the following ([source](https://docs.aws.amazon.com/AmazonECS/latest/userguide/firelens-example-taskdefs.html)):
 
@@ -365,7 +366,7 @@ We build this image with the usual Docker build command:
 docker buildx build --platform linux/amd64 -t fluent-bit-s3 .
 ```
 
-Also, we need to push this image to a registry from which ECS task would be able to pull it. We can use Elastic Container Registry (ECR) for storing this Docker image. We can create an ECR repository with the following Terraform definition:
+Also, we need to push this image to a registry from which ECS would be able to pull it. We can use Elastic Container Registry (ECR) for storing our Docker images. We can create an ECR repository with the following Terraform definition:
 
 ```
 resource "aws_ecr_repository" "fluentbit_repository" {
@@ -378,9 +379,9 @@ output "fluent_bit_registry_url" {
 }
 ```
 
-When the registry is ready, we can tag our image and push it to the registry. I recommend using the `Push Commands` provided by the registry, which are a set of Docker commands for build and pushing the image. 
+When the registry is ready, we can tag our image and push it to the registry. I recommend following the `Push Commands` provided by the registry. This push commands are a set of Docker commands for build and push the image. 
 
-Two more things we have to do is to create an S3 bucket in which we can stream logs and provision a policy for the task execution role for being able to write in this S3 bucket. We can create the S3 bucket as follows:
+Two more things left to do is to create an S3 bucket in which we can stream logs and provision a policy for the task execution role for being able to write in this S3 bucket. We can create the S3 bucket as follows:
 
 ```
 resource "aws_s3_bucket" "fluentbit_logging_bucket" {
@@ -421,9 +422,9 @@ resource "aws_iam_role_policy_attachment" "fluent_bit_task_role_s3_write_attachm
 }
 ```
 
-In order to put things together, we can find the whole code base for the article on GitHub: [https://github.com/Ernyoke/aws-fargate-fluentbit](https://github.com/Ernyoke/aws-fargate-fluentbit)
+## Putting Things Together
 
-
+The code for this project with instructions to deploy everything can be found on GitHub: [https://github.com/Ernyoke/aws-fargate-fluentbit](https://github.com/Ernyoke/aws-fargate-fluentbit)
 
 ## References
 
