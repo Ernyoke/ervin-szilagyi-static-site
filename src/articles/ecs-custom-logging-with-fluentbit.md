@@ -257,7 +257,7 @@ resource "aws_ecs_task_definition" "nginx_fluent_bit" {
 ]
 ```
 
-The task definition requires an execution role. This role is assumed by ECS service and it is used while deploying and setting up the container. The task definition can also have an task role. This role is attached to the containers and it provides permission for the running containers themselves. For simplicity, we will use the same role for the task and for the execution roles.
+The task definition requires an execution role. This role is assumed by ECS service and it is used while deploying and setting up the container. The task definition can also have a task role. This role is attached to the containers and it provides permission for the running containers themselves. For simplicity, we will use the same role for the task and for the execution roles.
 
 ```
 resource "aws_iam_role" "fluent_bit_task_role" {
@@ -381,7 +381,7 @@ output "fluent_bit_registry_url" {
 
 When the registry is ready, we can tag our image and push it to the registry. I recommend following the `Push Commands` provided by the registry. This push commands are a set of Docker commands for build and push the image. 
 
-Two more things left to do is to create an S3 bucket in which we can stream logs and provision a policy for the task execution role for being able to write in this S3 bucket. We can create the S3 bucket as follows:
+Two more things left to do is to create an S3 bucket in which we can stream logs and provision a policy for the task role for being able to write in this S3 bucket. We can create the S3 bucket as follows:
 
 ```
 resource "aws_s3_bucket" "fluentbit_logging_bucket" {
@@ -394,7 +394,7 @@ resource "aws_s3_bucket_acl" "fluentbit_logging_bucket_acl" {
 }
 ```
 
- We could provision the following policy and attach it to the task definition:
+We could provision the following policy and attach it to the task role:
 
 ```
 resource "aws_iam_policy" "fluent_bit_task_policy_s3_write" {
@@ -421,6 +421,8 @@ resource "aws_iam_role_policy_attachment" "fluent_bit_task_role_s3_write_attachm
   policy_arn = aws_iam_policy.fluent_bit_task_policy_s3_write.arn
 }
 ```
+
+Deploying these, we should be able to see gzipped JSON files appearing in our S3 bucket.
 
 ## Putting Things Together
 
