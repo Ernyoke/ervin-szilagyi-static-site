@@ -20,118 +20,13 @@ Fluent Bit is also fully supported by AWS. For custom log driver setup ECS offer
 
 ## Base Infrastructure Setup
 
-What we would want to achieve is to deploy a Fargate cluster with an nginx container using Fluent Bit. For being able to do this, we might want to lay down some basic infrastructure first. We need a VPC with a few subnets which do have access to internet. We will use Terraform in this article to easily spin up this infrastructure and also to provide a blueprint for the reader which can be easily reproducible. This article wont go into the inner workings of Terraform and expects the reader to have basic familiarity with its deployment process (or with any kind IoC deployment tool working process).
+What we would want to achieve is to deploy a Fargate cluster with an nginx container using Fluent Bit. For being able to do this, we might want to provision some basic infrastructure first. We need a VPC with a few subnets which do have access to internet. We will use Terraform in this article to easily spin up this infrastructure and also to provide a blueprint for the reader which can be easily reproducible. This article wont go into the inner workings of Terraform and expects the reader to have basic familiarity with its deployment process (or with any kind IoC deployment tool working process).
 
-Let's build a base VPC with 4 subnets (2 public and 2 private subnet), an Internet Gateway and a NAT Gateway:
+Let's assume we already have a base VPC with 4 subnets (2 public and 2 private subnet), an Internet Gateway and a NAT Gateway. The reason why we would want 4 subnets is redundancy and high availability (HA), which is a requirement for the Application Load Balancer we are planning to use for our ECS cluster. The Application Load Balancers requires to be deployed in at least 2 subnets with different availability zones. We will deploy the ALB in the provision public subnets, while any running ECS container will be places in a private subnet. Terraform code for provisioning the base infrastructure can be found in the following git repository: [https://github.com/Ernyoke/aws-fargate-fluentbit](https://github.com/Ernyoke/aws-fargate-fluentbit).
 
-```Bash
-# Create a VPC
-resource "aws_vpc" "fluent_bit_vpc" {
-  cidr_block = "10.0.0.0/16"
+## ECS Cluster Setup
 
-  tags = {
-    "Name" = "Fluent Bit VPC"
-  }
-}
-
-# Create a public subnet
-resource "aws_subnet" "fluent_bit_public_subnet" {
-  count             = 2
-  availability_zone = element(data.aws_availability_zones.azs.names, count.index)
-  vpc_id            = aws_vpc.fluent_bit_vpc.id
-  cidr_block        = cidrsubnet("10.0.0.0/16", 8, count.index)
-
-  tags = {
-    Name = "Fluent Bit Public Subnet"
-  }
-}
-
-# Create a private subnet
-resource "aws_subnet" "fluent_bit_private_subnet" {
-  count             = 2
-  availability_zone = element(data.aws_availability_zones.azs.names, count.index)
-  vpc_id            = aws_vpc.fluent_bit_vpc.id
-  cidr_block        = cidrsubnet("10.0.0.0/16", 8, length(aws_subnet.fluent_bit_public_subnet[*]) + count.index)
-
-  tags = {
-    Name = "Fluent Bit Private Subnet"
-  }
-}
-
-# Create an internet gateway for the VPC
-resource "aws_internet_gateway" "fluent_bit_igw" {
-  vpc_id = aws_vpc.fluent_bit_vpc.id
-
-  tags = {
-    Name = "Fluent Bit Internet Gateway"
-  }
-}
-
-# Create a NAT gateway for the private subnet and place it into the public subnet
-resource "aws_nat_gateway" "fluent_bit_ngw" {
-  allocation_id = aws_eip.fluent_bit_ngw_eip.allocation_id
-  subnet_id     = aws_subnet.fluent_bit_public_subnet[0].id
-
-  tags = {
-    Name = "Fluent Bit NAT Gateway"
-  }
-
-  # To ensure proper ordering, it is recommended to add an explicit dependency
-  # on the Internet Gateway for the VPC.
-  depends_on = [aws_internet_gateway.fluent_bit_igw]
-}
-
-# Public IP for the NAT gateway
-resource "aws_eip" "fluent_bit_ngw_eip" {
-  tags = {
-    "Name" = "Fluent Bit NAT Gateway IP"
-  }
-}
-
-# Route traffic from the public subnet to the internet gateway
-resource "aws_route_table" "fluent_bit_public_rt" {
-  count  = 2
-  vpc_id = aws_vpc.fluent_bit_vpc.id
-
-  route {
-    cidr_block = "0.0.0.0/0"
-    gateway_id = aws_internet_gateway.fluent_bit_igw.id
-  }
-
-  tags = {
-    Name = "Fluent Bit Public Subnet Route Table"
-  }
-}
-
-resource "aws_route_table_association" "fluent_bit_public_rta" {
-  count          = 2
-  subnet_id      = aws_subnet.fluent_bit_public_subnet[count.index].id
-  route_table_id = aws_route_table.fluent_bit_public_rt[count.index].id
-}
-
-# Route traffic from the private subnet to the NAT gateway
-resource "aws_route_table" "fluent_bit_private_rt" {
-  count  = 2
-  vpc_id = aws_vpc.fluent_bit_vpc.id
-
-  route {
-    cidr_block = "0.0.0.0/0"
-    gateway_id = aws_nat_gateway.fluent_bit_ngw.id
-  }
-
-  tags = {
-    Name = "Fluent Bit Private Subnet Route Table"
-  }
-}
-
-resource "aws_route_table_association" "fluent_bit_private_rta" {
-  count          = 2
-  subnet_id      = aws_subnet.fluent_bit_private_subnet[count.index].id
-  route_table_id = aws_route_table.fluent_bit_private_rt[count.index].id
-}
-```
-
-Now that we have a VPC, we need an Application Load Balancer for our ECS cluster. ECS services will be automatically registered to this load balancer. Also, we would want to allow traffic from this load balancer only to the ECS tasks.
+As I already mentioned, we need an Application Load Balancer for our ECS cluster. ECS services will be automatically registered to this load balancer. Also, we would want to allow traffic from this load balancer only to the ECS tasks.
 
 ```bash
 # Create a Security Group for the Application Load Balancer
@@ -184,7 +79,7 @@ resource "aws_alb_listener" "fluent_bit_listener" {
 }
 ```
 
-Provisioning the ECS cluster:
+We provision the ECS cluster with a Fargate service and a security group allowing traffic from the ALB ony:
 
 ```bash
 # Allow traffic from the Application Load Balancer to the ECS task
@@ -412,6 +307,121 @@ resource "aws_iam_role_policy_attachment" "fluent_bit_task_role_attachment" {
 }
 ```
 
+## Fluent Bit Configuration for Streaming Logs to S3
+
+Moving on, we would want to be able to stream log messages directly to S3. While it would be possible to accomplish streaming logs from CloudWatch to S3, in this case we would want to bypass CloudWatch log ingestion. 
+
+By default, Fluent Bit requires a [configuration file](https://docs.fluentbit.io/manual/v/1.2/configuration/file). An example for this configuration file which would allow streaming logs to S3 would be the following:
+
+```
+[INPUT]
+    Name forward
+    unix_path /var/run/fluent.sock
+    Mem_Buf_Limit 100MB
+
+[OUTPUT]
+    Name                         s3
+    Match                        *
+    bucket                       fluent-bit-log-12345
+    region                       us-east-1
+    s3_key_format                /$TAG[2]/$TAG[0]/%Y/%m/%d/%H/%M/%S/$UUID.gz
+    s3_key_format_tag_delimiters .-
+```
+
+In case of Fargate tasks, this configuration file should be baked in the image, for which we will see an example bellow. Before that, we might have noticed that in our task definition above, we did not provide such configuration file. The reason why we did not have to provide it, is that we are using a Fluent Bit image provided by AWS. This image has plugins for AWS services such as CloudWatch, Kinesis Firehose, S3. It also can generate configuration files based on the `logConfiguration` - `options` section for the Fluent Bit task definition. In this case, we would use the previous Fluentbit config file which we would bake it inside our Docker image. The task definition would be as follows:
+
+```
+{
+  "essential": true,
+  "image": "<id>.dkr.ecr.us-east-1.amazonaws.com/fluent-bit-s3:latest"
+  "name": "fluentbit-log-router",
+  "firelensConfiguration": {
+    "type": "fluentbit"
+  },
+  "logConfiguration": {
+    "logDriver": "awslogs",
+    "options": {
+      "awslogs-group": "firelens-container",
+      "awslogs-region": "${aws_region}",
+      "awslogs-create-group": "true",
+      "awslogs-stream-prefix": "firelens"
+    }
+  },
+  "memoryReservation": 50
+},
+```
+
+The Docker image with the configuration FluentBit configuration file is as simple as this:
+
+```
+FROM amazon/aws-for-fluent-bit:latest
+ADD s3.conf /fluent-bit/alt/fluent-bit.conf
+CMD ["/fluent-bit/bin/fluent-bit", "-c", "/fluent-bit/alt/fluent-bit.conf"]
+```
+
+We build this image with the usual Docker build command:
+
+```
+docker buildx build --platform linux/amd64 -t fluent-bit-s3 .
+```
+
+Also, we need to push this image to a registry from which ECS task would be able to pull it. We can use Elastic Container Registry (ECR) for storing this Docker image. We can create an ECR repository with the following Terraform definition:
+
+```
+resource "aws_ecr_repository" "fluentbit_repository" {
+  name                 = var.repo_name
+  image_tag_mutability = "MUTABLE"
+}
+
+output "fluent_bit_registry_url" {
+  value = aws_ecr_repository.fluentbit_repository.repository_url
+}
+```
+
+When the registry is ready, we can tag our image and push it to the registry. I recommend using the `Push Commands` provided by the registry, which are a set of Docker commands for build and pushing the image. 
+
+Two more things we have to do is to create an S3 bucket in which we can stream logs and provision a policy for the task execution role for being able to write in this S3 bucket. We can create the S3 bucket as follows:
+
+```
+resource "aws_s3_bucket" "fluentbit_logging_bucket" {
+  bucket = "fluent-bit-log-12345"
+}
+
+resource "aws_s3_bucket_acl" "fluentbit_logging_bucket_acl" {
+  bucket = aws_s3_bucket.fluentbit_logging_bucket.id
+  acl    = "private"
+}
+```
+
+ We could provision the following policy and attach it to the task definition:
+
+```
+resource "aws_iam_policy" "fluent_bit_task_policy_s3_write" {
+  name        = "fluent_bit_task_policy_allow_s3_write"
+  path        = "/"
+  description = "Task policy"
+
+  policy = jsonencode({
+    Version = "2012-10-17"
+    Statement = [
+      {
+        Action = [
+          "s3:PutObject"
+        ]
+        Effect   = "Allow"
+        Resource = ["arn:aws:s3:::${aws_s3_bucket.fluentbit_logging_bucket.bucket}/*"]
+      },
+    ]
+  })
+}
+
+resource "aws_iam_role_policy_attachment" "fluent_bit_task_role_s3_write_attachment" {
+  role       = aws_iam_role.fluent_bit_task_role.id
+  policy_arn = aws_iam_policy.fluent_bit_task_policy_s3_write.arn
+}
+```
+
+In order to put things together, we can find the whole code base for the article on GitHub: [https://github.com/Ernyoke/aws-fargate-fluentbit](https://github.com/Ernyoke/aws-fargate-fluentbit)
 
 
 
@@ -422,3 +432,4 @@ resource "aws_iam_role_policy_attachment" "fluent_bit_task_role_attachment" {
 3. Custom log routing: [https://docs.aws.amazon.com/AmazonECS/latest/developerguide/using_firelens.html](https://docs.aws.amazon.com/AmazonECS/latest/developerguide/using_firelens.html)
 4. Sidecar pattern: [https://docs.microsoft.com/en-us/azure/architecture/patterns/sidecar](https://docs.microsoft.com/en-us/azure/architecture/patterns/sidecar)
 5. Example of task definitions for Fluent Bit: [https://docs.aws.amazon.com/AmazonECS/latest/userguide/firelens-example-taskdefs.html](https://docs.aws.amazon.com/AmazonECS/latest/userguide/firelens-example-taskdefs.html)
+6. Fluent Bit configuration file: [https://docs.fluentbit.io/manual/v/1.2/configuration/file](https://docs.fluentbit.io/manual/v/1.2/configuration/file)
