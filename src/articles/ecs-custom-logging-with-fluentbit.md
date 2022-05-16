@@ -29,7 +29,7 @@ Let's assume we already have a base VPC with 4 subnets (2 public and 2 private s
 
 For ECS cluster setup first we need to provision an Application Load Balancer. ECS services will be automatically registered to this load balancer. For security purposes ant follow best practices, we would allow for the running containers to be able to communicate with the load balancer only. To achieve this, we will provision our ECS infrastructure as follows:
 
-```bash
+```terraform
 # Create a Security Group for the Application Load Balancer
 resource "aws_security_group" "fluent_bit_alb_sg" {
   name        = "fluent-bit-alb-sg"
@@ -82,7 +82,7 @@ resource "aws_alb_listener" "fluent_bit_listener" {
 
 We provision the ECS cluster with a Fargate service and a security group allowing traffic from the ALB ony:
 
-```bash
+```terraform
 # Allow traffic from the Application Load Balancer to the ECS task
 resource "aws_security_group" "fluent_bit_task_sg" {
   name        = "fluent-bit-task-sg"
@@ -138,7 +138,7 @@ In order to deploy a container to ECS Fargate, we need to create a ECS task. Eac
 
 An example for task definition having an `nginx` container as the primary container and a `fluent bit` container for log routing would be the following ([source](https://docs.aws.amazon.com/AmazonECS/latest/userguide/firelens-example-taskdefs.html)):
 
-```
+```json
 {
     "family": "firelens-example-cloudwatch",
     "taskRoleArn": "arn:aws:iam::123456789012:role/ecs_task_iam_role",
@@ -186,7 +186,7 @@ We can notice that this task definition contains a Fluent Bit image provided by 
 
 The Terraform equivalent of the task definition would be the following:
 
-```
+```terraform
 resource "aws_ecs_task_definition" "nginx_fluent_bit" {
   family                   = "nginx-fluent-bit"
   network_mode             = "awsvpc"
@@ -209,7 +209,7 @@ resource "aws_ecs_task_definition" "nginx_fluent_bit" {
 
 `task.tfpl` template file:
 
-```
+```json
 [
     {
     "essential": true,
@@ -259,7 +259,7 @@ resource "aws_ecs_task_definition" "nginx_fluent_bit" {
 
 The task definition requires an execution role. This role is assumed by ECS service and it is used while deploying and setting up the container. The task definition can also have a task role. This role is attached to the containers and it provides permission for the running containers themselves. For simplicity, we will use the same role for the task and for the execution roles.
 
-```
+```terraform
 resource "aws_iam_role" "fluent_bit_task_role" {
   name = "fluent-bit-task-role"
 
@@ -314,7 +314,7 @@ Moving on, we would want to be able to stream log messages directly to S3. While
 
 By default, Fluent Bit requires a [configuration file](https://docs.fluentbit.io/manual/v/1.2/configuration/file). An example for this configuration file which would allow streaming logs to S3 would be the following:
 
-```
+```bash
 [INPUT]
     Name forward
     unix_path /var/run/fluent.sock
@@ -331,7 +331,7 @@ By default, Fluent Bit requires a [configuration file](https://docs.fluentbit.io
 
 In case of Fargate tasks, this configuration file should be baked in the image, for which we will see an example bellow. Before that, we might have noticed that in our task definition above, we did not provide such configuration file. The reason why we did not have to provide it, is that we are using a Fluent Bit image provided by AWS. This image has plugins for AWS services such as CloudWatch, Kinesis Firehose, S3. It also can generate configuration files based on the `logConfiguration` - `options` section for the Fluent Bit task definition. In this case, we would use the previous Fluentbit config file which we would bake it inside our Docker image. The task definition would be as follows:
 
-```
+```json
 {
   "essential": true,
   "image": "<id>.dkr.ecr.us-east-1.amazonaws.com/fluent-bit-s3:latest"
@@ -354,7 +354,7 @@ In case of Fargate tasks, this configuration file should be baked in the image, 
 
 The Docker image with the configuration FluentBit configuration file is as simple as this:
 
-```
+```bash
 FROM amazon/aws-for-fluent-bit:latest
 ADD s3.conf /fluent-bit/alt/fluent-bit.conf
 CMD ["/fluent-bit/bin/fluent-bit", "-c", "/fluent-bit/alt/fluent-bit.conf"]
@@ -362,13 +362,13 @@ CMD ["/fluent-bit/bin/fluent-bit", "-c", "/fluent-bit/alt/fluent-bit.conf"]
 
 We build this image with the usual Docker build command:
 
-```
+```bash
 docker buildx build --platform linux/amd64 -t fluent-bit-s3 .
 ```
 
 Also, we need to push this image to a registry from which ECS would be able to pull it. We can use Elastic Container Registry (ECR) for storing our Docker images. We can create an ECR repository with the following Terraform definition:
 
-```
+```terraform
 resource "aws_ecr_repository" "fluentbit_repository" {
   name                 = var.repo_name
   image_tag_mutability = "MUTABLE"
@@ -383,7 +383,7 @@ When the registry is ready, we can tag our image and push it to the registry. I 
 
 Two more things left to do is to create an S3 bucket in which we can stream logs and provision a policy for the task role for being able to write in this S3 bucket. We can create the S3 bucket as follows:
 
-```
+```terraform
 resource "aws_s3_bucket" "fluentbit_logging_bucket" {
   bucket = "fluent-bit-log-12345"
 }
@@ -396,7 +396,7 @@ resource "aws_s3_bucket_acl" "fluentbit_logging_bucket_acl" {
 
 We could provision the following policy and attach it to the task role:
 
-```
+```terraform
 resource "aws_iam_policy" "fluent_bit_task_policy_s3_write" {
   name        = "fluent_bit_task_policy_allow_s3_write"
   path        = "/"

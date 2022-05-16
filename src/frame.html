@@ -48,8 +48,12 @@
             Site generated with <a href="https://github.com/Ernyoke/ssg" target="_blank">ssg</a>
       </footer>
 
-      <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.6.0/highlight.min.js"></script>
-      <script>hljs.highlightAll();</script>
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.5.1/highlight.min.js"></script>
+      <script type="text/javascript" src="scripts/terraform.js"></script>
+      <script>
+            hljs.registerLanguage('terraform', window.hljsDefineTerraform);
+            hljs.highlightAll();
+      </script>
 </body>
 
 </html>
