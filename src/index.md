@@ -9,6 +9,7 @@ In my free time I like to thinker with even more technology. I also enjoy readin
 # Articles
 
 - 2022
+    - May 21, 2022 - [AWS Lambda Graceful Shutdown](articles/aws-lambda-graceful-shutdown.md)
     - May 16, 2022 - [ECS Fargate Custom Logging with Fluent Bit](articles/ecs-custom-logging-with-fluentbit.md)
 - 2021
     - August 06, 2021 - [My Journey to become 5 times AWS Certified](articles/my-journey-to-become-5-times-aws-certified.md)
