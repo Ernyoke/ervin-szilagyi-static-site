@@ -8,7 +8,7 @@
 
 ## About Me
 
-Experienced software engineer having a wide interest in distributed backend systems, decoupled frontend frameworks and cloud based technologies.
+Experienced software engineer having a wide interest in distributed backend systems, software and cloud architecture and DevOps practices.
 
 ### Contact
 
@@ -38,12 +38,14 @@ ___
 
     *Since August 2021 until present*
 
-    - Cloud Engineer/Solution Architect working mainly on AWS infrastructure in the automotive industry.
-    - Assisting in architecting complex end-to-end cloud based solutions for the client needs. These solutions involved designed secure and usable APIs, highly available and secure networks for the relevant services and involvement at the development of the actual service (main technology stack: API Gateway, networking: AWS VPC, Route53, Elastic Load Balancers, AWS Lambda (Python, JavaScript, Go), ECS with Java microservices).
+    - Cloud Engineer/Solutions Architect working mainly on AWS infrastructure in the automotive industry.
+    - Assist in architect complex end-to-end cloud based solutions for the client needs. These solutions involved designing secure and usable APIs, highly available and secure networks for the relevant services.
+    - Take part in the end-to-end development of a set of microservices with all the additional infrastructure requirements (main technology stack: API Gateway, networking (AWS VPC, Route53, Elastic Load Balancers), AWS Lambda (Python, JavaScript, Go), Java microservices (ECS, Docker).
     - Doing cloud automation and monitoring with CloudWatch/Event Bridge and Lambda.
-    - Developing, architecting and refactoring the cloud based infrastructure using IoC tools such as Terraform.
-    - Supporting a set of ETL jobs. Doing maintenance work, optimizations, monitoring etc. (main technology stack: AWS Batch/AWS Lambda with Python, S3, AWS RDS, Redis)
-    - Managing a set of relational databases deployed on AWS RDS. Planning and leading migrations from older platforms to newer and more up-to-date versions. Building highly-available solutions by implementing replications.
+    - Develop, design and refactor cloud based infrastructure using IoC tools such as Terraform.
+    - Design and implement disaster recovery plans for services and platforms running on global scale
+    - Support a set of ETL jobs. Doing maintenance work, optimisations, monitoring etc. (main technology stack: AWS Batch/AWS Lambda with Python, S3, AWS RDS, Redis)
+    - Manage a set of relational databases deployed on AWS RDS. Planning and leading migrations from older platforms to newer and more up-to-date versions. Building highly-available solutions by implementing replications.
 
 ### RIA Solutions Group
 
