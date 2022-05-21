@@ -2,32 +2,32 @@
 
 ## Motivation
 
-AWS Elastic Container Registry provides an easy way of managing logs for containers and our micro-services running inside those containers. Having seamless integration with CloudWatch Logs, containers deployed on ECS Fargate have their standard output piped to CloudWatch Logs. This is made possible by `awslogs` log driver, which runs outside of the container and it is fully managed by AWS.
+AWS Elastic Container Service provides an easy way of managing logs for containers and for our microservices running inside those containers. Having seamless integration with CloudWatch Logs, containers deployed on ECS Fargate have their standard output piped to CloudWatch Logs. This is made possible by `awslogs` log driver, which runs outside of the container and it is fully managed by AWS.
 
-Using `awslogs` with CloudWatch may be fine for most of the use cases, although we might have several reasons for using a third party log aggregated.
+Using `awslogs` with CloudWatch may be fine for most of the use cases, although we might have several reasons for using a third party log aggregator.
 
 For example:
 
 - we may want to stream logs to S3 directly, bypassing CloudWatch Logs;
-- we may want to use a company-wide log aggregator based on ELK stack (or insert other log aggregator here);
+- we may want to use a company-wide log aggregator based on ELK stack (or insert here another log aggregator based on other tech-stack);
 - we may want to have better searching and traceability compared to what CloudWatch Log Insights offers;
-- we may want to avoid high ingestion price offered by CloudWatch Logs. This might not be as obvious at first, having a huge cluster of microservices with steady log flow may drive the monthly costs up significantly
+- we may want to avoid the high ingestion price offered by CloudWatch Logs. This might not be as obvious at first, having a huge cluster of microservices with steady log flow may drive the monthly costs up significantly
 
 ## Introduction to FluentBit
 
-At this point we might have taken the decision to store our logs outside of CloudWatch. The next challenge we are facing is how to stream our logs to our aggregator. One option would be to use a log router named [Fluent Bit](https://docs.fluentbit.io/manual). Fluent Bit is a lightweight agent with the sole purpose to gather log messages from our containers and stream them into a log aggregator. Fluent Bit provides a set of [plugins](https://docs.fluentbit.io/manual/pipeline/outputs) for integrating with essentially all known log aggregators. Moreover, it can collect logs from several sources in several formats, it can transform this messages offering a seamless integration between a producer service and a consumers (which can be even CloudWatch).
+At this point we might have taken the decision to store our logs outside of CloudWatch. The next challenge we are facing is how to stream our logs to our aggregator. One option would be to use a log router named [Fluent Bit](https://docs.fluentbit.io/manual). Fluent Bit is a lightweight agent with the sole purpose to gather log messages from our containers and stream them into a log aggregator. Fluent Bit provides a set of [plugins](https://docs.fluentbit.io/manual/pipeline/outputs) for integrating with essentially all known log aggregators. Moreover, it can collect logs from several sources in several formats, it can transform these messages, offering a seamless integration between a producer service and consumers.
 
-Fluent Bit is fully supported by AWS ECS and AWS ECS Fargate. AWS provides a custom log driver name [`FireLens`](https://docs.aws.amazon.com/AmazonECS/latest/developerguide/using_firelens.html) for making possible the integration with the FluentBit agent. AWS also offers a custom Docker image for Fluent Bit, which will be used further on in this article.
+Fluent Bit is fully supported by AWS ECS and AWS ECS Fargate. AWS provides a custom log driver named[`FireLens`](https://docs.aws.amazon.com/AmazonECS/latest/developerguide/using_firelens.html) for making possible the integration with the Fluent Bit agent. AWS also offers a custom Docker image for Fluent Bit, which will be used further on in this article.
 
 ## Base Infrastructure Setup
 
-What we would want to achieve is to deploy a Fargate cluster with an nginx container using Fluent Bit. For being able to do this, we might want to provision some basic infrastructure first. We need a VPC with a few subnets which do have access to internet. We will use Terraform in this article to easily spin up this infrastructure and also to provide a blueprint for the reader which can be easily reproducible. This article wont go into the inner workings of Terraform and expects the reader to have basic familiarity with its deployment process (or with any kind IoC deployment tool working process).
+What we would want to achieve is to deploy a Fargate cluster with an nginx container using Fluent Bit. For being able to do this, first we might want to provision some basic infrastructure. We need a VPC with a few subnets with internet access. We will use Terraform in this article to easily spin up this infrastructure and also to provide a blueprint for the reader. This article won't go into the inner workings of Terraform and expects the reader to have basic familiarity with its deployment process (or with any kind IoC deployment tool working process).
 
-Let's assume we already have a base VPC with 4 subnets (2 public and 2 private subnet), an Internet Gateway and a NAT Gateway. The reason why we would want 4 subnets is redundancy and high availability (HA), which is a requirement for the Application Load Balancer we are planning to use for our ECS cluster. The Application Load Balancers requires to be deployed in at least 2 subnets with different availability zones. We will deploy the ALB in the provision public subnets, while any running ECS container will be places in a private subnet. Terraform code for provisioning the base infrastructure can be found in the following git repository: [https://github.com/Ernyoke/aws-fargate-fluentbit](https://github.com/Ernyoke/aws-fargate-fluentbit).
+Let's assume we already have a base VPC with 4 subnets (2 public and 2 private subnets), an Internet Gateway and a NAT Gateway. The reason why we would want 4 subnets is redundancy and high availability (HA). The Application Load Balancer, planned to be used for the ECS cluster, requires it to be deployed in at least 2 subnets with different availability zones. We will deploy the ALB in the provision public subnets, while any running ECS container will be placed in a private subnet. Terraform code for provisioning the base infrastructure can be found in the following git repository: [https://github.com/Ernyoke/aws-fargate-fluentbit](https://github.com/Ernyoke/aws-fargate-fluentbit).
 
 ## ECS Cluster Setup
 
-For ECS cluster setup first we need to provision an Application Load Balancer. ECS services will be automatically registered to this load balancer. For security purposes ant follow best practices, we would allow for the running containers to be able to communicate with the load balancer only. To achieve this, we will provision our ECS infrastructure as follows:
+For ECS cluster setup first we need to provision an Application Load Balancer. ECS services will be automatically registered to this load balancer. For security purposes and to follow best practices, we would allow for the running containers to be able to communicate with the load balancer only. To achieve this, we will provision our ECS infrastructure as follows:
 
 ```terraform
 # Create a Security Group for the Application Load Balancer
@@ -134,7 +134,7 @@ resource "aws_ecs_service" "fluent_bit_service" {
 
 ## Building the Task Definition
 
-In order to deploy a container to ECS Fargate, we need to create a ECS task. Each ECS task requires a task definition. This task definition contains all the properties needed for the container to run, including the location of the image. ECS also supports [sidecar container pattern](https://docs.microsoft.com/en-us/azure/architecture/patterns/sidecar), which would be a outstanding solution for having separation of concerns between the primary container and peripheral task such as log routing.
+In order to deploy a container to ECS Fargate, we need to create an ECS task. Each ECS task requires a task definition. This task definition contains all the properties needed for the container to run, including the location of the image. ECS also supports [sidecar container pattern](https://docs.microsoft.com/en-us/azure/architecture/patterns/sidecar), which would be an outstanding solution for having separation of concerns between the primary container and peripheral tasks such as log routing.
 
 An example for task definition having an `nginx` container as the primary container and a `fluent bit` container for log routing would be the following ([source](https://docs.aws.amazon.com/AmazonECS/latest/userguide/firelens-example-taskdefs.html)):
 
@@ -310,7 +310,7 @@ resource "aws_iam_role_policy_attachment" "fluent_bit_task_role_attachment" {
 
 ## Fluent Bit Configuration for Streaming Logs to S3
 
-Moving on, we would want to be able to stream log messages directly to S3. While it would be possible to accomplish streaming logs from CloudWatch to S3, in this case we would want to bypass CloudWatch log ingestion. 
+Moving on, we would like to be able to stream log messages directly to S3. While it would be possible to accomplish streaming logs from CloudWatch to S3, in this case we would want to bypass CloudWatch log ingestion. 
 
 By default, Fluent Bit requires a [configuration file](https://docs.fluentbit.io/manual/v/1.2/configuration/file). An example for this configuration file which would allow streaming logs to S3 would be the following:
 
@@ -329,7 +329,7 @@ By default, Fluent Bit requires a [configuration file](https://docs.fluentbit.io
     s3_key_format_tag_delimiters .-
 ```
 
-In case of Fargate tasks, this configuration file should be baked in the image, for which we will see an example bellow. Before that, we might have noticed that in our task definition above, we did not provide such configuration file. The reason why we did not have to provide it, is that we are using a Fluent Bit image provided by AWS. This image has plugins for AWS services such as CloudWatch, Kinesis Firehose, S3. It also can generate configuration files based on the `logConfiguration` - `options` section for the Fluent Bit task definition. In this case, we would use the previous Fluentbit config file which we would bake it inside our Docker image. The task definition would be as follows:
+In case of Fargate tasks, this configuration file should be baked in the image, for which we will see an example below. Before that, we might have noticed that in our task definition above, we did not provide such a configuration file. The reason why we did not have to provide it, is that we are using a Fluent Bit image provided by AWS. This image has plugins for AWS services such as CloudWatch, Kinesis Firehose, S3. It also can generate configuration files based on the `logConfiguration` - `options` section for the Fluent Bit task definition. In this case, we would use the previous Fluentbit config file which we would bake it inside our Docker image. The task definition would be as follows:
 
 ```json
 {
@@ -379,7 +379,7 @@ output "fluent_bit_registry_url" {
 }
 ```
 
-When the registry is ready, we can tag our image and push it to the registry. I recommend following the `Push Commands` provided by the registry. This push commands are a set of Docker commands for build and push the image. 
+When the registry is ready, we can tag our image and push it to the registry. I recommend following the `Push Commands` provided by the registry. These *push commands* are a set of Docker commands for building and pushing the image. 
 
 Two more things left to do is to create an S3 bucket in which we can stream logs and provision a policy for the task role for being able to write in this S3 bucket. We can create the S3 bucket as follows:
 
