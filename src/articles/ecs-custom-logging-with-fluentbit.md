@@ -2,7 +2,7 @@
 
 ## Motivation
 
-AWS Elastic Container Service provides an easy way of managing logs for containers and for our microservices running inside those containers. Having seamless integration with CloudWatch Logs, containers deployed on ECS Fargate have their standard output piped to CloudWatch Logs. This is made possible by `awslogs` log driver, which runs outside of the container and it is fully managed by AWS.
+AWS Elastic Container Service provides an easy way of managing logs for containers and for our microservices deployed inside those containers. Having seamless integration with CloudWatch Logs, containers running on ECS Fargate have their standard output piped to CloudWatch Logs. This is made possible by `awslogs` log driver, which is executed outside of the container and it is fully managed by AWS.
 
 Using `awslogs` with CloudWatch may be fine for most of the use cases, although we might have several reasons for using a third party log aggregator.
 
@@ -424,7 +424,9 @@ resource "aws_iam_role_policy_attachment" "fluent_bit_task_role_s3_write_attachm
 
 Deploying these, we should be able to see gzipped JSON files appearing in our S3 bucket.
 
-## Putting Things Together
+## Conclusion
+
+In this article we have seen how to configure Fluent Bit agents for ECS Fargate tasks. We have also learnt about deploying Fluent Bit in a sidecar container, having it separated from the execution of the service. The benefits of having Fluent Bit is the vast amount of plugins and out of the box solutions for being able to integrate with basically any existing log aggregator.
 
 The code for this project with instructions to deploy everything can be found on GitHub: [https://github.com/Ernyoke/aws-fargate-fluentbit](https://github.com/Ernyoke/aws-fargate-fluentbit)
 
