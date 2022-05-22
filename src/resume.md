@@ -53,9 +53,9 @@ ___
 
     *Since December 2019 until August 2021*
 
-    - Doing mainly integration work for a client in logistics industry. Apply enterprise integration patters in order to achieve highly flexible and easily maintainable solutions.
+    - Doing mainly integration work for a client in the logistics industry. Apply enterprise integration patterns in order to achieve highly flexible and easily maintainable solutions.
     - Main technology stack for integration consisted of Spring Integration and Java EE technologies such as JBoss for the underlying web server, Java EE 8, JMS (ActiveMQ, IBM MQ), JPA (EclipseLink).
-    - Participate in architecture design and implementation. Discuss and present technical solution for clients.
+    - Participate in architecture design and implementation. Discuss and present technical solutions for clients.
 
 - #### Software Engineer/Team Leader
 
@@ -64,13 +64,14 @@ ___
     - Participate in development of cloud based solutions for clients from the logistics industry.
     - Apply domain driven design principles to implement new libraries using micro-service architecture.
     - Implement and maintain multiple services using both event sourcing (Apache Kafka) and REST APIs as a way of communication. The stack of technologies used for service development includes languages which run on JVM, Java 8 and Groovy with usage of Spring Boot and other Spring libraries (Spring MVC, Spring Data, Spring AOC, Spring Batch etc.). It also includes NodeJS with the usage of JavaScript ES6 features.
-    - Develop and integrate several features which required handling both relational and non-relational data. The technology stack implies heavy usage of Elasticsearch for indexing and searching huge amount of client data. Besides, several services use MySQL/MariaDB databases for relational data and Apache Cassandra database for non relational data.
+     - Develop and integrate several features which require handling both relational and non-relational data. The technology stack implies heavy usage of Elasticsearch for indexing and searching huge amounts of client data. Besides, several services use MySQL/MariaDB databases for relational data and Apache Cassandra databases for non relational data.
     - Work with real-time data streams using Amazon SQS and big data processing using Spring Batch.
     - Participate in front-end development as well, implementing several features visible to the end user. The front-end stack implies usage of HTML5, CSS3, JavaScript with the usage of AngularJS framework.
-    - Practice test driven development (TDD), implement unit tests/integration tests for code changes where testing was feasible. Have in-depth experience with Spock framework, as well with JUnit4 and Mochito.
-    - Work in agile framework, collaborating with the client and business in story grooming, reviewing story/acceptance criteria and performance metrics.
+    - Practice test driven development (TDD), implement unit tests/integration tests for code changes where testing was feasible. Have in-depth experience with the Spock framework, as well with JUnit4 and Mochito.
+    - Work in an agile framework, collaborating with the client and business in story grooming, reviewing story/acceptance criteria and performance metrics.
     - Participate in interviewing new software engineer candidates.
     - Provide mentorship and guidance for new joiners and junior colleagues.
+
 
 ### Endava Romania
 
