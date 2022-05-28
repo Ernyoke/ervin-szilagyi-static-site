@@ -1,3 +1,5 @@
+![Glider](images/glider.svg)
+
 # About
 
 Hi there!

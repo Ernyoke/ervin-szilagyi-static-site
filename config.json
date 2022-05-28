@@ -1,0 +1,11 @@
+{
+    "source": "src",
+    "destination": "ernyoke.github.io",
+    "baseHref": "https://ervinszilagyi.dev",
+    "meta": {
+      "og:title": "Ervin Szilágyi - Personal site",
+      "og:image": "images/glider-banner.jpg",
+      "og:description": "Personal web page and blog.",
+      "og:url": "https://ervinszilagyi.dev"
+    }
+  }
