@@ -85,6 +85,22 @@ The application will be deployed in minutes and will be accessible over the inte
 ![Event Logs](img-deploy-containers-with-app-runner/event-log.png)
 
 App Runner provides a default domain, on which our application is publicly accessible. If we have a registered domain, we can use that as well with App Runner. Moreover, App Runner has integration with Route53, the domain registrar provided by AWS.
+
+## Features and Limitations
+
+Like any service in AWS, App Runner has its feature set and its limitations. Knowing them is important in making a wise decision when choosing between App Runner and other services with similar functionalities. That being said, these are some of App Runner's features and its limitations:
+
+- App Runner is easy to use, compared to other services like Elastic Container Service (ECS) or Elastic Beanstalk. App Runner offers a limited amount of configurations with sane defaults, which means users can bring their containerized applications up and running in a really short period of time.
+- App Runner is entirely managed by AWS, we don't get access to the underlying machine and infrastructure. This can be good, since we don't have to bother maintaining and updating this infrastructure. This also means, we can not do any adjustments regarding the underlying infrastructure. If our application requires some advanced configuration from the container host, we probably won't be able to accomplish that with App Runner.
+- App Runner applications are publicly accessible from the internet. They don't require a Security Group and they don't run inside a VPC (even if we give access to the VPC). If we would want to have an application accessible only from our corporate network, we are out of luck with App Runner.
+- We can connect our App Runner application to private services (running inside a VPC). This means we can use private RDS databases, caching services (Redis, Memcached), etc.
+- App Runner has integration with ECR, X-Ray, CloudWatch Logs, Route 53 services by default. App Runner applications can have an IAM role, which means they can securely integrate with other AWS services, such as S3, DynamoDB, Aurora, etc.
+- App Runner can automatically build the container for several development platforms (Python, Node, Java). If there is no support for our platform, App Runner can pull images from ECR.
+
+## Pricing
+
+In the case of App Runner we pay per hour depending on how much vCPU and memory we provisioned. If automatic deployments are enabled, we pay `1$` per month. Additionally, we pay for active builds per minute. Additional costs may incur for data transfer.
+
 ## References:
 
 1. AWS App Runner: [https://aws.amazon.com/apprunner/](https://aws.amazon.com/apprunner/)
