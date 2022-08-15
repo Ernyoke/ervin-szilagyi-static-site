@@ -36,6 +36,7 @@ I must note that while practice questions are great, you should avoid brain-dump
 The exam was challenging. It was certainly not the hardest certification exam I've taken, it does not even get close to the "AWS Certified Solutions Architect - Professional" exam, but it nevertheless is challenging. In complexity I think it is similar to the AWS Sysops exam, but without having a practical part. Most of the questions present in the exam are based on real life situations where you have to choose the most suitable option from the available ones. While it requires certain things to be memorized, I did not find that many hard factual questions during my exam.
 
 Some important topics I suggest focusing on, are the following:
+
 - Cloud security: knowing about some predefined roles and permissions and when to use them. Also, there can be several questions about security best practices (least privilege, when to use predefined and custom roles, service accounts, etc.);
 - Containers: Google Kubernetes Engine represents a significant part of the exam, focusing on learning basic Kubernetes terminology is a must;
 - High level knowledge about all the database/big data offerings by GCP. The questions mostly rely deciding which service is best choice for a certain situation, so it is important to know each of them at a very high level
