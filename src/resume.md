@@ -10,7 +10,7 @@
 
 Experienced software engineer having a wide interest in distributed backend systems, software and cloud architecture and DevOps practices.
 
-AWS Community Builder - container category since 2022.
+[AWS Community Builder](https://aws.amazon.com/developer/community/community-builders/) - Containers category since 2022.
 
 ### Contact
 
