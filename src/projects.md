@@ -25,6 +25,7 @@ The goal of this project was to procedurally generate 3D terrain using [Diamond-
 ## Imger
 
 Imger is a collection of image processing algorithms implemented in Go. Example of algorithms:
+
     - Grayscale
     - Blend algorithms: AddScalarToGray, AddGray, AddGrayWeighted
     - Thresholding algorithms: Binary, BinaryInv, Trunc, ToZero, ToZeroInv, Otsu
