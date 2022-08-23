@@ -24,7 +24,18 @@ The goal of this project was to procedurally generate 3D terrain using [Diamond-
 
 ## Imger
 
-Imger is a collection of image processing algorithms implemented in Go. The idea behind this project was to reimplement *DelaunayImage* in Go and replace OpenCV with Imger. Unfortunately this did never materialize, but it should be entirely possible, since Imger has all the necessary building blocks.
+Imger is a collection of image processing algorithms implemented in Go. Example of algorithms:
+    - Grayscale
+    - Blend algorithms: AddScalarToGray, AddGray, AddGrayWeighted
+    - Thresholding algorithms: Binary, BinaryInv, Trunc, ToZero, ToZeroInv, Otsu
+    - Image padding: BorderConstant, BorderReplicate, BorderReflect
+    - Convolution
+    - Blur algorithms: Average - Box, Gaussian
+    - Edge detection algorithms: Sobel, Laplacian, Canny
+    - Resizing algorithms: Nearest Neighbour, Linear, Catmull-Rom, Lanczos
+    - Effects: Pixelate, Sepia, Emboss, Sharpen, Invert
+    - Transform algorithms: Rotate
+    - Generate Gradients: LinearGradient, SigmoidalGradient
 
 - Technologies used: Go
 - Source code: [https://github.com/Ernyoke/Imger](https://github.com/Ernyoke/Imger)
