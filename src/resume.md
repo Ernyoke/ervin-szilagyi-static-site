@@ -185,6 +185,9 @@ ___
 - **Microsoft Certified: Azure Developer Associate**
     - valid between October 2020 and October 2022
     - Badge: [verify](https://www.credly.com/badges/93829fc2-5ed8-4bf6-9291-5912ac66af7f/public_url)
+- **Associate Cloud Engineer**
+    - valid between August 2022 and August 2024
+    - Badge and certification: [verify](https://www.credential.net/9056a79b-89f1-4fb7-b824-76b4f752dd57)
 - **Software Security / License AFRP6UPJZ5 - Coursera Verified Certificates**
     - since December 2015
     - [https://www.coursera.org/account/accomplishments/verify/AFRP6UPJZ5](https://www.coursera.org/account/accomplishments/verify/AFRP6UPJZ5)
