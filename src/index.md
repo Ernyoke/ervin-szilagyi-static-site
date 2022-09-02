@@ -13,6 +13,7 @@ In my free time I like to tinker with even more technology. I also enjoy reading
 # Articles
 
 - 2022
+    - August 26, 2022 - [Serverless Lambdas with Rust on AWS](articles/serverless-lambdas-with-rust-aws.md)
     - August 09, 2022 - [GCP Associate Cloud Engineer Certification Experience](articles/gcp-associate-cloud-engineer-certification-experience.md)
     - May 28, 2022 - [Deploy Containers with App Runner](articles/deploy-containers-with-app-runner.md)
     - May 21, 2022 - [AWS Lambda Graceful Shutdown](articles/aws-lambda-graceful-shutdown.md)
