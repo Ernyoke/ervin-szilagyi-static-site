@@ -18,7 +18,7 @@ The easiest way to create a Lambda project for Rust language is to use [`cargo-l
 cargo lambda new function-name
 ```
 
-It will prompt some questions for us asking about the event type we will plan to use to launch the Lambda. Afterward, it will generate the project including the required AWS SDk dependencies based on what trigger whe chose. For example, for a function that can be invoked by an API Gateway - REST endpoint, `cargo lambda` will generate something like this:
+It will prompt some questions for us asking about the event type we will plan to use to launch the Lambda. Afterward, it will generate the project including the required AWS SDK dependencies based on what trigger we chose. For example, for a function that can be invoked by an API Gateway - REST endpoint, `cargo lambda` will generate something like this:
 
 ```Toml
 [package]
@@ -68,11 +68,11 @@ In order to build our Lambda, we can also rely on the help of `cargo-lambda` too
 cargo lambda build --release
 ```
 
-By default, this will target the `x86-64` architecture. If we would like to target Graviton with ARM64 architecture, we can add the `--arm64` flag. It is that simple. We can notice that, that the architecture of our current machine does not matter when building the Lambda. We can create a target package for `x86` or for `arm64`, regardless if we are on a shiny MacBook M1 machine or an intel/AMD based PC/laptop. `cargo-lambda` uses Zig-lang under hood for cross-compilation and it makes sure to hide the  complexity from us when we are building Rust executables.
+By default, this will target the `x86-64` architecture. If we would like to target Graviton with ARM64 architecture, we can add the `--arm64` flag. It is that simple. We can notice that, that the architecture of our current machine does not matter when building the Lambda. We can create a target package for `x86` or for `arm64`, regardless if we are on a shiny MacBook M1 machine or an intel/AMD based PC/laptop. `cargo-lambda` uses Zig-lang under the hood for cross-compilation and it makes sure to hide the complexity from us when we are building Rust executables.
 
 ### What if we don't like magic?
 
-Using `cargo-lambda` makes it easy to build the necessary executable from a Rust project, but what if we would want to do it ourselves? It turns out this can be a kind of rabbit hole. Generally, if our Lambda is a binary executable, it should be built targeting a Linux environment since AWS is using a flavor Amazon Linux under the hood for the Lambda runtime. This can be done somewhat flawlessly if our host machine is also running Linux. We just have to do the steps bellow:
+Using `cargo-lambda` makes it easy to build the necessary executable from a Rust project, but what if we would want to do it ourselves? It turns out this can be a kind of rabbit hole. Generally, if our Lambda is a binary executable, it should be built targeting a Linux environment since AWS is using a flavor of Amazon Linux under the hood for the Lambda runtime. This can be done somewhat flawlessly if our host machine is also running Linux. We just have to do the steps below:
 
 1. Assuming we have Rust installed the [recommended way](https://www.rust-lang.org/tools/install), we should also have `rustup` tool present for managing build toolchains. Using `rustup` we should add `x86_64-unknown-linux-musl` build target:
 
@@ -86,7 +86,7 @@ rustup target add x86_64-unknown-linux-musl
 cargo build --release --target x86_64-unknown-linux-musl
 ```
 
-This will create a `target` folder in which we will a binary ready to be deployed to AWS.
+This will create a `target` folder in which we will have a binary ready to be deployed to AWS.
 
 ### What about Windows and MacOS?
 
@@ -143,9 +143,9 @@ If this command runs successfully, we can invoke our Lambda. Moreover, we should
 
 ## Working with Containers
 
-A while ago AWS [announced container support](https://aws.amazon.com/blogs/aws/new-for-aws-lambda-container-image-support) for Lambda. This means a Lambda project can be packaged into a Docker container and pushed to a container registry (ECR), from where it can be deployed to AWS Lambda. Containerizing a Lambda function comes with a few benefits, for example we can deploy a project with a size of up to 10GB. This can be helpful for Rust project because having a bunch of dependencies can increase the project size exponentially.
+A while ago AWS [announced container support](https://aws.amazon.com/blogs/aws/new-for-aws-lambda-container-image-support) for Lambda. This means a Lambda project can be packaged into a Docker container and pushed to a container registry (ECR), from where it can be deployed to AWS Lambda. Containerizing a Lambda function comes with a few benefits, for example, we can deploy a project with a size of up to 10GB. This can be helpful for a Rust project because having a bunch of dependencies can increase the project size exponentially.
 
-AWS provides a base image for Lambda, [`public.ecr.aws/lambda/provided:al2`](https://gallery.ecr.aws/lambda/provided) which contains all the required components to run our functions. To containerize our Lambda, what we have to do is to copy our executable to the image and name it as `bootstrap` (this name can be customized, but for sake of simplicity we won't do that). `provided:al2` has an entrypoint already configured to run the executable.
+AWS provides a base image for Lambda, [`public.ecr.aws/lambda/provided:al2`](https://gallery.ecr.aws/lambda/provided) which contains all the required components to run our functions. To containerize our Lambda, what we have to do is to copy our executable to the image and name it `bootstrap` (this name can be customized, but for sake of simplicity we won't do that). `provided:al2` has an entrypoint already configured to run the executable.
 
 Taking our image a step further, we can build a [multi-stage](https://docs.docker.com/develop/develop-images/multistage-build) Docker image. To accomplish this, we can use a base Rust image as the build stage, the purpose of which is do the compile and build step and to produce an executable. This executable will be copied over to the main image by the next second stage. While a multi-stage Docker image is not mandatory for our purposes, it can be helpful to automate the whole process of building Rust Lambdas.
 
