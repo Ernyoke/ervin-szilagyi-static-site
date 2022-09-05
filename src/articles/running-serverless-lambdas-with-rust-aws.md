@@ -1,4 +1,4 @@
-# Serverless Lambdas with Rust on AWS
+# Running Serverless Lambdas with Rust on AWS
 
 ## Intro
 
