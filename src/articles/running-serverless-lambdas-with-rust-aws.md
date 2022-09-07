@@ -246,7 +246,7 @@ The Lambda benchmarks and measurements were done with the following setup:
 
 Each Lambda was invoked 5 times in a row with a custom event, which will require them to compute the first `10_000` digits of PI:
 
-```
+```bash
 aws lambda invoke \
     --function-name calculate-pi-rs-docker-arm64 \
     --invocation-type RequestResponse \
