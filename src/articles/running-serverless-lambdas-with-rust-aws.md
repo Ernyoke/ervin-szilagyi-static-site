@@ -203,7 +203,11 @@ The platform can be either `linux/amd64` or `linux/arm64`. By default, Docker wi
 
 ## Benchmarks
 
-Rust is fast. It should be, it is a system's programming language compiled down to machine code for a specific platform. To see how fast this highly optimized machine code is when executed as an AWS Lambda, I decided to do some totally non-scientific benchmarks. To measure the performance of code written in Rust I decided to attempt to compute the first N digits of PI. Algorithms used to compute digits of PI are used for several CPU stress testing and benchmarking tools, for example [https://www.superpi.net/](https://www.superpi.net/). To compute the first N digits of PI I used the [Unbounded Spigot Algorithms for the Digits of PI](http://www.cs.ox.ac.uk/jeremy.gibbons/publications/spigot.pdf). To be honest, I stole the JavaScript implementation from [this](https://stackoverflow.com/a/64286624/7661119) StackOverflow answer and I re-wrote it in Rust. I don't want to claim that this is the faster algorithm to compute PI and certainly I don't want to claim that my Rust implementation of this algorithm is the most optimal. But I feel like my attempt was good enough to compare the performance of Rust to other languages such as JavaScript and draw some conclusions.
+Rust is fast. It should be, it is a system's programming language compiled down to machine code for a specific platform. To see how fast this highly optimized machine code is when executed as an AWS Lambda, I decided to do some totally non-scientific benchmarks. 
+
+To measure the performance of code written in Rust I decided to attempt to compute the first N digits of PI. Algorithms used to compute digits of PI are used by several CPU stress testing and benchmarking tools, such as [https://www.superpi.net/](https://www.superpi.net/). 
+
+In order to compute the first N digits of PI I used the [Unbounded Spigot Algorithms for the Digits of PI](http://www.cs.ox.ac.uk/jeremy.gibbons/publications/spigot.pdf). To be honest, I stole the JavaScript implementation from [this](https://stackoverflow.com/a/64286624/7661119) StackOverflow answer and I re-wrote it in Rust. I don't want to claim that this is the faster algorithm to compute PI and certainly I don't want to claim that my Rust implementation of this algorithm is the most optimal. But I feel like my attempt was good enough to compare the performance of Rust to other languages such as JavaScript and draw some conclusions.
 
 Here is my Rust implementation of the algorithm:
 
