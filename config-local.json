@@ -1,7 +1,7 @@
 {
     "source": "src",
     "destination": "ernyoke.github.io",
-    "baseHref": "./",
+    "baseHref": "file:...",
     "meta": {
       "og:title": "Ervin Szilágyi - Personal site",
       "og:image": "images/glider-banner.jpg",

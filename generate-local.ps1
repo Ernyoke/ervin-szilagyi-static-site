@@ -1,3 +1,3 @@
-ssg ./config.json
+ssg ./config-local.json
 
 
