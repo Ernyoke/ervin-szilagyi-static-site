@@ -8,17 +8,17 @@ Recently I started playing around with Rust programming language. Currently, the
 
 If we take a look at the [AWS documentation](https://docs.aws.amazon.com/lambda/latest/dg/lambda-runtimes.html) for Lambda runtimes, we can see that Rust is not on the list of supported languages out of the box. Well, that's maybe discouraging at first, but it turns out this is not a huge issue at all. There absolutely is support for Rust, in fact, the [official blog post](https://aws.amazon.com/blogs/opensource/rust-runtime-for-aws-lambda/) announcing the Rust implementation for the Lambda runtime is from more than 4 years ago. Using this runtime implementation we can build an executable for a Custom Lambda Environment.
 
-The Lambda runtime implementation for Rust it is a dependency (which in the world of Rust are called crates), that will be packaged with our code.
+The Lambda runtime implementation for Rust is a dependency (which in the world of Rust are called crates), that will be packaged with our code.
 
 ## Create a Lambda Project using Rust
 
-The easiest way to create a Lambda project for Rust language is to use [`cargo-lambda`](https://www.cargo-lambda.info/guide/what-is-cargo-lambda.html). This can be installed on any OS following the instruction from the [documentation](https://www.cargo-lambda.info/guide/installation.html). To create a new project, we can use the this command:
+The easiest way to create a Lambda project for Rust language is to use [`cargo-lambda`](https://www.cargo-lambda.info/guide/what-is-cargo-lambda.html). This can be installed on any OS following the instruction from the [documentation](https://www.cargo-lambda.info/guide/installation.html). To create a new project, we can use this command:
 
 ```bash
 cargo lambda new function-name
 ```
 
-It will prompt some questions for us asking about the event type we will plan to use to launch the Lambda. Afterward, it will generate the project including the required AWS SDK dependencies based on what trigger we chose. For example, for a function that can be invoked by an API Gateway - REST endpoint, `cargo lambda` will generate something like this:
+Running the command it will prompt some questions for us asking about the event type we will plan to use to launch the Lambda. Afterward, it will generate the project including the required AWS SDK dependencies based on what trigger we chose. For example, for a function that can be invoked by an API Gateway - REST endpoint, `cargo lambda` will generate something like this:
 
 ```Toml
 [package]
@@ -88,7 +88,7 @@ cargo build --release --target x86_64-unknown-linux-musl
 
 This will create a `target` folder in which we will have a binary ready to be deployed to AWS.
 
-### What about Windows and MacOS?
+### What about Windows and macOS?
 
 If we are running Windows, we can use WSL to have access to a fully-fledged Linux environment, and then we can do the steps above. In case we don't want to use WSL or for some reason, we can't use it, we will have to do a cross-build to Linux. I tried the steps above from Windows, but at each attempt, I was running into a linker issue (`error: linker cc not found`). I am sure that are several ways to solve this, what I found to be the easier solution is to use [`cross`](https://github.com/cross-rs/cross). Before somebody screams at me... I know this solution is kind of a band-aid since `cross` will rely on Docker to target different environments...but hey, it worked for my purpose.
 
@@ -108,7 +108,7 @@ In fact, if we want our Lambda to run on Graviton, we can very easily target ARM
 
 ## Deploy the Package to AWS
 
-The super-easy way would be to rely on `cargo-lambda` again. What we have to do is to execute the command bellow:
+The super-easy way would be to rely on `cargo-lambda` again. What we have to do is to execute the command below:
 
 ```bash
 cargo lambda deploy
@@ -147,7 +147,7 @@ A while ago AWS [announced container support](https://aws.amazon.com/blogs/aws/n
 
 AWS provides a base image for Lambda, [`public.ecr.aws/lambda/provided:al2`](https://gallery.ecr.aws/lambda/provided) which contains all the required components to run our functions. To containerize our Lambda, what we have to do is to copy our executable to the image and name it `bootstrap` (this name can be customized, but for sake of simplicity we won't do that). `provided:al2` has an entrypoint already configured to run the executable.
 
-Taking our image a step further, we can build a [multi-stage](https://docs.docker.com/develop/develop-images/multistage-build) Docker image. To accomplish this, we can use a base Rust image as the build stage, the purpose of which is do the compile and build step and to produce an executable. This executable will be copied over to the main image by the next second stage. While a multi-stage Docker image is not mandatory for our purposes, it can be helpful to automate the whole process of building Rust Lambdas.
+Taking our image a step further, we can build a [multi-stage](https://docs.docker.com/develop/develop-images/multistage-build) Docker image. To accomplish this, we can use a base Rust image as the build stage, the purpose of which is to do the compile and build step and to produce an executable. This executable will be copied over to the main image by the next second stage. While a multi-stage Docker image is not mandatory for our purposes, it can be helpful to automate the whole process of building Rust Lambdas.
 
 Without further ado, this is our Lambda container:
 
@@ -207,7 +207,7 @@ Rust is fast. It should be, it is a system's programming language compiled down 
 
 To measure the performance of code written in Rust I decided to attempt to compute the first N digits of PI. Algorithms used to compute digits of PI are used by several CPU stress testing and benchmarking tools, such as [https://www.superpi.net/](https://www.superpi.net/). 
 
-In order to compute the first N digits of PI I used the [Unbounded Spigot Algorithms for the Digits of PI](http://www.cs.ox.ac.uk/jeremy.gibbons/publications/spigot.pdf). To be honest, I stole the JavaScript implementation from [this](https://stackoverflow.com/a/64286624/7661119) StackOverflow answer and I re-wrote it in Rust. I don't want to claim that this is the faster algorithm to compute PI and certainly I don't want to claim that my Rust implementation of this algorithm is the most optimal. But I feel like my attempt was good enough to compare the performance of Rust to other languages such as JavaScript and draw some conclusions.
+In order to compute the first N digits of PI, I used the [Unbounded Spigot Algorithms for the Digits of PI](http://www.cs.ox.ac.uk/jeremy.gibbons/publications/spigot.pdf). To be honest, I stole the JavaScript implementation from [this](https://stackoverflow.com/a/64286624/7661119) StackOverflow answer and I re-wrote it in Rust. I don't want to claim that this is the faster algorithm to compute PI and certainly I don't want to claim that my Rust implementation of this algorithm is the most optimal. But I feel like my attempt was good enough to compare the performance of Rust to other languages such as JavaScript and draw some conclusions.
 
 Here is my Rust implementation of the algorithm:
 
@@ -232,7 +232,7 @@ fn generate_pi(limit: i32) -> Vec<i32> {
 }
 ```
 
-The whole Lambda project can be found on GitHub.
+The whole Lambda project can be found on [GitHub](https://github.com/Ernyoke/aws-lambda-benchmarks).
 
 The Lambda benchmarks and measurements were done with the following setup:
 
@@ -287,11 +287,11 @@ As a comparison, I measured the JavaScript implementation of the Unbounded Spigo
 | Docker x86-64  | 24335.88 ms      | 24554.33 ms      | 23962.31 ms      | 24388.03 ms      | 24367.48 ms      |
 | Docker arm64   | 27752.90 ms      | 27042.74 ms      | 26617.62 ms      | 27020.76 ms      | 27064.53 ms      |
 
-A comparison between the Rust and the Javascript implementations:
+A comparison between the Rust and the JavaScript implementations:
 
-![Rust/JS implementation charts](running-serverless-lambads-with-rust/rust-vs-js-pi-calculator.png)
+![Rust - JS implementation comparison charts](running-serverless-lambads-with-rust/rust-vs-js-pi-calculator.png)
 
-Moving on I measured the cold start of both Rust and JavaScript implementations. The cold start is the `Init` phase of a Lambda. We encounter a cold start if our Lambda was not invoked recently or AWS decides to fire up another instance of our Lambda function in parallel to which is running currently. To do the cold start measurements, I let all the Lambdas rest and executed them afterward. I noted down the cold start duration and I let all the Lambdas rest again to make sure to encounter a cold start at the next execution as well. I did this 3 time for each Lambda and I got the following results:
+Moving on I measured the cold start of both Rust and JavaScript implementations. The cold start is the `Init` phase of a Lambda. We encounter a cold start if our Lambda was not invoked recently or AWS decides to fire up another instance of our Lambda function in parallel to which is running currently. To do the cold start measurements, I let all the Lambdas rest and executed them afterward. I noted down the cold start duration and I let all the Lambdas rest again to make sure to encounter a cold start at the next execution as well. I did this 3 times for each Lambda and I got the following results:
 
 Rust:
 
@@ -311,7 +311,7 @@ JavaScript:
 | Docker x86-64  | 272.43 ms    | 252.28 ms    | 259.95 ms    |
 | Docker arm64   | 305.06 ms    | 277.63 ms    | 201.52 ms    |
 
-![Rust/JS cold start](running-serverless-lambads-with-rust/cold-start.png)
+![Rust/JS cold start measurement charts](running-serverless-lambads-with-rust/cold-start.png)
 
 ### Conclusions after these benchmarks:
 
