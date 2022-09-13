@@ -8,7 +8,7 @@ According to [sessions.edu](https://www.sessions.edu/notes-on-design/whats-the-d
 To give an example, the following image is considered to be "low poly":
 !["Low poly" portrait of Leonardo DiCaprio](img-generate-low-poly-images/leo.jpeg)
 
-The roots of "low poly" art go back to the early days of computer graphics, where lack of performant hardware forced computer scientists and game designers to present their idea using as few polygons as possible. Nowadays, obviously, this is not really an issue, but the artistic nature of having more edges than curves is still present, representing a somewhat niche artistic style.
+The roots of "low poly" art goes back to the early days of computer graphics, where the lack of performant hardware forced computer scientists and game designers to present their idea using as few polygons as possible. Nowadays, this is not really an issue, but the artistic nature of having more edges than curves is still present, representing a somewhat niche artistic style.
 
 [![Equilinox](http://img.youtube.com/vi/XuTXzLZMLUE/0.jpg)](https://www.youtube.com/watch?v=XuTXzLZMLUE&ab_channel=ThinMatrix)
 
@@ -18,7 +18,7 @@ Being fascinated by this style, one might ask how could we generate images like 
 ## Delaunay triangulation
 
 Let's imagine the following challenge: we are given a set of points in a 2D space. From this set of points we should create a mesh having the following properties:
-- the mesh should be composed from triangles
+- the mesh should be composed of triangles
 - no overlapping triangles are allowed
 - the mesh should be pleasing to the eye:
   - we should avoid having [sliver triangles](https://math.stackexchange.com/questions/56680/sliver-triangle).
@@ -29,7 +29,7 @@ One way to tackle this challenge would be to use Delaunay triangulation algorith
 >In mathematics and computational geometry, a Delaunay triangulation (also known as a Delone triangulation) for a given set P of discrete points in a plane is a triangulation DT(P) such that no point in P is inside the circumcircle of any triangle in DT(P).
 
 Let's break this down. First, let's see what is the circumcircle of a triangle?
-The circumcircle of a triangle is basically a circle which can be drawn around the triangle in such a way that every vertex of the triangle touches the circle itself.
+The circumcircle of a triangle is basically a circle that can be drawn around the triangle in such a way that every vertex of the triangle touches the circle itself.
 
 Example:
 ![Alt Text](img-generate-low-poly-images/circumcirlce.png)
@@ -63,11 +63,11 @@ private static Circle calculateCircumCircle(Point a, Point b, Point c) {
 }
 ```
 
-Now that we know what a circumcircle is, let's reformulate the initial definition. The definition states that we have a set of points in a 2D space and we incorporate them into triangles in such a way that no triangle has a vertex which is inside of another triangle's circumcircle. The vertex can and should be on a circumcircle, but should not be inside in other triangle's circumcircle:
+Now that we know what a circumcircle is, let's reformulate the initial definition. The definition states that we have a set of points in a 2D space and we incorporate them into triangles in such a way that no triangle has a vertex that is inside of another triangle's circumcircle. The vertex can and should be on a circumcircle, but should not be inside in another triangle's circumcircle:
 
 ![Alt Text](img-generate-low-poly-images/triangulation.png)
 
-Moving forward there are several categories of algorithms used for Delaunay triangulation. Probably to be the easier to understand and to implement is the one called [Bowyer-Watson](https://en.wikipedia.org/wiki/Bowyer%E2%80%93Watson_algorithm) algorithm. This algorithm is an incremental algorithm, meaning that we try to add each point one by one to the final result. If one point will not suffice the Delaunay triangulation definition, we try to re-triangulate all the affected area of the final result. The steps of the algorithm are the following:
+Moving forward there are several categories of algorithms used for Delaunay triangulation. Probably to be the easier to understand and implement is the one called [Bowyer-Watson](https://en.wikipedia.org/wiki/Bowyer%E2%80%93Watson_algorithm) algorithm. This algorithm is an incremental algorithm, meaning that we try to add each point one by one to the final result. If one point will not suffice the Delaunay triangulation definition, we try to re-triangulate all the affected areas of the final result. The steps of the algorithm are the following:
 
 ```Bash
 function BowyerWatson (pointList)
@@ -168,9 +168,9 @@ private List<Triangle> bowyerWatson(List<Point> edgePoints, Size imageSize) {
 The algorithm has an `O(n^2)` time complexity, which leaves some room for improvement, but it has potential for parallelization.
 
 
-## Putting it all to together
+## Putting it all together
 
-Knowing how the Delaunay triangulation works, the next challenge would be to apply it somehow in order to get from this image: 
+Knowing how the Delaunay triangulation works, the next challenge would be to apply it somehow to get from this image: 
 
 ![Alt Text](img-generate-low-poly-images/original-resized.jpeg)
 
@@ -178,7 +178,7 @@ to this one:
 
 ![Alt Text](img-generate-low-poly-images/final-resized.jpg)
 
-In order to achieve this, we could consider the following steps:
+To achieve this, we could consider the following steps:
 
 1. Apply a blurring filter to the image.
 2. Create a gray-scale image from the blurred image.
@@ -187,23 +187,23 @@ In order to achieve this, we could consider the following steps:
 5. Feed the output to the Delaunay triangulation algorithm to get a set of triangles forming the Delaunay mesh.
 6. Reconstruct the image from the mesh.
 
-Moving forward, let's break these steps down by having an in-depth discussion about some implementation details. Basically every step involves some kind of image manipulation algorithm. Although it would be fun to manually implement all of them, in this case I've decided to use a third party library, namely [openpnp/opencv](https://github.com/openpnp/opencv), which is a Java wrapper around the already established [OpenCV](https://opencv.org/) image processing library.
+Moving forward, let's break these steps down by having an in-depth discussion about some implementation details. Every step involves some kind of image manipulation algorithm. Although it would be fun to manually implement all of them, in this case, I've decided to use a third-party library, namely [openpnp/opencv](https://github.com/openpnp/opencv), which is a Java wrapper around the already established [OpenCV](https://opencv.org/) image processing library.
 
 1. ### Apply a blurring filter to the image: 
 
-A common way to blur images is done through applying a [Gaussian filter](https://en.wikipedia.org/wiki/Gaussian_blur) to the image. A Gaussian filter is basically a `NxN` matrix which gets [convolved](https://en.wikipedia.org/wiki/Convolution) with the RGB pixel values of the image. Using OpenCV, this can be done by a simple function call:
+A common way to blur images is by applying a [Gaussian filter](https://en.wikipedia.org/wiki/Gaussian_blur) to the image. A Gaussian filter is basically an `NxN` matrix that gets [convolved](https://en.wikipedia.org/wiki/Convolution) with the RGB pixel values of the image. Using OpenCV, this can be done by a simple function call:
 
 ```Java
 Imgproc.GaussianBlur(originalImage, blurredImage, new Size(arguments.getBlurKernelSize(), arguments.getBlurKernelSize()), 0);
 ```
 
-The size of the kernel aka filter determines how "blurry" the image will be. In order to not lose a lot of information regarding the characteristics of an image, I recommend sticking to a smaller kernel size. This is important, since it will have a significant impact on the final result.
+The size of the kernel aka filter determines how "blurry" the image will be. To not lose a lot of information regarding the characteristics of an image, I recommend sticking to smaller kernel sizes. This is important since it will have a significant impact on the final result.
 
-Besides Gaussian blur approach, there are other solutions for getting a blurry image, (example. [Stack-blur](http://incubator.quasimondo.com/processing/fast_blur_deluxe.php)). Usually the tendency is faster blurring procedures will result in lower quality blur, but in our case this does not really affect the final result. I simply went with the Gaussian algorithm, because OpenCV provides an implementation for it.
+Besides Gaussian blur approach, there are other solutions for getting a blurry image, (example. [Stack-blur](http://incubator.quasimondo.com/processing/fast_blur_deluxe.php)). Usually, the tendency is faster blurring procedures will result in a lower quality blur, but in our case, this does not really affect the final result. I simply went with the Gaussian algorithm, because OpenCV provides an implementation for it.
 
 2. ### Create a gray-scale image from the blurred image: 
 
-Probably everyone knows what a grayscale image is. Essentially is a black-and white image or a monochrome image carrying only light intensity information. Usually, if we want to transform an RGB image to a grayscale one, we can compute the value of each pixel using a weighted sum. The formula can be found on the [Wikipedia - Grayscale](https://en.wikipedia.org/wiki/Grayscale) page. Using OpenCV, grayscaling can be achieved with the following line:
+Probably everyone knows what a grayscale image is. Essentially is a black-and-white image or a monochrome image carrying only light intensity information. Usually, if we want to transform an RGB image into a grayscale one, we can compute the value of each pixel using a weighted sum. The formula can be found on the [Wikipedia - Grayscale](https://en.wikipedia.org/wiki/Grayscale) page. Using OpenCV, grayscaling can be achieved with the following line:
 
 ```Java
 Imgproc.cvtColor(blurredImage, grayscaleImage, Imgproc.COLOR_RGB2GRAY);
@@ -211,27 +211,27 @@ Imgproc.cvtColor(blurredImage, grayscaleImage, Imgproc.COLOR_RGB2GRAY);
 
 3. ### Apply some edge detection to the image and capture the output
 
-Next, we would want to isolate the main characteristics of an image by doing edge detection. Again, there are several methodologies to detect the edges from an image. For our case a simple [Sobel](https://en.wikipedia.org/wiki/Sobel_operator) operator might be sufficient to get an acceptable result.
+Next, we would want to isolate the main characteristics of an image by doing edge detection. Again, there are several methodologies to detect the edges from an image. For our case, a simple [Sobel](https://en.wikipedia.org/wiki/Sobel_operator) operator might be sufficient to get an acceptable result.
 
 ![Alt Text](img-generate-low-poly-images/edge-detection-resized.jpg)
 
 4. ### Clean up the image by applying a simple de-noising algorithm
 
-In order to get rid of noise and to also preserve the strongest edges from the image, we would want to apply some [thresholding](https://en.wikipedia.org/wiki/Thresholding_(image_processing)) to it, eventually creating a binary image. The simplest thresholding approach works just fine, meaning that we get an input threshold value and we compare that with every pixel from the image with the edges. If the pixel value is greater than the threshold value, we set the pixel to be 255 - white. Every pixel with value less than the threshold will be 0 - black.
+To get rid of noise and to also preserve the strongest edges from the image, we would want to apply some [thresholding](https://en.wikipedia.org/wiki/Thresholding_(image_processing)) to it, eventually creating a binary image. The simplest thresholding approach works just fine, meaning that we get an input threshold value and we compare that with every pixel from the image with the edges. If the pixel value is greater than the threshold value, we set the pixel to be 255 - white. Every pixel with a value less than the threshold will be 0 - black.
 
-We can play around with the value of the threshold, because it will impact the outcome significantly. Lower threshold may result in images having way more information preserved than higher threshold values. Depending on what we want to achieve, this may result in favorable output or it may have too much going on.
+We can play around with the value of the threshold because it will impact the outcome significantly. A lower threshold may result in images having way more information preserved than higher threshold values. Depending on what we want to achieve, this may result in favorable output or it may have too much going on.
 
 ![Alt Text](img-generate-low-poly-images/edge-points-resized.png)
 
 5. ### Feed the output to the Delaunay triangulation algorithm to get a set of triangles forming the Delaunay mesh
 
-After tresholding we may end up with a bunch of black and white pixels. If we feed the location of these pixels to the Delaunay algorithm, we get a mesh of triangles which can be plotted to a surface. If we are lucky, the triangles will be aligned in a way which preserves the essence of the original image.
+After thresholding, we may end up with a bunch of black and white pixels. If we feed the location of these pixels to the Delaunay algorithm, we get a mesh of triangles that can be plotted to a surface. If we are lucky, the triangles will be aligned in a way that preserves the essence of the original image.
 
 ![Alt Text](img-generate-low-poly-images/wire-final-resized.png)
 
 6. ### Reconstruct the image from the mesh
 
-In order to fill these triangles with colors, we can take each node from a triangle and locate the original pixels for their locations. Adding the RGB values of the original pixels and dividing the sum by 3, we may get an RGB value which may be used to fill the triangle.
+To fill these triangles with colors, we can take each node from a triangle and locate the original pixels for their locations. Adding the RGB values of the original pixels and dividing the sum by 3, we may get an RGB value which may be used to fill the triangle.
 
 The final result may look like this:
 

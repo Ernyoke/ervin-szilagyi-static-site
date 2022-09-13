@@ -2,13 +2,13 @@
 
 ## Intro
 
-A common optimization technique for Lambda functions recommended by AWS is to [take advantage of execution environment reuse to improve the performance of your function](https://docs.aws.amazon.com/lambda/latest/dg/best-practices.html). This means, for example, in case we have a database connection, it is recommended for these connections to be initialized before the function handler. In case of a cold start, the Lambda execution environment will run the full initialization of the connectivity (essentially all the code before handler will be executed), while in case of warm starts, this execution will be avoided, the already initialized state being cached and reused.
+A common optimization technique for Lambda functions recommended by AWS is to [take advantage of execution environment reuse to improve the performance of your function](https://docs.aws.amazon.com/lambda/latest/dg/best-practices.html). This means, for example, in case we have a database connection, it is recommended for these connections to be initialized before the function handler. In case of a cold start, the Lambda execution environment will run the full initialization of the connectivity (essentially all the code before the handler will be executed), while in case of warm starts, this execution will be avoided, and the already initialized state being cached and reused.
 
-The problem with this approach is that as long as something takes time and effort to be initialized, it usually also requires time and effort to be teared down gracefully. In case of database connections, it would be a best practice to disconnect and end existing connections if we know we won't use them anymore. For a long time there were no recommended solutions for building a graceful shutdown mechanism. But happily we can find some examples for graceful shutdown in the official [aws-samples](https://github.com/aws-samples/graceful-shutdown-with-aws-lambda) GitHub repositories.
+The problem with this approach is that as long as something takes time and effort to be initialized, it usually also requires time and effort to be torn down gracefully. In the case of database connections, it would be a best practice to disconnect and end existing connections if we know we won't use them anymore. For a long time, there were no recommended solutions for building a graceful shutdown mechanism. But happily, we can find some examples for graceful shutdown in the official [aws-samples](https://github.com/aws-samples/graceful-shutdown-with-aws-lambda) GitHub repositories.
 
 ## Graceful Shutdown with Lambda
 
-Actually it is pretty simple to achieve graceful shutdown, although it may seem a little hacky. In case of a Lambda function **which is registered with an external extension**, the Lambda environment allocates 300-500 milliseconds of cleanup for the runtime process. When Lambda service is about to shut down the runtime, it will send a `SIGTERM` signal to the runtime and then a `SHUTDOWN` event to each registered external extension. We can catch the `SIGTERM` signal in our Lambda functions and execute some cleanup logic.
+Actually, it is pretty simple to achieve a graceful shutdown, although it may seem a little hacky. In the case of a Lambda function **which is registered with an external extension**, the Lambda environment allocates 300-500 milliseconds of cleanup for the runtime process. When Lambda service is about to shut down the runtime, it will send a `SIGTERM` signal to the runtime and then a `SHUTDOWN` event to each registered external extension. We can catch the `SIGTERM` signal in our Lambda functions and execute some cleanup logic.
 
 Let's see an example of a Lambda using NodeJS which listens to `SIGTERM` signal and attempts to do some cleanup:
 
@@ -35,7 +35,7 @@ process.on('SIGTERM', async () => {
 });
 ```
 
-In order for this approach to work, we need to register our Lambda function with an external extension. The easiest way would be to use [CloudWatch Lambda Insights](https://docs.aws.amazon.com/lambda/latest/dg/monitoring-insights.html). CloudWatch Lambda Insight is a monitoring and troubleshooting solution for serverless applications. It is provided by AWS and it works with both `x86` and `arm64` types of Lambdas. It can be attached as a Lambda Layer to our function. Here is an example how to create a function with Lambda Insights layer using Terraform:
+In order for this approach to work, we need to register our Lambda function with an external extension. The easiest way would be to use [CloudWatch Lambda Insights](https://docs.aws.amazon.com/lambda/latest/dg/monitoring-insights.html). CloudWatch Lambda Insight is a monitoring and troubleshooting solution for serverless applications. It is provided by AWS and it works with both `x86` and `arm64` types of Lambdas. It can be attached as a Lambda Layer to our function. Here is an example of how to create a function with the Lambda Insights layer using Terraform:
 
 ```terraform
 resource "aws_lambda_function" "lambda" {
@@ -114,7 +114,7 @@ resource "aws_iam_role_policy_attachment" "lambda_logs" {
 
 ## Conclusion
 
-In this article we've seen how we can have graceful shutdown for Lambda functions which rely on environment re-use. We built a function using the NodeJS environment. Examples for other execution environments can be found in the [AWS samples](https://github.com/aws-samples/graceful-shutdown-with-aws-lambda) project mentioned before.
+In this article, we've seen how we can have a graceful shutdown for Lambda functions that rely on environment re-use. We built a function using the NodeJS environment. Examples for other execution environments can be found in the [AWS samples](https://github.com/aws-samples/graceful-shutdown-with-aws-lambda) project mentioned before.
 
 ## References:
 
