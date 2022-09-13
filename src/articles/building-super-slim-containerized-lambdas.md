@@ -31,17 +31,20 @@ ARG FUNCTION_DIR="/function"
 
 FROM rust:1.63-buster as builder
 
-RUN apt-get update && apt-get install jq libssl-dev gcc zip -y
-RUN rustup target add x86_64-unknown-linux-musl
-
 WORKDIR /build
 
-# Copy the source code of the whole project to the Docker image
-ADD . . 
+ADD Cargo.toml Cargo.toml
+ADD Cargo.lock Cargo.lock
+ADD src src
 
-RUN cargo build --release --target x86_64-unknown-linux-musl
+# Cache build folders, see: https://stackoverflow.com/a/60590697/7661119
+# Docker Buildkit required
+RUN --mount=type=cache,target=/usr/local/cargo/registry \
+    --mount=type=cache,target=/home/root/app/target \
+    rustup target add x86_64-unknown-linux-musl && \
+    cargo build --release --target x86_64-unknown-linux-musl
 
-# Copy artifacts to a clean image
+# copy artifacts to a clean image
 FROM gcr.io/distroless/static
 
 # Include global arg in this stage of the build
@@ -62,17 +65,20 @@ ARG FUNCTION_DIR="/function"
 
 FROM rust:1.63-buster as builder
 
-RUN apt-get update && apt-get install jq libssl-dev gcc zip -y
-RUN rustup target add aarch64-unknown-linux-musl
-
 WORKDIR /build
 
-# Copy the source code of the whole project to the Docker image
-ADD . .
+ADD Cargo.toml Cargo.toml
+ADD Cargo.lock Cargo.lock
+ADD src src
 
-RUN cargo build --release --target aarch64-unknown-linux-musl
+# Cache build folders, see: https://stackoverflow.com/a/60590697/7661119
+# Docker Buildkit required
+RUN --mount=type=cache,target=/usr/local/cargo/registry \
+    --mount=type=cache,target=/home/root/app/target \
+    rustup target add aarch64-unknown-linux-musl && \
+    cargo build --release --target aarch64-unknown-linux-musl
 
-# Copy artifacts to a clean image
+# copy artifacts to a clean image
 FROM gcr.io/distroless/static:latest
 
 # Include global arg in this stage of the build
@@ -92,9 +98,51 @@ Both of these images can be built with `docker buildx` command:
 docker buildx build --progress=plain --platform linux/arm64 -t rust-arm64 -f Dockerfile-distroless-x86-64 .
 ```
 
+The whole Lambda project can be found on [GitHub](https://github.com/Ernyoke/aws-lambda-benchmarks).
+
 Changing the `--platform` argument to `linux/amd64`, we can built ARM based containers as well. We could use the usual `docker build` command, but this will target the systems architecture, which can be `x86-64` for most of the PC/laptop devices abd `arm64` for the ARM based devices such as M1 Macs.
 
+## Performance Gains
+
+Having this thin image, we might wonder what kind of performance gain can we achieve. Obviously, our code wont run faster regardless of the image. Theoretically, we should achieve a certain amount if reduction of the initialization period during a cold start of this Lambda function. Our image should be agile in terms of startup time, the image should be able to be fetched quickly and can be cached easily. 
+
+To check if there are any performance gains to be found, I decided to run the Lambda making sure I will run into a cold start. I repeated this 5 times, while I was extracting the initialization period of the Lambda function from the CloudWatch logs.
+
+The measured results are the following:
+
+| Arch    | Init - exec 1 | Init - exec 2 | Init - exec 3 | Init - exec 4 | Init - exec 5 |
+|---------|---------------|---------------|---------------|---------------|---------------|
+| x86-64  | 6.29 ms       | 7.70 ms       | 42.19 ms      | 49.21 ms      | 33.22 ms      |
+| arm64   | 33.41 ms      | 24.93 ms      | 5.43 ms       | 5.11 ms       | 52.16 ms      |
+
+All of these measurements were done on `us-east-1` region. The Lambda had the minimum possible size of RAM allocated (128 MB).
+
+These init times are certainly great. They are way bellow 100 ms, in many cases bellow 10 ms. But we should not attribute this to the fact that we are using a distroless base image. In my [previous article](running-serverless-lambdas-with-rust-aws.md) got similar results with `public.ecr.aws/lambda/provided:al2` base image. Lambda ECR caching works in mysterious ways, I guess...
+
+## Other Gains?
+
+As we saw, we can not see a significant decrease of running time in case a Lambda using distroless Docker container. We might be able to see speed-ups elsewhere. Small containers are easier to build and to pass around. Assuming we are using a deployment pipeline, we might have a faster build/upload time.
+
+Even if storage is cheap today, we might be able to save a few pennies of ECR storage. Having a bunch of containers, this might add up.
+
+Ultimately, the Dockerfile presented by this article adheres to AWS recommended [best practices](https://aws.amazon.com/blogs/compute/optimizing-lambda-functions-packaged-as-container-images/) (aside from being a base image not provided by AWS) and general [Docker best practices](https://www.youtube.com/watch?v=vlS5EiapiII). It relies on multi-stage images with a build phase, it uses caching of layers and build artifacts and it is small as it can be.
+
+## Final Thoughts
+
+Should we use distroless containers? 
+
+It depends what we are goals are. In case we have a statically built executable, like a Lambda function written in Rust, Go, C++, etc. then I think it is a fantastic option.
+
+When not to use them?
+
+Distroless containers are hard to work with in case we need to install additional dependencies, pre-compiles libraries, etc. Distroless images don't have a shell, consequently they don't come with a package manager. We can add something like a busybox shell, but this kind of defies the purpose of using distroless images.
+
+In certain cases we might want to have larger images with a bunch of tools, obvious example being when we are doing development. In this case we should go with an image with a full operating system.
 
 ## Links and References
 
-"Distroless" Container Images - [https://github.com/GoogleContainerTools/distroless](https://github.com/GoogleContainerTools/distroless)
+1. Running Serverless Lambdas with Rust on AWS: [https://ervinszilagyi.dev/articles/running-serverless-lambdas-with-rust-aws.html](https://ervinszilagyi.dev/articles/running-serverless-lambdas-with-rust-aws.html) 
+2. "Distroless" Container Images - [https://github.com/GoogleContainerTools/distroless](https://github.com/GoogleContainerTools/distroless)
+3. Distroless Docker: Containerizing Apps, not VMs - Matthew Moore - [https://youtu.be/lviLZFciDv4](https://youtu.be/lviLZFciDv4)
+4. Optimizing Lambda functions packaged as container images: [https://aws.amazon.com/blogs/compute/optimizing-lambda-functions-packaged-as-container-images](https://aws.amazon.com/blogs/compute/optimizing-lambda-functions-packaged-as-container-images)
+5. Creating Effective Docker Images: [https://www.youtube.com/watch?v=vlS5EiapiII](https://www.youtube.com/watch?v=vlS5EiapiII)
