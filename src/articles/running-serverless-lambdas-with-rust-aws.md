@@ -154,14 +154,13 @@ Without further ado, this is our Lambda container:
 ```bash
 FROM rust:1.63-buster as builder
 
-RUN apt-get update && apt-get install jq libssl-dev gcc zip -y
-RUN rustup target add x86_64-unknown-linux-musl
-
 WORKDIR /build
 
-ADD . .
+ADD Cargo.toml Cargo.toml
+ADD Cargo.lock Cargo.lock
+ADD src src
 
-RUN cargo build --release --target x86_64-unknown-linux-musl
+RUN rustup target add x86_64-unknown-linux-musl && cargo build --release --target x86_64-unknown-linux-musl
 
 # copy artifacts to a clean image
 FROM public.ecr.aws/lambda/provided:al2
@@ -176,14 +175,13 @@ This will create an `x86` Docker container, if we want an `arm64` based one, we 
 ```bash
 FROM rust:1.63-buster as builder
 
-RUN apt-get update && apt-get install jq libssl-dev gcc zip -y
-RUN rustup target add aarch64-unknown-linux-musl
-
 WORKDIR /build
 
-ADD . .
+ADD Cargo.toml Cargo.toml
+ADD Cargo.lock Cargo.lock
+ADD src src
 
-RUN cargo build --release --target aarch64-unknown-linux-musl
+RUN rustup target add aarch64-unknown-linux-musl && cargo build --release --target aarch64-unknown-linux-musl
 
 # copy artifacts to a clean image
 FROM public.ecr.aws/lambda/provided:al2-arm64
