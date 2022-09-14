@@ -1,6 +1,7 @@
 # Blog Posts
 
 - 2022
+    - September 14, 2022 - [Building Super Slim Containerized Lambdas on AWS](articles/building-super-slim-containerized-lambdas.md)
     - September 05, 2022 - [Running Serverless Lambdas with Rust on AWS](articles/running-serverless-lambdas-with-rust-aws.md)
     - August 09, 2022 - [GCP Associate Cloud Engineer Certification Experience](articles/gcp-associate-cloud-engineer-certification-experience.md)
     - May 28, 2022 - [Deploy Containers with App Runner](articles/deploy-containers-with-app-runner.md)
