@@ -8,7 +8,7 @@
 
 ## About Me
 
-Experienced software engineer having a wide interest in distributed backend systems, software and cloud architecture and DevOps practices.
+Experienced software engineer having a wide interest in distributed backend systems, software and cloud architecture, and DevOps practices.
 
 [AWS Community Builder](https://aws.amazon.com/developer/community/community-builders/) - Containers category since 2022.
 
@@ -28,8 +28,8 @@ Experienced software engineer having a wide interest in distributed backend syst
 
 - Address: *Târgu Mureș, Romania*
 - Date of birth: *15/01/1993*
-- Nationality: *romanian*
-- Languages: *english,* *hungarian,* *romanian*
+- Nationality: *Romanian*
+- Languages: *English,* *Hungarian,* *Romanian*
 ___
 
 ## Work Experience
@@ -38,39 +38,39 @@ ___
 
 - #### Software Product & Platform Engineering Specialist
 
-    *Since August 2021 until present*
+    *From August 2021 until the present*
 
     - Cloud Engineer/Solutions Architect working mainly on AWS infrastructure in the automotive industry.
-    - Assist in architect complex end-to-end cloud based solutions for the client needs. These solutions involved designing secure and usable APIs, highly available and secure networks for the relevant services.
+    - Assist in architect complex end-to-end cloud-based solutions for client needs. These solutions involved designing secure and usable APIs, and highly available and secure networks for the relevant services.
     - Take part in the end-to-end development of a set of microservices with all the additional infrastructure requirements (main technology stack: API Gateway, networking (AWS VPC, Route53, Elastic Load Balancers), AWS Lambda (Python, JavaScript, Go), Java microservices (ECS, Docker).
     - Doing cloud automation and monitoring with CloudWatch/Event Bridge and Lambda.
-    - Develop, design and refactor cloud based infrastructure using IoC tools such as Terraform.
-    - Design and implement disaster recovery plans for services and platforms running on global scale
-    - Support a set of ETL jobs. Doing maintenance work, optimisations, monitoring etc. (main technology stack: AWS Batch/AWS Lambda with Python, S3, AWS RDS, Redis)
+    - Develop, design, and refactor cloud-based infrastructure using IoC tools such as Terraform.
+    - Design and implement disaster recovery plans for services and platforms running on a global scale
+    - Support a set of ETL jobs. Doing maintenance work, optimizations, monitoring, etc. (main technology stack: AWS Batch/AWS Lambda with Python, S3, AWS RDS, Redis)
     - Manage a set of relational databases deployed on AWS RDS. Planning and leading migrations from older platforms to newer and more up-to-date versions. Building highly-available solutions by implementing replications.
 
 ### RIA Solutions Group
 
 - #### Senior Software Engineer
 
-    *Since December 2019 until August 2021*
+    *From December 2019 until August 2021*
 
-    - Doing mainly integration work for a client in the logistics industry. Apply enterprise integration patterns in order to achieve highly flexible and easily maintainable solutions.
-    - Main technology stack for integration consisted of Spring Integration and Java EE technologies such as JBoss for the underlying web server, Java EE 8, JMS (ActiveMQ, IBM MQ), JPA (EclipseLink).
+    - Doing mainly integration work for a client in the logistics industry. Apply enterprise integration patterns to achieve highly flexible and easily maintainable solutions.
+    - Main technology stack for integration consisted of Spring Integration and Java EE technologies such as JBoss for the underlying web server, Java EE 8, JMS (ActiveMQ, IBM MQ), and JPA (EclipseLink).
     - Participate in architecture design and implementation. Discuss and present technical solutions for clients.
 
 - #### Software Engineer/Team Leader
 
-    *Since August 2019 until November 2019*
+    *From August 2019 until November 2019*
 
-    - Participate in development of cloud based solutions for clients from the logistics industry.
-    - Apply domain driven design principles to implement new libraries using micro-service architecture.
-    - Implement and maintain multiple services using both event sourcing (Apache Kafka) and REST APIs as a way of communication. The stack of technologies used for service development includes languages which run on JVM, Java 8 and Groovy with usage of Spring Boot and other Spring libraries (Spring MVC, Spring Data, Spring AOC, Spring Batch etc.). It also includes NodeJS with the usage of JavaScript ES6 features.
-     - Develop and integrate several features which require handling both relational and non-relational data. The technology stack implies heavy usage of Elasticsearch for indexing and searching huge amounts of client data. Besides, several services use MySQL/MariaDB databases for relational data and Apache Cassandra databases for non relational data.
+    - Participate in the development of cloud-based solutions for clients from the logistics industry.
+    - Apply domain-driven design principles to implement new libraries using micro-services architecture.
+    - Implement and maintain multiple services using both event sourcing (Apache Kafka) and REST APIs as a way of communication. The stack of technologies used for service development includes languages that run on JVM, Java 8, and Groovy with the usage of Spring Boot and other Spring libraries (Spring MVC, Spring Data, Spring AOC, Spring Batch, etc.). It also includes NodeJS with the usage of JavaScript ES6 features.
+     - Develop and integrate several features which require handling both relational and non-relational data. The technology stack implies heavy usage of Elasticsearch for indexing and searching huge amounts of client data. Besides, several services use MySQL/MariaDB databases for relational data and Apache Cassandra databases for non-relational data.
     - Work with real-time data streams using Amazon SQS and big data processing using Spring Batch.
-    - Participate in front-end development as well, implementing several features visible to the end user. The front-end stack implies usage of HTML5, CSS3, JavaScript with the usage of AngularJS framework.
-    - Practice test driven development (TDD), implement unit tests/integration tests for code changes where testing was feasible. Have in-depth experience with the Spock framework, as well with JUnit4 and Mochito.
-    - Work in an agile framework, collaborating with the client and business in story grooming, reviewing story/acceptance criteria and performance metrics.
+    - Participate in front-end development as well, implementing several features visible to the end user. The front-end stack implies the usage of HTML5, CSS3, and JavaScript with the usage of the AngularJS framework.
+    - Practice test-driven development (TDD), and implement unit tests/integration tests for code changes where testing was feasible. Have in-depth experience with the Spock framework, as well as with JUnit4 and Mochito.
+    - Work in an agile framework, collaborating with the client and business in story grooming, and reviewing story/acceptance criteria and performance metrics.
     - Participate in interviewing new software engineer candidates.
     - Provide mentorship and guidance for new joiners and junior colleagues.
 
@@ -83,20 +83,20 @@ ___
 
     - Develop and maintain multiple full-stack business applications, working in agile teams. During my work the following technologies were used:
         - Back-end based on Java stack: Java 8, Maven, JAX-WS, JAX-RS, Spring/Spring Boot (Spring Core, Spring MVC, Spring AOP, Spring Security, Spring Data, Spring Batch, Spring Test), Tomcat, JBoss
-        - Persistence: extensively used both SQL (Oracle database with Hibernate JPA, Liquibase for migrations) and noSQL type databases (MarkLogic 8 with JSON documents. For interaction/querying we used server side Javascript).
+        - Persistence: extensively used both SQL (Oracle database with Hibernate JPA, Liquibase for migrations) and noSQL type databases (MarkLogic 8 with JSON documents. For interaction/querying we used server-side Javascript).
         - Front-end: AngularJS (which implies heavy usage of Javascript[ES5])/Angular 4 (TypeScript), HTML5, CSS3 (Sass) + Twitter Bootstrap 3, package-managers (npm, Bower).
         - Deployment/DevOps: Jenkins, Docker, Maven, Grunt, Gulp, npm
-        - Testing/Unit testing frameworks: JUnit, Mockito, Karma, Jasmin, Protractor, roxy
-        - Dev environments: IntelIJ, WebStorm, VSCode, VIM, MarkLogic query console, SQL Developer
+        - Testing/Unit testing frameworks: JUnit, Mockito, Karma, Jasmin, Protractor, Roxy
+        - Dev environments: IntelliJ, WebStorm, VSCode, VIM, MarkLogic query console, SQL Developer
         - Source control: git
         - Scripting/automation: Bash, NodeJS,
         - Other libraries/frameworks: Google Guava, Apache commons, Lombok, Dozer mapper, lodash;
     - Gather requirements from the external clients, actively participate in client and internal agile meetings;
-    - Develop REST based Web Services used by third-parties and implement REST end-points;
-    - Secure REST end-points using Spring Security. Write and generate documentation for these end-points using Swagger;
-    - Initiate extensive refactorings of older functionalities, focus on usage of design patterns;
+    - Develop REST-based Web Services used by third parties and implement REST end-points;
+    - Secure REST endpoints using Spring Security. Write and generate documentation for these end-points using Swagger;
+    - Initiate extensive refactorings of older functionalities, focus on the usage of design patterns;
     - Integrate with the external services which were exposing both REST and SOAP end-points;
-    - Create user friendly GUI using HTML, CSS and Javascript, implement single-page front-end applications using Angular;
+    - Create user-friendly GUIs using HTML, CSS and Javascript, implement single-page front-end applications using Angular;
     - Extensively involved in code reviews (platforms used: BitBucket);
     - Actively involved in release management/product delivery (platforms uses: AWS EC2, AWS S3);
 - Supervise summer internship attendees
@@ -109,7 +109,7 @@ ___
 
     - Develop and maintain a Railway Automation project using C++ (MFC, Boost), Visual Basic and
     Python environments;
-    - Work in a regulated environment, the components developed by us where graded between SIL 0 and SIL 2 safety-integrity level;
+    - Work in a regulated environment, the components developed by us were graded between SIL 0 and SIL 2 safety-integrity level;
     - Develop and maintain unit tests using GTEST and GMOCK libraries;
     - Implement regression and UI tests using AutoIT and Python languages;
     - Configure and maintain Jenkins - continuous integration system, develop batch scripts for automatic builds;
@@ -139,7 +139,7 @@ ___
 
 *From September 2015 to June 2017*
 
-- **Studied**: Agile Methodologies, Numerical Math and Statistics, Virtual Reality and Game Development, Genetic Algorithms, Concurrent Computing (CUDA), Distributed Systems (Java EE), Software Verification and Synthesis, Software Testing, Modern Databases, Component Based Software Development
+- **Studied**: Agile Methodologies, Numerical Math and Statistics, Virtual Reality and Game Development, Genetic Algorithms, Concurrent Computing (CUDA), Distributed Systems (Java EE), Software Verification and Synthesis, Software Testing, Modern Databases, Component-Based Software Development
 - **Final grade**: 10/10
 - **Thesis**: Parallel artistic style transfer using deep convolutional neural network
 
@@ -147,12 +147,12 @@ ___
 
 *From September 2011 to June 2015*
 
-- **Studied**: Algorithms and Data Structures, Programming Languages, Web Technologies, Operating Systems, Databases, Computer Networks, Distributed Systems, Artificial Intelligence, Object Oriented Programming , Java Technologies, Android Programming, Image Processing, Computer Architecture, Assembly Programming, Micro controllers, Programmable Digital Systems, Digital Signal Processing
+- **Studied**: Algorithms and Data Structures, Programming Languages, Web Technologies, Operating Systems, Databases, Computer Networks, Distributed Systems, Artificial Intelligence, Object Oriented Programming, Java Technologies, Android Programming, Image Processing, Computer Architecture, Assembly Programming, Microcontrollers, Programmable Digital Systems, Digital Signal Processing
 - **Final grade**: 10/10
 - **Thesis**: WLAN based conference system
 - **Honors**:
-    - *16th Scientific Student Conference of Technical Science - XVI. Műszaki Erdélyi Tudományos Diakköri Konferencia,* Second place in Computer Science and Applied Informatics section with the project of: *"WLAN based Conference System"*.
-    - *XIV Scientific Students' Associations Conference - XIV. Tudományos Diákköri Konferencia (Sapientia TDK),* First place in Computer Science and Software Development Section section with the project of: "WLAN based Conference System".
+    - *16th Scientific Student Conference of Technical Science - XVI. Műszaki Erdélyi Tudományos Diakköri Konferencia,* Second place in Computer Science and Applied Informatics section with the project of *"WLAN based Conference System"*.
+    - *XIV Scientific Students' Associations Conference - XIV. Tudományos Diákköri Konferencia (Sapientia TDK),* First place in Computer Science and Software Development Section section with the project: "WLAN based Conference System".
 
 ---
 
