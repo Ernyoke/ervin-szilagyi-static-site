@@ -268,7 +268,7 @@ I took the  `Duration` field from the log statements and I put it in a table. I 
 | Docker x86-64  | 5501.72 ms       | 5734.71 ms       | 5337.14 ms       | 5580.38 ms       | 5206.17 ms       |
 | Docker arm64   | 11412.80 ms      | 12079.55 ms      | 12307.51 ms      | 12044.27 ms      | 11784.83 ms      |
 
-![Rust implementation charts](running-serverless-lambads-with-rust/rust-pi-calculator.png)
+![Rust implementation charts](img-running-serverless-lambads-with-rust/rust-pi-calculator.png)
 
 The memory usage of these executions was not varying as much:
     - x86-64: 12-13 MB
@@ -287,7 +287,7 @@ As a comparison, I measured the JavaScript implementation of the Unbounded Spigo
 
 A comparison between the Rust and the JavaScript implementations:
 
-![Rust - JS implementation comparison charts](running-serverless-lambads-with-rust/rust-vs-js-pi-calculator.png)
+![Rust - JS implementation comparison charts](img-running-serverless-lambads-with-rust/rust-vs-js-pi-calculator.png)
 
 Moving on I measured the cold start of both Rust and JavaScript implementations. The cold start is the `Init` phase of a Lambda. We encounter a cold start if our Lambda was not invoked recently or AWS decides to fire up another instance of our Lambda function in parallel to which is running currently. To do the cold start measurements, I let all the Lambdas rest and executed them afterward. I noted down the cold start duration and I let all the Lambdas rest again to make sure to encounter a cold start at the next execution as well. I did this 3 times for each Lambda and I got the following results:
 
@@ -309,7 +309,7 @@ JavaScript:
 | Docker x86-64  | 272.43 ms    | 252.28 ms    | 259.95 ms    |
 | Docker arm64   | 305.06 ms    | 277.63 ms    | 201.52 ms    |
 
-![Rust/JS cold start measurement charts](running-serverless-lambads-with-rust/cold-start.png)
+![Rust/JS cold start measurement charts](img-running-serverless-lambads-with-rust/cold-start.png)
 
 ### Conclusions after these benchmarks:
 
