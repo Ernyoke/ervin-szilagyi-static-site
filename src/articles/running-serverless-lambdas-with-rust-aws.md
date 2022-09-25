@@ -151,7 +151,7 @@ Taking our image a step further, we can build a [multi-stage](https://docs.docke
 
 Without further ado, this is our Lambda container:
 
-```bash
+```dockerfile
 FROM rust:1.63-buster as builder
 
 WORKDIR /build
@@ -172,7 +172,7 @@ ENTRYPOINT ["/bootstrap"]
 
 This will create an `x86` Docker container, if we want an `arm64` based one, we can do it with a few modifications:
 
-```bash
+```dockerfile
 FROM rust:1.63-buster as builder
 
 WORKDIR /build

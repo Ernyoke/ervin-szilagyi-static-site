@@ -26,7 +26,7 @@ In the following lines, we will define a Dockerfile to use distrloless with a Ru
 
 The Dockerfile for an `x86-64` Lambda would look something like this:
 
-```bash
+```dockerfile
 ARG FUNCTION_DIR="/function"
 
 FROM rust:1.63-buster as builder
@@ -60,7 +60,7 @@ ENTRYPOINT [ "./bootstrap" ]
 
 With slight adjustments we can create an `arm64` Docker container as well:
 
-```bash
+```dockerfile
 ARG FUNCTION_DIR="/function"
 
 FROM rust:1.63-buster as builder
