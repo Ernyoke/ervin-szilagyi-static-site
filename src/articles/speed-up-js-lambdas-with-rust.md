@@ -175,7 +175,52 @@ exports.handler = async (event) => {
 };
 ```
 
-This is it. To deploy this function into AWS, we have to pack the `app.js` file and the `node_modules` folder into a `zip` archive and upload it to AWS Lambda. Assuming are target architecture for the Lambda and for the dependency match (we can not have an x86-64 native dependency running on a Lambda function set to use arm64), our function should work as expected.
+This is it. To deploy this function into AWS, we have to pack the `app.js` file and the `node_modules` folder into a `zip` archive and upload it to AWS Lambda. Assuming are target architecture for the Lambda and for the dependency match (we can not have an x86-64 native dependency running on a Lambda function set to use arm64), our function should work as expected....or maybe not.
+
+### `GLIBC_2.28' not found
+
+It is important to note that the Rust code written by us compiles down to a dynamic library. One of the differences between dynamic and static libraries is that dynamic libraries can have dynamic dependencies which are expected to be present on the host machine while executing instructions from the library. In contrast, a static library may contain everything required in order to be able to be used as-is. If we build our dynamic library developed in Rust, we may encounter the following issue during its first execution:
+
+```bash
+/lib64/libc.so.6: version `GLIBC_2.28' not found (required by .../compute-pi-rs-lib/index.node)
+```
+
+The reason behind this issue, as explained in this [blog post](https://kobzol.github.io/rust/ci/2021/05/07/building-rust-binaries-in-ci-that-work-with-older-glibc.html), is that Rust dynamically link to the C standard library, more specifically the GLIBC implementation. This should not be a problem, since GLIBC should be present in essentially every Unix system, however, this becomes a challenge in case the version of the GLIBC used at build time is different compared to the version present on the system. If we are using `cross` for building our library, it may happen that the GLIBC version of the Docker container used by cross is different than the one present in the Lambda Runtime on AWS.
+
+The solution would be to build the library on a system that has the same GLIBC version. The most reliable solution I found is to use an Amazon Linux Docker image as the build image instead of using the default cross image. `cross` has the ability to be configured to use a [custom image](https://github.com/cross-rs/cross#custom-docker-images) for compilation and building. What we have to do is to provide a Dockerfile with Amazon Linux 2 as its base image and provide additional configuration to be able to build Rust code. The Dockerfile could look like this:
+
+```docker
+FROM public.ecr.aws/amazonlinux/amazonlinux:2.0.20220912.1
+
+ENV RUSTUP_HOME=/usr/local/rustup \
+    CARGO_HOME=/usr/local/cargo \
+    PATH=/usr/local/cargo/bin:$PATH \
+    RUST_VERSION=1.63.0
+
+RUN yum install -y gcc gcc-c++ openssl-devel; \
+    curl https://sh.rustup.rs -sSf | sh -s -- --no-modify-path --profile minimal --default-toolchain $RUST_VERSION -y; \
+    chmod -R a+w $RUSTUP_HOME $CARGO_HOME; \
+    rustup --version; \
+    cargo --version; \
+    rustc --version;
+
+WORKDIR /target
+```
+
+In the second step, we will have to create a toml file named `Cross.toml` in the root folder of our project. In the content of this file we have to specify a path to the Dockerfile above, for example:
+
+```toml
+[target.x86_64-unknown-linux-gnu]
+dockerfile = "./Dockerfile-x86-64"
+```
+
+This `toml` file will be used automatically at each build. Instead of the base `cross` Docker image, the specified dockerfile will be used for the custom image definition.
+
+The reason for using Amazon Linux 2 is because the Lambda Runtime itself is based on that. We can find more information about runtimes and dependencies in the [AWS documentation about runtimes](https://docs.aws.amazon.com/lambda/latest/dg/lambda-runtimes.html).
+
+## Performance and Benchmarks
+
+![Trace for an execution with cold start](img-speed-up-js-lambdas-with-rust/cold-start-trace.png)
 
 ## Links and References
 
@@ -185,3 +230,6 @@ This is it. To deploy this function into AWS, we have to pack the `app.js` file 
 4. Neon: [https://neon-bindings.com/docs/introduction](https://neon-bindings.com/docs/introduction)
 5. Node-API (N-API): [https://nodejs.org/api/n-api.html#node-api](https://nodejs.org/api/n-api.html#node-api)
 6. Tokio Runtimes: [https://docs.rs/tokio/1.20.1/tokio/runtime/index.html](https://docs.rs/tokio/1.20.1/tokio/runtime/index.html)
+7. Building Rust binaries in CI that work with older GLIBC: [https://kobzol.github.io/rust/ci/2021/05/07/building-rust-binaries-in-ci-that-work-with-older-glibc.html](https://kobzol.github.io/rust/ci/2021/05/07/building-rust-binaries-in-ci-that-work-with-older-glibc.html)
+8. `cross` - Custom Docker images: [https://github.com/cross-rs/cross#custom-docker-images](https://github.com/cross-rs/cross#custom-docker-images)
+9. Lambda runtimes: [https://docs.aws.amazon.com/lambda/latest/dg/lambda-runtimes.html]()
