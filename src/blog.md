@@ -1,7 +1,7 @@
 # Blog Posts
 
 - 2022
-    - September 25, 2022 - [Speed Up JavaScript AWS Lambda Functions with Rust](articles/speed-up-js-lambdas-with-rust.md)
+    - October 02, 2022 - [Electrify you NodeJS AWS Lambdas with Rust](articles/electrify-your-nodejs-aws-lambdas-with-rust.md)
     - September 14, 2022 - [Building Super Slim Containerized Lambdas on AWS](articles/building-super-slim-containerized-lambdas.md)
     - September 05, 2022 - [Running Serverless Lambdas with Rust on AWS](articles/running-serverless-lambdas-with-rust-aws.md)
     - August 09, 2022 - [GCP Associate Cloud Engineer Certification Experience](articles/gcp-associate-cloud-engineer-certification-experience.md)

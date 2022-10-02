@@ -1,4 +1,4 @@
-# Speed Up JavaScript AWS Lambda Functions with Rust
+# Electrify you NodeJS AWS Lambdas with Rust
 
 ## Introduction
 
@@ -177,7 +177,7 @@ exports.handler = async (event) => {
 
 This is it. To deploy this function into AWS, we have to pack the `app.js` file and the `node_modules` folder into a `zip` archive and upload it to AWS Lambda. Assuming our target architecture for the Lambda and for the dependency match (we can not have an x86-64 native dependency running on a Lambda function set to use arm64), our function should work as expected....or maybe not.
 
-### `GLIBC_2.28' not found
+### `GLIBC_2.28` not found
 
 It is important to note that the Rust code written by us compiles down to a dynamic library. One of the differences between dynamic and static libraries is that dynamic libraries can have dynamic dependencies which are expected to be present on the host machine while executing instructions from the library. In contrast, a static library may contain everything required in order to be able to be used as-is. If we build our dynamic library developed in Rust, we may encounter the following issue during its first execution:
 
@@ -257,7 +257,16 @@ With Graviton (`arm64`) it looks similar:
 
 We can see that according to my measurements, the function with the dynamic library has a similar execution time compared to the one developed in vanilla Rust. In fact, it appears that it is faster, which should not be the case, since there is some overload when using FFI. There is a difference of one month between doing the vanilla Rust measurements and the embedded dynamic library Lambda measurements. The underlying hardware may perform slightly better or I was simply lucky and got an environment that does not encounter as much load from other AWS users, or who knows...
 
-## Conclusions
+## Final Thoughts
+
+Combining native code with NodeJS can be fun afternoon project, but would this make sense in a production environment? In most cases probably not. The reason why I'm saying this is that the modern NodeJS interpreters are blazingly fast. They can perform at the level required for most of the use cases for which a Lambda function would be adequite. Having to deal with the baggage of complexity introduced by a dynamic library written is Rust my not be the perfect solution. Moreover, in most of the cases, Lambda functions are small enough that it would be wiser to migrate them entirely to a more performant runtime, rather than having to extract a certain part of it into a library. Before deciding to partially or entirely rewrite a function, I recommend doing some actual measurements and performance tests. XRay can help a lot to trace and diagnose bottle necks in our code.
+
+In certain situation it might be useful to have a native binding as a dynamic library. For example:
+
+- cryptographic functions, like hashing, encryption/decryption, temper verification, etc. These can be CPU intensive tasks, it may be a good idea to use a native approach for these;
+- image processing, AI;
+- data engineering, having to do complex transformations on a huge amount of data;
+- providing a single library (developed in Rust) company-wise without the need for rewriting it for every stack. We could wrap it with Neon use it as an NPM dependency
 
 ## Links and References
 
@@ -271,3 +280,5 @@ We can see that according to my measurements, the function with the dynamic libr
 8. `cross` - Custom Docker images: [https://github.com/cross-rs/cross#custom-docker-images](https://github.com/cross-rs/cross#custom-docker-images)
 9. Lambda runtimes: [https://docs.aws.amazon.com/lambda/latest/dg/lambda-runtimes.html](https://docs.aws.amazon.com/lambda/latest/dg/lambda-runtimes.html)
 10. Running Serverless Lambdas with Rust on AWS: [https://ervinszilagyi.dev/articles/running-serverless-lambdas-with-rust-aws.html](https://ervinszilagyi.dev/articles/running-serverless-lambdas-with-rust-aws.html)
+
+The code used in this article can be found on Github at: ...
