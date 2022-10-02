@@ -259,14 +259,14 @@ We can see that according to my measurements, the function with the dynamic libr
 
 ## Final Thoughts
 
-Combining native code with NodeJS can be fun afternoon project, but would this make sense in a production environment? In most cases probably not. The reason why I'm saying this is that the modern NodeJS interpreters are blazingly fast. They can perform at the level required for most of the use cases for which a Lambda function would be adequite. Having to deal with the baggage of complexity introduced by a dynamic library written is Rust my not be the perfect solution. Moreover, in most of the cases, Lambda functions are small enough that it would be wiser to migrate them entirely to a more performant runtime, rather than having to extract a certain part of it into a library. Before deciding to partially or entirely rewrite a function, I recommend doing some actual measurements and performance tests. XRay can help a lot to trace and diagnose bottle necks in our code.
+Combining native code with NodeJS can be a fun afternoon project, but would this make sense in a production environment? In most cases probably not. The reason why I'm saying this is that the modern NodeJS interpreters are blazingly fast. They can perform at the level required for most of the use cases for which a Lambda function would be adequate. Having to deal with the baggage of complexity introduced by a dynamic library written in Rust may not be the perfect solution. Moreover, in most cases, Lambda functions are small enough that it would be wiser to migrate them entirely to a more performant runtime, rather than having to extract a certain part of it into a library. Before deciding to partially or entirely rewrite a function, I recommend doing some actual measurements and performance tests. XRay can help a lot to trace and diagnose bottlenecks in our code.
 
-In certain situation it might be useful to have a native binding as a dynamic library. For example:
+In certain situations, it might be useful to have a native binding as a dynamic library. For example:
 
-- cryptographic functions, like hashing, encryption/decryption, temper verification, etc. These can be CPU intensive tasks, it may be a good idea to use a native approach for these;
+- cryptographic functions, like hashing, encryption/decryption, temper verification, etc. These can be CPU-intensive tasks, so it may be a good idea to use a native approach for these;
 - image processing, AI;
 - data engineering, having to do complex transformations on a huge amount of data;
-- providing a single library (developed in Rust) company-wise without the need for rewriting it for every stack. We could wrap it with Neon use it as an NPM dependency
+- providing a single library (developed in Rust) company-wise without the need for rewriting it for every stack. We could wrap it with Neon and use it as an NPM dependency
 
 ## Links and References
 
@@ -281,4 +281,4 @@ In certain situation it might be useful to have a native binding as a dynamic li
 9. Lambda runtimes: [https://docs.aws.amazon.com/lambda/latest/dg/lambda-runtimes.html](https://docs.aws.amazon.com/lambda/latest/dg/lambda-runtimes.html)
 10. Running Serverless Lambdas with Rust on AWS: [https://ervinszilagyi.dev/articles/running-serverless-lambdas-with-rust-aws.html](https://ervinszilagyi.dev/articles/running-serverless-lambdas-with-rust-aws.html)
 
-The code used in this article can be found on Github at: ...
+The code used in this article can be found on GitHub at: ...
