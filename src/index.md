@@ -13,6 +13,7 @@ In my free time I like to tinker with even more technology. I also enjoy reading
 # Latest Posts
 
 - 2022
+    - October 02, 2022 - [Electrify your NodeJS AWS Lambdas with Rust](articles/electrify-your-nodejs-aws-lambdas-with-rust.md)
     - September 14, 2022 - [Building Super Slim Containerized Lambdas on AWS](articles/building-super-slim-containerized-lambdas.md)
     - September 05, 2022 - [Running Serverless Lambdas with Rust on AWS](articles/running-serverless-lambdas-with-rust-aws.md)
     - August 09, 2022 - [GCP Associate Cloud Engineer Certification Experience](articles/gcp-associate-cloud-engineer-certification-experience.md)
