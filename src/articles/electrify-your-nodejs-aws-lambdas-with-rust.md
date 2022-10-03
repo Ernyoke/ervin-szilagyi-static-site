@@ -1,4 +1,4 @@
-# Electrify you NodeJS AWS Lambdas with Rust
+# Electrify your NodeJS AWS Lambdas with Rust
 
 ## Introduction
 
@@ -17,7 +17,7 @@ To make a function call to a binary addon from NodeJS, we have to do the followi
 3. Implement our business logic in the native code.
 4. Build the dynamic library. Rust makes this step convenient by being able to configure the `[lib]` section in the project's `toml` file. Moreover, if we are using Neon to initiate our project, this will be configured for us out of the box.
 
-As for the first step, we would have to create a Rust project with Neon for building a dynamic library. This can be done using `npm init neon my-rust-lib`. To be more correct, this will create a so-called Neon project, which means it already has a `package.json` for handling Node-related things. The project structure will look something like this:
+As for the first step, we would want to create a Rust project with Neon dependency for building a dynamic library. This can be done using `npm init neon my-rust-lib`. To be more accurate, this will create a so-called Neon project, which means it already has a `package.json` for handling Node-related things. The project structure will look something like this:
 
 ```
 my-rust-lib/
@@ -52,9 +52,9 @@ If we take a look at the `package.json`, we will find something that resembles t
 ```
 
 
-Running `npm install` command, our dynamic library will be built in release mode. We also should notice that this will target our current CPU architecture and operating system. If we want to build this package for being used by an AWS Lambda, we will have to adjust this configuration to target Linux x86-64 or arm64.
+Running `npm install` command, our dynamic library will be built in release mode. Is important to know that this will target our current CPU architecture and operating system. If we want to build this package for being used by an AWS Lambda, we will have to do a cross-target build to Linux x86-64 or arm64.
 
-Taking a look at `lib.rs` file, we can see the entry point of your library exposing a function named `hello`. The return type of this function is a string. It is also important to notice the conversion from a Rust's `str` point to a JsString type, which does the bridging for strings between JavaScript and Rust.
+Taking a look at `lib.rs` file, we can see the entry point of our library exposing a function named `hello`. The return type of this function is a string. It is also important to notice the conversion from a Rust's `str` point to a JsString type. This type does the bridging for strings between JavaScript and Rust.
 
 ```rust
 use neon::prelude::*;
@@ -70,7 +70,7 @@ fn main(mut cx: ModuleContext) -> NeonResult<()> {
 }
 ```
 
-After we built our library, we can install it in another NodeJS project. This can be accomplished by executing:
+After we built our library, we can install it in another NodeJS project by running:
 
 ```bash
 npm install <path>
@@ -175,17 +175,17 @@ exports.handler = async (event) => {
 };
 ```
 
-This is it. To deploy this function into AWS, we have to pack the `app.js` file and the `node_modules` folder into a `zip` archive and upload it to AWS Lambda. Assuming our target architecture for the Lambda and for the dependency match (we can not have an x86-64 native dependency running on a Lambda function set to use arm64), our function should work as expected....or maybe not.
+This is it. To deploy this function into AWS, we have to pack the `app.js` file and the `node_modules` folder into a `zip` archive and upload it to AWS Lambda. Assuming our target architecture for the Lambda and for the dependencies match (we can not have an x86-64 native dependency running on a Lambda function set to use arm64), our function should work as expected....or maybe not.
 
 ### `GLIBC_2.28` not found
 
-It is important to note that the Rust code written by us compiles down to a dynamic library. One of the differences between dynamic and static libraries is that dynamic libraries can have dynamic dependencies which are expected to be present on the host machine while executing instructions from the library. In contrast, a static library may contain everything required in order to be able to be used as-is. If we build our dynamic library developed in Rust, we may encounter the following issue during its first execution:
+With our Neon project, we build a dynamic library. One of the differences between dynamic and static libraries is that dynamic libraries can have shared dependencies that are expected to be present on the host machine at the time of execution. In contrast, a static library may contain everything required in order to be able to be used as-is. If we build our dynamic library developed in Rust, we may encounter the following issue during its first execution:
 
 ```bash
 /lib64/libc.so.6: version `GLIBC_2.28' not found (required by .../compute-pi-rs-lib/index.node)
 ```
 
-The reason behind this issue, as explained in this [blog post](https://kobzol.github.io/rust/ci/2021/05/07/building-rust-binaries-in-ci-that-work-with-older-glibc.html), is that Rust dynamically links to the C standard library, more specifically the GLIBC implementation. This should not be a problem, since GLIBC should be present in essentially every Unix system, however, this becomes a challenge in case the version of the GLIBC used at build time is different compared to the version present on the system executing the binary. If we are using `cross` for building our library, the GLIBC version of the Docker container used by cross may be different than the one present in the Lambda Runtime on AWS.
+The reason behind this issue, as explained in this [blog post](https://kobzol.github.io/rust/ci/2021/05/07/building-rust-binaries-in-ci-that-work-with-older-glibc.html), is that Rust dynamically links to the C standard library, more specifically the GLIBC implementation. This should not be a problem, since GLIBC should be present on essentially every Unix system, however, this becomes a challenge in case the version of the GLIBC used at build time is different compared to the version present on the system executing the binary. If we are using `cross` for building our library, the GLIBC version of the Docker container used by cross may be different than the one present in the Lambda Runtime on AWS.
 
 The solution would be to build the library on a system that has the same GLIBC version. The most reliable solution I found is to use an Amazon Linux Docker image as the build image instead of using the default cross image. `cross` can be configured to use a [custom image](https://github.com/cross-rs/cross#custom-docker-images) for compilation and building. What we have to do is to provide a Dockerfile with Amazon Linux 2 as its base image and provide additional configuration to be able to build Rust code. The Dockerfile could look like this:
 
@@ -224,23 +224,23 @@ The reason for using Amazon Linux 2 is that the Lambda Runtime itself is based o
 
 For my previous article [Running Serverless Lambdas with Rust on AWS](https://ervinszilagyi.dev/articles/running-serverless-lambdas-with-rust-aws.html) we used an unbounded spigot algorithm to compute the first N digits of PI. We will use the same algorithm for the upcoming benchmarks as well. We had seen the implementation of this algorithm above. To summarize, our Lambda function written in NodeJS will use FFI to call a function written in Rust which will return a list with the first N number of PI. 
 
-To be able to compare our measurements with the results gathered for a Lambda written entirely in Rust, we will use the same configurations. These are `128 MB of RAM` memory allocated for a Lambda deployed in `us-east-1`. Measurements will be performed for both `x86-64` and `arm64` architectures.
+To be able to compare our measurements with the results gathered for a Lambda written entirely in Rust, we will use the same AWS Lambda configurations. These are `128 MB of RAM` memory allocated, and the Lambda being deployed in `us-east-1`. Measurements will be performed for both `x86-64` and `arm64` architectures.
 
 ### Cold Start/Warm Start
 
-Using XRay, we can get an interesting breakdown of how our Lambda performs and where the time spent during each run is. For example, here we can see a trace for a cold start execution for an `x86-64` Lambda:
+Using XRay, we can get an interesting breakdown of how our Lambda performs and where the time is spent during each run. For example, here we can see a trace for a cold start execution for an `x86-64` Lambda:
 
 ![Trace for an execution with cold start](img-speed-up-js-lambdas-with-rust/cold-start-trace.png)
 
-Here we can see a trace for a warm start for the same Lambda:
+In the following we can see the trace for a warm start in case of the same Lambda:
 
 ![Trace for an execution with warm start](img-speed-up-js-lambdas-with-rust/warm-start-trace.png)
 
-As we can see, the initialization period is pretty standard for a NodeJS runtime. In my previous article, we got cold starts between 100ms and 300ms for NodeJS, the initialization period in this case falls into that interval as well. 
+The initialization (cold start) period is pretty standard for a NodeJS runtime. In my previous article, we could measure cold starts between 100ms and 300ms for NodeJS. The cold start period for this current execution falls directly into this interval.
 
 ### Performance Comparisons
 
-As with the previous article, I measured the execution time of the same Lambda function deployed targeting both `x86-64` and `arm64` architectures. These are the results I witnessed:
+As usual, I measured the running time of 5 consecutive executions of the same Lambda function. I did this for both `x86-64` and `arm64` architectures. These are the results I witnessed:
 
 |                | Duration - run 1 | Duration - run 2 | Duration - run 3 | Duration - run 4 | Duration - run 5 |
 |----------------|------------------|------------------|------------------|------------------|------------------|
@@ -255,18 +255,21 @@ With Graviton (`arm64`) it looks similar:
 
 ![Execution time comparison between JS, RS, and embedded RS in JS (x86-64)](img-speed-up-js-lambdas-with-rust/arm64.png)
 
-We can see that according to my measurements, the function with the dynamic library has a similar execution time compared to the one developed in vanilla Rust. In fact, it appears that it is faster, which should not be the case, since there is some overload when using FFI. There is a difference of one month between doing the vanilla Rust measurements and the embedded dynamic library Lambda measurements. The underlying hardware may perform slightly better or I was simply lucky and got an environment that does not encounter as much load from other AWS users, or who knows...
+According to my measurements, the function with the dynamic library has a similar execution time compared to the one developed in vanilla Rust. In fact, it appears that might be a little bit faster. This is kind of unexpected since there is some overhead when using FFI. Although this performance increase might be considered a margin of error, we should also regard the fact that the measurements were not done on the same day. The underlying hardware might have been performed slightly better. Or simply I was just lucky and got an environment that does not encounter as much load from other AWS users, who knows...
 
 ## Final Thoughts
 
-Combining native code with NodeJS can be a fun afternoon project, but would this make sense in a production environment? In most cases probably not. The reason why I'm saying this is that the modern NodeJS interpreters are blazingly fast. They can perform at the level required for most of the use cases for which a Lambda function would be adequate. Having to deal with the baggage of complexity introduced by a dynamic library written in Rust may not be the perfect solution. Moreover, in most cases, Lambda functions are small enough that it would be wiser to migrate them entirely to a more performant runtime, rather than having to extract a certain part of it into a library. Before deciding to partially or entirely rewrite a function, I recommend doing some actual measurements and performance tests. XRay can help a lot to trace and diagnose bottlenecks in our code.
+Combining native code with NodeJS can be a fun afternoon project, but would this make sense in a production environment? 
 
-In certain situations, it might be useful to have a native binding as a dynamic library. For example:
+In most cases probably not. 
 
-- cryptographic functions, like hashing, encryption/decryption, temper verification, etc. These can be CPU-intensive tasks, so it may be a good idea to use a native approach for these;
-- image processing, AI;
-- data engineering, having to do complex transformations on a huge amount of data;
-- providing a single library (developed in Rust) company-wise without the need for rewriting it for every stack. We could wrap it with Neon and use it as an NPM dependency
+The reason why I'm saying this is that modern NodeJS interpreters are blazingly fast. They can perform at the level required for most of the use cases for which a Lambda function would be adequate. Having to deal with the baggage of complexity introduced by a dynamic library written in Rust may not be the perfect solution. Moreover, in most cases, Lambda functions are small enough that it would be wiser to migrate them entirely to a more performant runtime, rather than having to extract a certain part of it into a library. Before deciding to partially or entirely rewrite a function, I recommend doing some actual measurements and performance tests. XRay can help a lot to trace and diagnose bottlenecks in our code.
+
+On the other hand, in certain situations, it might be useful to have a native binding as a dynamic library. For example:
+
+- in the case of cryptographic functions, like hashing, encryption/decryption, temper verification, etc. These can be CPU-intensive tasks, so it may be a good idea to use a native approach for these;
+- if we are trying to do image processing, AI, data engineering, or having to do complex transformations on a huge amount of data;
+- if we need to provide a single library (developed in Rust) company-wise without the need for rewriting it for every other used stack. We could wrappers, such as Neon, to expose them to other APIs, such as the one of NodeJS.
 
 ## Links and References
 
@@ -281,4 +284,4 @@ In certain situations, it might be useful to have a native binding as a dynamic 
 9. Lambda runtimes: [https://docs.aws.amazon.com/lambda/latest/dg/lambda-runtimes.html](https://docs.aws.amazon.com/lambda/latest/dg/lambda-runtimes.html)
 10. Running Serverless Lambdas with Rust on AWS: [https://ervinszilagyi.dev/articles/running-serverless-lambdas-with-rust-aws.html](https://ervinszilagyi.dev/articles/running-serverless-lambdas-with-rust-aws.html)
 
-The code used in this article can be found on GitHub at: ...
+The code used in this article can be found on GitHub at [https://github.com/Ernyoke/aws-lambda-js-with-rust](https://github.com/Ernyoke/aws-lambda-js-with-rust)
