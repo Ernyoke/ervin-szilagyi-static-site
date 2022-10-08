@@ -7,5 +7,12 @@
       "og:image": "images/glider-banner.jpg",
       "og:description": "Personal web page and blog.",
       "og:url": "https://ervinszilagyi.dev"
-    }
+    },
+    "default_frame": "frame.html",
+    "frames": [
+      {
+        "folder": "./articles",
+        "frame": "article_frame.html"
+      }
+    ]
   }
