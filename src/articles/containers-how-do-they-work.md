@@ -6,4 +6,82 @@ Nowadays, in software engineering we take containers for granted. We rely on the
 
 ## Playground Set-Up
 
-To understand containers, we would want to play around some container runtimes. Docker is the most popular implementation of a container runtime, we will use that for this article, but there are several other implementations out there, for. example: Podman, LXC/LXD, rkt and many others. 
+To understand containers, we would want to play around some container runtimes. Docker is the most popular implementation of a container runtime, we will use that for this article, but there are several other implementations out there, for. example: Podman, LXC/LXD, rkt and many others.
+
+We would want to use a Linux (Ubuntu) machine on which we can install Docker Engine following the steps from the [Docker documentation](https://docs.docker.com/engine/install/ubuntu/). We would want to specifically use Docker Engine and not Docker Desktop. Docker Desktop will use a virtual machine for the host, we don't want to have that machine for current our purposes.
+
+## Process Isolation
+
+Containers are not virtual machines. Despite having a their own hostname, filesystem, process space and networking, they are not VMs. They do not have a separate kernel, they cannot have separate kernel modules or device drives installed. They can have multiple processes, which are isolated from the host machine's running processes.
+
+On our Ubuntu machine, we can run the following command to get information about the kernel:
+
+```bash
+root@ip-172-31-24-119:~# uname -s -r
+Linux 5.15.0-1019-aws
+```
+
+From the output we can see that the name of the kernel is `Linux`. Because I'm using an AWS EC2 machine, the release version of the kernel is `5.15.0-1019-aws`.
+
+Let's output some more information about our Linux distribution:
+
+```bash
+root@ip-172-31-24-119:~# cat /etc/os-release
+PRETTY_NAME="Ubuntu 22.04.1 LTS"
+NAME="Ubuntu"
+VERSION_ID="22.04"
+VERSION="22.04.1 LTS (Jammy Jellyfish)"
+VERSION_CODENAME=jammy
+ID=ubuntu
+ID_LIKE=debian
+HOME_URL="https://www.ubuntu.com/"
+SUPPORT_URL="https://help.ubuntu.com/"
+BUG_REPORT_URL="https://bugs.launchpad.net/ubuntu/"
+PRIVACY_POLICY_URL="https://www.ubuntu.com/legal/terms-and-policies/privacy-policy"
+UBUNTU_CODENAME=jammy
+```
+
+Now, let's run Rocky Linux from a Docker container using the following command:
+
+```bash
+docker run -ti rockylinux:8
+```
+
+The `-ti` flag will run the container in an interactive mode, prompting us to a shell inside the container. Let's fetch some OS information:
+
+```bash
+[root@3564a12dd942 /]# cat /etc/os-release
+NAME="Rocky Linux"
+VERSION="8.6 (Green Obsidian)"
+ID="rocky"
+ID_LIKE="rhel centos fedora"
+VERSION_ID="8.6"
+PLATFORM_ID="platform:el8"
+PRETTY_NAME="Rocky Linux 8.6 (Green Obsidian)"
+ANSI_COLOR="0;32"
+CPE_NAME="cpe:/o:rocky:rocky:8:GA"
+HOME_URL="https://rockylinux.org/"
+BUG_REPORT_URL="https://bugs.rockylinux.org/"
+ROCKY_SUPPORT_PRODUCT="Rocky Linux"
+ROCKY_SUPPORT_PRODUCT_VERSION="8"
+REDHAT_SUPPORT_PRODUCT="Rocky Linux"
+REDHAT_SUPPORT_PRODUCT_VERSION="8"
+```
+
+It seems like we are connected to a different machine. But if we get information about the kernel, we will get something familiar.
+
+```bash
+[root@3564a12dd942 /]# uname -s -r
+Linux 5.15.0-1019-aws
+```
+
+We can notice that it is the same as for the host machine. We can see that the container and the Ubuntu host machine are sharing the kernel. Containers rely on the ability of the host operating system to isolate on program from another while allowing these programs to share resources between them such as CPU, memory, storage and networking resources. The is accomplished by a capability of Linux kernel, named [**namespaces**](https://en.wikipedia.org/wiki/Linux_namespaces).
+
+Linux namespaces are not new technology or recently added feature of the kernel, they have been available for many years. The role of a namespace is to isolate the processes running inside of it, so it should not be able to see things it shouldn't.
+
+To see process namespaces in action with containers, we will use `containerd`. If we followed the installation link from above, we should have `containerd` installed with Docker Engine. This is because Docker uses `containerd` under the hood for the container runtime. A container runtime (container engine) provides low-level functionalities to execute containerized processes. To access `containerd`, we can use `ctr` command. For example, to check if it works correctly, we can run `ctr images ls`, which will get a list of images. 
+
+## Links
+
+1. Install Docker Engine on Ubuntu - [https://docs.docker.com/engine/install/ubuntu/](https://docs.docker.com/engine/install/ubuntu/)
+2. Linux Namespaces - [https://en.wikipedia.org/wiki/Linux_namespaces](https://en.wikipedia.org/wiki/Linux_namespaces)
