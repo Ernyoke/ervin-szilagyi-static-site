@@ -79,7 +79,54 @@ We can notice that it is the same as for the host machine. We can see that the c
 
 Linux namespaces are not new technology or recently added feature of the kernel, they have been available for many years. The role of a namespace is to isolate the processes running inside of it, so it should not be able to see things it shouldn't.
 
-To see process namespaces in action with containers, we will use `containerd`. If we followed the installation link from above, we should have `containerd` installed with Docker Engine. This is because Docker uses `containerd` under the hood for the container runtime. A container runtime (container engine) provides low-level functionalities to execute containerized processes. To access `containerd`, we can use `ctr` command. For example, to check if it works correctly, we can run `ctr images ls`, which will get a list of images. 
+To see process namespaces in action with containers, we will use `containerd`. If we followed the installation link from above, we should have `containerd` installed with Docker Engine. This is because Docker uses `containerd` under the hood for the container runtime. A container runtime (container engine) provides low-level functionalities to execute containerized processes. To access `containerd`, we can use `ctr` command. For example, to check if it works correctly, we can run `ctr images ls`, which will get a list of images. At this point we most likely don't have any images, so we can get a `busybox` image using:
+
+```bash
+ctr image pull docker.io/library/busybox:latest
+```
+
+We can check again the existing images with `ctr images ls` which should list the `busybox` image. We can run this image using:
+
+
+```bash
+ctr run -t --rm docker.io/library/busybox:latest v1
+```
+
+This command will run the image in interactive mode, meaning that we will have a terminal to us from the image. Grabbing the list of currently running tasks with `ctr task ls` command, we should get something similar:
+
+```
+TASK    PID     STATUS
+v1      1517    RUNNING
+```
+
+If we take the PID of the running container, we can get the parent process of it:
+
+```
+root@ip-172-31-24-119:~# ps -ef | grep 1517 | grep -v grep
+root        1517    1493  0 21:55 pts/0    00:00:00 sh
+root@ip-172-31-24-119:~# ps -ef | grep 1493 | grep -v grep
+root        1493       1  0 21:55 ?        00:00:00 /usr/bin/containerd-shim-runc-v2 -namespace default -id v1 -address /run/containerd/containerd.sock
+root        1517    1493  0 21:55 pts/0    00:00:00 sh
+```
+
+As we might have expected, the parent process is `containerd`. Moving on, we can get the process namespaces created by `containerd` with `lsns`:
+
+```bash
+root@ip-172-31-24-119:~# lsns | grep 1517
+4026532279 mnt         1  1517 root            sh
+4026532280 uts         1  1517 root            sh
+4026532281 ipc         1  1517 root            sh
+4026532282 pid         1  1517 root            sh
+4026532283 net         1  1517 root            sh
+```
+
+`containerd` is running five different types of namespaces for isolating processes. These are the following:
+
+- `mnt`: mount points;
+- `uts`: Unix time sharing;
+- `ipc`: interprocess communication;
+- `pid`: process identifiers;
+- `net`: interfaces, routeing tables and firewalls. 
 
 ## Links
 
