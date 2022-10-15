@@ -226,10 +226,91 @@ bin    dev    etc    home   lib    media  mnt    opt    proc   root   run    sbi
 / #
 ```
 
-Essentially we are mimicking an Alpine container here. Container runtimes, such as `containerd` (or Docker) implement a similar approach to `chroot`. Besides this, they provide a more practical way of to set up this filesystem isolation using **container images**. Container images are ready-to-use bundles which contain all the required files and folder for base, metadata (environment variables, arguments) and other executables.
+Container runtimes, such as `containerd` (or Docker) implement a similar approach to `chroot`. Besides this, they provide a more practical way of to set up this filesystem isolation using **container images**. Container images are ready-to-use bundles which contain all the required files and folder for base, metadata (environment variables, arguments) and other executables.
 
-## Dockerfile
+## Building Container Images
 
+Before building a container image ourselves, let's step a little bit back and investigate how are other, well known images built. We will use docker to pull Apache httpd image and we will take it apart to see what does it contain.
+
+Let's pull the image from the Docker registry:
+
+```bash
+ssm-user@ip-172-31-24-119:~$ docker pull httpd
+Using default tag: latest
+latest: Pulling from library/httpd
+bd159e379b3b: Already exists
+36d838c2f6d6: Pull complete
+b55eda22bb18: Pull complete
+f6e6bfa28393: Pull complete
+a1b49b7ecb8a: Pull complete
+Digest: sha256:4400fb49c9d7d218d3c8109ef721e0ec1f3897028a3004b098af587d565f4ae5
+Status: Downloaded newer image for httpd:latest
+docker.io/library/httpd:latest
+```
+
+We can spin up a container based on this image and connect to a shell inside of it using the following command:
+
+```bash
+ssm-user@ip-172-31-24-119:~$ docker run -it httpd /bin/bash
+```
+
+Having a shell we can navigate to the root of the image and list all the files and folders:
+
+```bash
+root@17556581d317:/usr/local/apache2# cd /
+root@17556581d317:/# ls -lart
+total 72
+drwxr-xr-x   2 root root 4096 Sep  3 12:10 home
+drwxr-xr-x   2 root root 4096 Sep  3 12:10 boot
+drwxr-xr-x   1 root root 4096 Oct  4 00:00 var
+drwxr-xr-x   1 root root 4096 Oct  4 00:00 usr
+drwxr-xr-x   2 root root 4096 Oct  4 00:00 srv
+drwxr-xr-x   2 root root 4096 Oct  4 00:00 sbin
+drwxr-xr-x   3 root root 4096 Oct  4 00:00 run
+drwx------   2 root root 4096 Oct  4 00:00 root
+drwxr-xr-x   2 root root 4096 Oct  4 00:00 opt
+drwxr-xr-x   2 root root 4096 Oct  4 00:00 mnt
+drwxr-xr-x   2 root root 4096 Oct  4 00:00 media
+drwxr-xr-x   2 root root 4096 Oct  4 00:00 lib64
+drwxrwxrwt   1 root root 4096 Oct  5 04:09 tmp
+drwxr-xr-x   1 root root 4096 Oct  5 04:10 lib
+drwxr-xr-x   1 root root 4096 Oct  5 04:10 bin
+drwxr-xr-x   1 root root 4096 Oct 15 20:19 etc
+-rwxr-xr-x   1 root root    0 Oct 15 20:19 .dockerenv
+drwxr-xr-x   1 root root 4096 Oct 15 20:19 ..
+drwxr-xr-x   1 root root 4096 Oct 15 20:19 .
+dr-xr-xr-x  13 root root    0 Oct 15 20:19 sys
+dr-xr-xr-x 176 root root    0 Oct 15 20:19 proc
+drwxr-xr-x   5 root root  360 Oct 15 20:19 dev
+```
+
+The Apache http image we are using is based on a Debian base image. This means it has a filesystem similar to what we would expect from the Debian Linux distribution. It contains all the necessary files and folders which would be expected by the Apache web server to run correctly.
+
+Also, if we take another look at the output of the `docker pull` command, we can see that a bunch if layers are downloaded. Moreover, some layers are skipped with the message that they already exist on our host machine. Container images are made up of layers. Layers can be shared between images. The reason why a layer was skipped is that I already have downloaded another image (`nginx`) on the host machine which is also based on Debian. Docker detected that the images share the same layer and it did not download it twice. Layers are used to save space and to speed up build and pulls/pushes. 
+
+Layers are created when a images are built. Usually we build images using other base images. For example, we use `httpd` and we copy our website on it, adding another layer on top of the base image. Base images also should come from somewhere, usually they are built from a minimal Linux filesystem. As another example, the Alpine Linux resources downloaded and used for `chroot`, could be used as base for a container image.
+
+There are several ways to build images, the most popular would be the Docker approach with the usage of `Dockerfiles`. A minimal Dockerfile for using `httpd` as the base image would look like this:
+
+```Dockerfile
+FROM httpd:2.4
+RUN mkdir -p /usr/local/apache2/conf/sites/
+COPY my-httpd.conf /usr/local/apache2/conf/httpd.conf
+COPY ./public-html/ /usr/local/apache2/htdocs/
+```
+
+There are many possible commands that can be used when building Docker images. For more information, we would want to check out the [Docker documentation](https://docs.docker.com/engine/reference/builder/). Some widely used commands from a Dockerfile would be the following:
+
+`FROM`: specifies the base image for the current build
+`ENV`: specifies an environment variable
+`RUN`: a command executed inside of the container while being built
+`COPY`: used to copy over files from the host machine to the container while it is being built
+`ENTRYPOINT`: specifies the initial process for the container
+`CMD`: sets the default parameters for the initial process
+
+## Conclusions
+
+In this article we have seen what containers are. They are not virtual machines, they are essentially a group of isolated processes with their own isolated filesystem and networking. They are sharing the kernel modules with the host machine. Because of these, they are lightweight, compared to fully fledged virtual machine. They can be spawn up and torn down quickly.
 
 ## Links and References
 
@@ -237,12 +318,14 @@ Essentially we are mimicking an Alpine container here. Container runtimes, such 
 2. Linux Namespaces: [https://en.wikipedia.org/wiki/Linux_namespaces](https://en.wikipedia.org/wiki/Linux_namespaces)
 3. Docker Container Network Namespace is Invisible: [https://www.baeldung.com/linux/docker-network-namespace-invisible](https://www.baeldung.com/linux/docker-network-namespace-invisible)
 4. `chroot`: [https://en.wikipedia.org/wiki/Chroot](https://en.wikipedia.org/wiki/Chroot)
+5. Dockerfile reference: [https://docs.docker.com/engine/reference/builder/](https://docs.docker.com/engine/reference/builder/)
 
 ## Additional Reading
 
 1. Building containers by hand using namespaces: The net namespace: [https://www.redhat.com/sysadmin/net-namespaces](https://www.redhat.com/sysadmin/net-namespaces)
+2. Basics of Container Isolation: [https://blog.devgenius.io/basics-of-container-isolation-5eabdb258409](https://blog.devgenius.io/basics-of-container-isolation-5eabdb258409)
 
-This article is heavily inspired from these 2 books:
+*This article is heavily inspired from these 2 books:*
 
 1. Alan Hohn -  The Book of Kubernetes: [https://www.amazon.com/Book-Kubernetes-Comprehensive-Container-Orchestration-ebook/dp/B09WJYZKHN](https://www.amazon.com/Book-Kubernetes-Comprehensive-Container-Orchestration-ebook/dp/B09WJYZKHN)
 2. Liz Rice - Container Security: Fundamental Technology Concepts that Protect Containerized Applications: [https://www.amazon.com/Container-Security-Fundamental-Containerized-Applications-ebook/dp/B088B9KKGC](https://www.amazon.com/Container-Security-Fundamental-Containerized-Applications-ebook/dp/B088B9KKGC)

@@ -1,6 +1,7 @@
 # Blog Posts
 
 - 2022
+    - October 16, 2022 - [Containers: Under the Hood](articles/containers-under-the-hood.md)
     - October 02, 2022 - [Electrify your NodeJS AWS Lambdas with Rust](articles/electrify-your-nodejs-aws-lambdas-with-rust.md)
     - September 14, 2022 - [Building Super Slim Containerized Lambdas on AWS](articles/building-super-slim-containerized-lambdas.md)
     - September 05, 2022 - [Running Serverless Lambdas with Rust on AWS](articles/running-serverless-lambdas-with-rust-aws.md)
