@@ -2,26 +2,26 @@
 
 ## Introduction
 
-Nowadays, in software engineering we take containers for granted. We rely on them on day-to-day work, we build highly available and highly scalable production environments with them. But, many of us, software engineers, are struggling to explain what containers fundamentally are. Usually, we point out that they are not virtual machines, which is true, but what are they then? In this article we will try to have a more in-depth understanding about what containers are, how do they work and how can we leverage them for building industry standard systems.
+Nowadays, in software engineering, we take containers for granted. We rely on them for day-to-day work, we build highly available and highly scalable production environments with them. But, many of us, software engineers, are struggling to understand and consequently what containers fundamentally are. Usually, when explaining to others, we point out that they are not virtual machines, which is true, but we struggle to precisely state what they are. In this article, we will try to have a more in-depth understanding of what containers are, how they work, and how can we leverage them for building industry-standard systems.
 
 ## Playground Set-Up
 
-To understand containers, we would want to play around some container runtimes. Docker is the most popular implementation of a container runtime, we will use that for this article, but there are several other implementations out there, for. example: Podman, LXC/LXD, rkt and many others.
+To understand containers, we would want to play around with some *container runtimes*. Docker is the most popular implementation of a container runtime, we will use that for this article. There are several other implementations out there, for example, Podman, LXC/LXD, rkt, and many others.
 
-We would want to use a Linux (Ubuntu) machine on which we can install Docker Engine following the steps from the [Docker documentation](https://docs.docker.com/engine/install/ubuntu/). We would want to specifically use Docker Engine and not Docker Desktop. Docker Desktop will use a virtual machine for the host, we don't want to have that machine for current our purposes.
+Moving on with our setup, we would want to use a Linux (Ubuntu) machine on which we can install Docker Engine following the steps from the [Docker documentation](https://docs.docker.com/engine/install/ubuntu/). We would want to specifically use Docker Engine and not Docker Desktop. Docker Desktop will use a virtual machine for the host, we don't want to have that virtual machine for our current purposes.
 
 ## Process Isolation
 
-Containers are not virtual machines. Despite having a their own hostname, filesystem, process space and networking, they are not VMs. They do not have a separate kernel, they cannot have separate kernel modules or device drives installed. They can have multiple processes, which are isolated from the host machine's running processes.
+Containers are not virtual machines (VMs). Despite having their own hostname, filesystem, process space, and networking, they are not VMs. They do not have a standalone kernel, and they cannot have separate kernel modules or device drives installed. They can have multiple processes, which are isolated from the host machine's running processes.
 
-On our Ubuntu machine, we can run the following command to get information about the kernel:
+On our Ubuntu host, we can run the following command to get information about the kernel:
 
 ```bash
 root@ip-172-31-24-119:~# uname -s -r
 Linux 5.15.0-1019-aws
 ```
 
-From the output we can see that the name of the kernel is `Linux`. Because I'm using an AWS EC2 machine, the release version of the kernel is `5.15.0-1019-aws`.
+From the output, we can see that the name of the kernel currently in use is `Linux` with the release version of the kernel `5.15.0-1019-aws` (The `aws` prefix comes from the fact that I'm using an EC2 machine on AWS).
 
 Let's output some more information about our Linux distribution:
 
@@ -75,9 +75,9 @@ It seems like we are connected to a different machine. But if we get information
 Linux 5.15.0-1019-aws
 ```
 
-We can notice that it is the same as for the host machine. We can see that the container and the Ubuntu host machine are sharing the kernel. Containers rely on the ability of the host operating system to isolate on program from another while allowing these programs to share resources between them such as CPU, memory, storage and networking resources. The is accomplished by a capability of Linux kernel, named [**namespaces**](https://en.wikipedia.org/wiki/Linux_namespaces).
+We can notice that it is the same as for the host machine. We can see that the container and the Ubuntu host machine are sharing the same kernel. Containers rely on the ability of the host operating system to isolate one program from another while allowing these programs to share resources between them such as CPU, memory, storage, and networking resources. This is accomplished by a capability of the Linux kernel, named [**namespaces**](https://en.wikipedia.org/wiki/Linux_namespaces).
 
-Linux namespaces are not new technology or recently added feature of the kernel, they have been available for many years. The role of a namespace is to isolate the processes running inside of it, so it should not be able to see things it shouldn't.
+Linux namespaces are not a new technology or a recently added feature of the kernel, they have been available for many years. The role of a namespace is to isolate the processes running inside of it, so it should not be able to see things it shouldn't.
 
 To see process namespaces in action with containers, we will use `containerd`. If we followed the installation link from above, we should have `containerd` installed with Docker Engine. This is because Docker uses `containerd` under the hood for the container runtime. A container runtime (container engine) provides low-level functionalities to execute containerized processes. To access `containerd`, we can use `ctr` command. For example, to check if it works correctly, we can run `ctr images ls`, which will get a list of images. At this point we most likely don't have any images, so we can get a `busybox` image using:
 
@@ -92,7 +92,7 @@ We can check again the existing images with `ctr images ls` which should list th
 ctr run -t --rm docker.io/library/busybox:latest v1
 ```
 
-This command will run the image in interactive mode, meaning that we will have a terminal to us from the image. Grabbing the list of currently running tasks with `ctr task ls` command, we should get something similar:
+This command will run the image in interactive mode, meaning that we will have a terminal to use from the image. Grabbing the list of currently running tasks with `ctr task ls` command, we should get something similar:
 
 ```
 TASK    PID     STATUS
@@ -130,11 +130,11 @@ root@ip-172-31-24-119:~# lsns | grep 1517
 
 ## Network Isolation
 
-`containerd` is using network namespaces to have network isolation and to simplify configuration. In a lot of cases our containers act as web servers. For being able to run a web server, we need to choose an network interface and port on which the server will listen on. In order to solve the issue of port collision (2 ore more processes listening on the same interface on the same port), container runtimes use virtual network interfaces.
+`containerd` is using network namespaces to have network isolation and to simplify configuration. In a lot of cases, our containers act as web servers. For being able to run a web server, we need to choose a network interface and port on which the server will listen on. To solve the issue of port collision (2 or more processes listening on the same interface on the same port), container runtimes use virtual network interfaces.
 
 If we would want to see the network namespace created by `containerd`, we will run into an issue. Unfortunately, [network namespaces created by `containerd` are invisible](https://www.baeldung.com/linux/docker-network-namespace-invisible). This means, if we execute `ip netns list` to list all the network namespaces present on our host machine, we most likely get no output. We can still get hold of the namespace if we do the following:
 
-1. Get the PID of the current running container:
+1. Get the PID of the currently running container:
 
 ```bash
 root@ip-172-31-24-119:~# ctr task ls
@@ -142,7 +142,7 @@ TASK    PID      STATUS
 v1      13744    RUNNING
 ```
 
-2. Create an empty file in `/var/run/netns` location with the container identifier (we will use the container PID for as the identifier):
+2. Create an empty file in `/var/run/netns` location with the container identifier (we will use the container PID as the identifier):
 
 ```
 mkdir -p /var/run/netns
@@ -187,9 +187,9 @@ Running `ip a` from inside the `busybox` container, we get similar output:
 
 ## Filesystem Isolation
 
-The idea of process isolation involves preventing a process seeing things it should not. In terms of files and folder, Linux provides filesystem permissions. The Linux kernel associates a owner and group to each file and folder, on top of that it manages read, write and execute permissions. This permissions system works well, although if a process manages to elevate, it could see things which probably it shouldn't.
+The idea of process isolation involves preventing a process from seeing things it should not. In terms of files and folders, Linux provides filesystem permissions. The Linux kernel associates an owner and group to each file and folder, on top of that it manages read, write and execute permissions. This permissions system works well, although if a process manages to elevate, it could see things that probably it shouldn't.
 
-A more advanced solution for isolation provided by a Linux kernel is to run a process in a isolated filesystem. This can be achieved by an approach known as [change root](https://en.wikipedia.org/wiki/Chroot). The `chroot` command changes the apparent root directory for the current running process and its children.
+A more advanced solution for isolation provided by a Linux kernel is to run a process in an isolated filesystem. This can be achieved by an approach known as [change root](https://en.wikipedia.org/wiki/Chroot). The `chroot` command changes the apparent root directory for the current running process and its children.
 
 For example, we can use download Alpine Linux inside a folder and run an isolated shell using `chroot`:
 
@@ -216,7 +216,7 @@ ssm-user@ip-172-31-24-119:~/alpine$ ls
 bin  dev  etc  home  lib  media  mnt  opt  proc  root  run  sbin  srv  sys  tmp  usr  var
 ```
 
-We can recognize this folders from any other Linux distribution. The `alpine` folder has the necessary resources to be used as root folder. We can run an isolated Alpine shell as follows:
+We can recognize these folders from any other Linux distribution. The `alpine` folder has the necessary resources to be used as the root folder. We can run an isolated Alpine shell as follows:
 
 ```bash
 ssm-user@ip-172-31-24-119:~/alpine$ cd ..
@@ -226,11 +226,11 @@ bin    dev    etc    home   lib    media  mnt    opt    proc   root   run    sbi
 / #
 ```
 
-Container runtimes, such as `containerd` (or Docker) implement a similar approach to `chroot`. Besides this, they provide a more practical way of to set up this filesystem isolation using **container images**. Container images are ready-to-use bundles which contain all the required files and folder for base, metadata (environment variables, arguments) and other executables.
+Container runtimes, such as `containerd` (or Docker) implement a similar approach to `chroot`. Besides this, they provide a more practical way of setting up this filesystem isolation using **container images**. Container images are ready-to-use bundles that contain all the required files and folders for the base, metadata (environment variables, arguments), and other executables.
 
 ## Building Container Images
 
-Before building a container image ourselves, let's step a little bit back and investigate how are other, well known images built. We will use docker to pull Apache httpd image and we will take it apart to see what does it contain.
+Before building a container image ourselves, let's step a little bit back and investigate how are other, well-known images built. We will use docker to pull Apache httpd image and we will take it apart to see what it contains.
 
 Let's pull the image from the Docker registry:
 
@@ -284,11 +284,11 @@ dr-xr-xr-x 176 root root    0 Oct 15 20:19 proc
 drwxr-xr-x   5 root root  360 Oct 15 20:19 dev
 ```
 
-The Apache http image we are using is based on a Debian base image. This means it has a filesystem similar to what we would expect from the Debian Linux distribution. It contains all the necessary files and folders which would be expected by the Apache web server to run correctly.
+The Apache http image we are using is based on a Debian base image. This means it has a filesystem similar to what we would expect from the Debian Linux distribution. It contains all the necessary files and folders which would be expected by the Apache webserver to run correctly.
 
-Also, if we take another look at the output of the `docker pull` command, we can see that a bunch if layers are downloaded. Moreover, some layers are skipped with the message that they already exist on our host machine. Container images are made up of layers. Layers can be shared between images. The reason why a layer was skipped is that I already have downloaded another image (`nginx`) on the host machine which is also based on Debian. Docker detected that the images share the same layer and it did not download it twice. Layers are used to save space and to speed up build and pulls/pushes. 
+Also, if we take another look at the output of the `docker pull` command, we can see that a bunch of layers are downloaded. Moreover, some layers are skipped with the message that they already exist on our host machine. Container images are made up of layers. Layers can be shared between images. The reason why a layer was skipped is that I already have downloaded another image (`nginx`) on the host machine which is also based on Debian. Docker detected that the images share the same layer and it did not download it twice. Layers are used to save space and to speed up the build and pulls/pushes. 
 
-Layers are created when a images are built. Usually we build images using other base images. For example, we use `httpd` and we copy our website on it, adding another layer on top of the base image. Base images also should come from somewhere, usually they are built from a minimal Linux filesystem. As another example, the Alpine Linux resources downloaded and used for `chroot`, could be used as base for a container image.
+Layers are created when images are built. Usually, we build images using other base images. For example, we use `httpd` and copy our website on it, adding another layer on top of the base image. Base images also should come from somewhere, usually, they are built from a minimal Linux filesystem. As another example, the Alpine Linux resources downloaded and used for `chroot`, could be used as the base for a container image.
 
 There are several ways to build images, the most popular would be the Docker approach with the usage of `Dockerfiles`. A minimal Dockerfile for using `httpd` as the base image would look like this:
 
@@ -299,7 +299,7 @@ COPY my-httpd.conf /usr/local/apache2/conf/httpd.conf
 COPY ./public-html/ /usr/local/apache2/htdocs/
 ```
 
-There are many possible commands that can be used when building Docker images. For more information, we would want to check out the [Docker documentation](https://docs.docker.com/engine/reference/builder/). Some widely used commands from a Dockerfile would be the following:
+Many possible commands can be used when building Docker images. For more information, we would want to check out the [Docker documentation](https://docs.docker.com/engine/reference/builder/). Some widely used commands from a Dockerfile would be the following:
 
 `FROM`: specifies the base image for the current build
 `ENV`: specifies an environment variable
@@ -310,7 +310,7 @@ There are many possible commands that can be used when building Docker images. F
 
 ## Conclusions
 
-In this article we have seen what containers are. They are not virtual machines, they are essentially a group of isolated processes with their own isolated filesystem and networking. They are sharing the kernel modules with the host machine. Because of these, they are lightweight, compared to fully fledged virtual machine. They can be spawn up and torn down quickly.
+In this article, we have seen what containers are. They are not virtual machines, they are essentially a group of isolated processes with their own isolated filesystem and networking. They are sharing the kernel modules with the host machine. Because of this, they are lightweight, compared to a fully-fledged virtual machine. They can be spawned up and torn down quickly.
 
 ## Links and References
 
