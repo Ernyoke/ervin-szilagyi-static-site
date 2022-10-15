@@ -1,4 +1,4 @@
-# Containers: How do they work?
+# Containers: Under the Hood
 
 ## Introduction
 
@@ -120,7 +120,7 @@ root@ip-172-31-24-119:~# lsns | grep 1517
 4026532283 net         1  1517 root            sh
 ```
 
-`containerd` is running five different types of namespaces for isolating processes. These are the following:
+`containerd` is running five different types of namespaces for isolating processes running in our `busybox` container. These are the following:
 
 - `mnt`: mount points;
 - `uts`: Unix time sharing;
@@ -128,7 +128,65 @@ root@ip-172-31-24-119:~# lsns | grep 1517
 - `pid`: process identifiers;
 - `net`: interfaces, routeing tables and firewalls. 
 
+## Network Isolation
+
+`containerd` is using network namespaces to have network isolation and to simplify configuration. In a lot of cases our containers act as web servers. For being able to run a web server, we need to choose an network interface and port on which the server will listen on. In order to solve the issue of port collision (2 ore more processes listening on the same interface on the same port), container runtimes use virtual network interfaces.
+
+If we would want to see the network namespace created by `containerd`, we will run into an issue. Unfortunately, [network namespaces created by `containerd` are invisible](https://www.baeldung.com/linux/docker-network-namespace-invisible). This means, if we execute `ip netns list` to list all the network namespaces present on our host machine, we most likely get no output. We can still get hold of the namespace if we do the following:
+
+1. Get the PID of the current running container:
+
+```bash
+root@ip-172-31-24-119:~# ctr task ls
+TASK    PID      STATUS
+v1      13744    RUNNING
+```
+
+2. Create an empty file in `/var/run/netns` location with the container identifier (we will use the container PID for as the identifier):
+
+```
+mkdir -p /var/run/netns
+touch /var/run/netns/13744
+```
+
+3. Bind the `net` process namespace to this file:
+
+```
+mount -o bind /proc/13744/ns/net /var/run/netns/13744
+```
+
+Now if we run `ip netns list`, we get the following:
+
+```bash
+root@ip-172-31-24-119:~# ip netns list
+13744
+```
+
+We also can look at the interfaces on the network namespace:
+
+```bash
+root@ip-172-31-24-119:~# ip netns exec 13744 ip addr list
+1: lo: <LOOPBACK,UP,LOWER_UP> mtu 65536 qdisc noqueue state UNKNOWN group default qlen 1000
+    link/loopback 00:00:00:00:00:00 brd 00:00:00:00:00:00
+    inet 127.0.0.1/8 scope host lo
+       valid_lft forever preferred_lft forever
+    inet6 ::1/128 scope host
+       valid_lft forever preferred_lft forever
+```
+
+Running `ip a` from inside the `busybox` container, we get similar output:
+
+```bash
+1: lo: <LOOPBACK,UP,LOWER_UP> mtu 65536 qdisc noqueue qlen 1000
+    link/loopback 00:00:00:00:00:00 brd 00:00:00:00:00:00
+    inet 127.0.0.1/8 scope host lo
+       valid_lft forever preferred_lft forever
+    inet6 ::1/128 scope host
+       valid_lft forever preferred_lft forever    
+```
+
 ## Links
 
 1. Install Docker Engine on Ubuntu - [https://docs.docker.com/engine/install/ubuntu/](https://docs.docker.com/engine/install/ubuntu/)
 2. Linux Namespaces - [https://en.wikipedia.org/wiki/Linux_namespaces](https://en.wikipedia.org/wiki/Linux_namespaces)
+3. Docker Container Network Namespace is Invisible: [https://www.baeldung.com/linux/docker-network-namespace-invisible](https://www.baeldung.com/linux/docker-network-namespace-invisible)
