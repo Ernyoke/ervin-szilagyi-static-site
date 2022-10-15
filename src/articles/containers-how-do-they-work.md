@@ -185,8 +185,64 @@ Running `ip a` from inside the `busybox` container, we get similar output:
        valid_lft forever preferred_lft forever    
 ```
 
-## Links
+## Filesystem Isolation
 
-1. Install Docker Engine on Ubuntu - [https://docs.docker.com/engine/install/ubuntu/](https://docs.docker.com/engine/install/ubuntu/)
-2. Linux Namespaces - [https://en.wikipedia.org/wiki/Linux_namespaces](https://en.wikipedia.org/wiki/Linux_namespaces)
+The idea of process isolation involves preventing a process seeing things it should not. In terms of files and folder, Linux provides filesystem permissions. The Linux kernel associates a owner and group to each file and folder, on top of that it manages read, write and execute permissions. This permissions system works well, although if a process manages to elevate, it could see things which probably it shouldn't.
+
+A more advanced solution for isolation provided by a Linux kernel is to run a process in a isolated filesystem. This can be achieved by an approach known as [change root](https://en.wikipedia.org/wiki/Chroot). The `chroot` command changes the apparent root directory for the current running process and its children.
+
+For example, we can use download Alpine Linux inside a folder and run an isolated shell using `chroot`:
+
+```bash
+ssm-user@ip-172-31-24-119:~$ ls
+ssm-user@ip-172-31-24-119:~$ mkdir alpine
+ssm-user@ip-172-31-24-119:~$ cd alpine
+ssm-user@ip-172-31-24-119:~/alpine$ curl -o alpine.tar.gz http://dl-cdn.alpinelinux.org/alpine/v3.16/releases/x86_64/alpine-minirootfs-3.16.0-x86_64.tar.gz
+  % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
+                                 Dload  Upload   Total   Spent    Left  Speed
+100 2649k  100 2649k    0     0  65.6M      0 --:--:-- --:--:-- --:--:-- 66.3M
+ssm-user@ip-172-31-24-119:~/alpine$ ls
+alpine.tar.gz
+```
+
+Now lets unpack the archive:
+
+```bash
+ssm-user@ip-172-31-24-119:~/alpine$ tar xf alpine.tar.gz
+ssm-user@ip-172-31-24-119:~/alpine$ ls
+alpine.tar.gz  bin  dev  etc  home  lib  media  mnt  opt  proc  root  run  sbin  srv  sys  tmp  usr  var
+ssm-user@ip-172-31-24-119:~/alpine$ rm alpine.tar.gz
+ssm-user@ip-172-31-24-119:~/alpine$ ls
+bin  dev  etc  home  lib  media  mnt  opt  proc  root  run  sbin  srv  sys  tmp  usr  var
+```
+
+We can recognize this folders from any other Linux distribution. The `alpine` folder has the necessary resources to be used as root folder. We can run an isolated Alpine shell as follows:
+
+```bash
+ssm-user@ip-172-31-24-119:~/alpine$ cd ..
+ssm-user@ip-172-31-24-119:~$ sudo chroot alpine sh
+/ # ls
+bin    dev    etc    home   lib    media  mnt    opt    proc   root   run    sbin   srv    sys    tmp    usr    var
+/ #
+```
+
+Essentially we are mimicking an Alpine container here. Container runtimes, such as `containerd` (or Docker) implement a similar approach to `chroot`. Besides this, they provide a more practical way of to set up this filesystem isolation using **container images**. Container images are ready-to-use bundles which contain all the required files and folder for base, metadata (environment variables, arguments) and other executables.
+
+## Dockerfile
+
+
+## Links and References
+
+1. Install Docker Engine on Ubuntu: [https://docs.docker.com/engine/install/ubuntu/](https://docs.docker.com/engine/install/ubuntu/)
+2. Linux Namespaces: [https://en.wikipedia.org/wiki/Linux_namespaces](https://en.wikipedia.org/wiki/Linux_namespaces)
 3. Docker Container Network Namespace is Invisible: [https://www.baeldung.com/linux/docker-network-namespace-invisible](https://www.baeldung.com/linux/docker-network-namespace-invisible)
+4. `chroot`: [https://en.wikipedia.org/wiki/Chroot](https://en.wikipedia.org/wiki/Chroot)
+
+## Additional Reading
+
+1. Building containers by hand using namespaces: The net namespace: [https://www.redhat.com/sysadmin/net-namespaces](https://www.redhat.com/sysadmin/net-namespaces)
+
+This article is heavily inspired from these 2 books:
+
+1. Alan Hohn -  The Book of Kubernetes: [https://www.amazon.com/Book-Kubernetes-Comprehensive-Container-Orchestration-ebook/dp/B09WJYZKHN](https://www.amazon.com/Book-Kubernetes-Comprehensive-Container-Orchestration-ebook/dp/B09WJYZKHN)
+2. Liz Rice - Container Security: Fundamental Technology Concepts that Protect Containerized Applications: [https://www.amazon.com/Container-Security-Fundamental-Containerized-Applications-ebook/dp/B088B9KKGC](https://www.amazon.com/Container-Security-Fundamental-Containerized-Applications-ebook/dp/B088B9KKGC)
