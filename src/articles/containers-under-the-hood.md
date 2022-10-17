@@ -230,6 +230,90 @@ bin    dev    etc    home   lib    media  mnt    opt    proc   root   run    sbi
 
 Container runtimes, such as `containerd` (or Docker) implement a similar approach to `chroot` for filesystem isolation. On top of that, they provide a more practical way of setup for the isolation by using **container images**. Container images are ready-to-use bundles that contain all the required files and folders for the base filesystem, metadata (environment variables, arguments), and other executables.
 
+## Resource Limiting
+
+Until now we've seen how we can have process, networking, and filesystem isolation. There is one piece missing from the puzzle: hardware resource limiting. Even if our processes our entirely isolated, they still can "see" the host's CPU, memory, networking, and storage. In the following lines, we will discuss how can we guarantee, that a container is only using the resource allocated to it.
+
+In the case of a Linux kernel the **scheduler** keeps a list of all the processes, from which it tracks all the ones that are ready to run and also how much time each process received. The scheduler is designed to be [fair](https://en.wikipedia.org/wiki/Completely_Fair_Scheduler), meaning it tries to give time to each process to run. It also accepts input regarding the priority of each process. 
+
+In terms of prioritization of processes, we can discuss processes about *real-time* and *non-real-time* policies. Real-time processes have to react fast ("in-real-time") to outside events, so these processes get a higher priority compared to non-real-time processes.
+
+We can use `ps` Linux command to see which process is running in real-time or non-real-time:
+
+```bash
+root@ip-172-31-19-81:~# ps -e -o pid,class,rtprio,ni,comm
+    PID CLS RTPRIO  NI COMMAND
+      1 TS       -   0 systemd
+      2 TS       -   0 kthreadd
+      3 TS       - -20 rcu_gp
+      4 TS       - -20 rcu_par_gp
+      5 TS       - -20 netns
+      ...
+     15 FF      99   - migration/0
+     16 FF      50   - idle_inject/0
+     17 TS       -   0 kworker/0:1-events
+      ...
+   1374 TS       -   0 bash
+   1385 TS       -   0 ps
+```
+
+In the output above we can take a look at the `CLS` column, we can have the following values:
+
+- `TS`: time-sharing, non-real-time policy
+- `FF`: FIFO (first in - first out), real-time policy
+- `RR`: round-robin, also real-time-policy
+
+In the `RTPRIO` and `NI` columns, we can see the priority of some processes. `RTPRIO` (real-time priority) applies only to real-time processes, while `NI` ("nice" level) applies to non-real-time processes and can have a value between -20 (least nice, highest priority) to 20 (nicest, lowest priority).
+
+Real-time processes are usually not computationally intensive, but when they need CPU, they need it immediately. For all real-time processes to get the CPU they require, the Linux kernel reserves slices of CPU time for each process. The ability to provide slices of CPU time to each process represents the basis of CPU resource isolation in the case of containers. This approach is preferred because one process can not influence the scheduler by requesting more processing time for certain computationally intensive tasks.
+
+To manage container use of CPU cores, Linux uses **control groups (`cgroups`)**. Control groups can do, even more, to cite [Wikipedia](https://en.wikipedia.org/wiki/Cgroups):
+
+> `cgroups` is a Linux kernel feature that limits, accounts for, and isolates the resource usage (CPU, memory, disk I/O, network, etc.) of a collection of processes.
+
+We can add processes to `cgroups`. After a process is in a `cgroup`, the kernel automatically applies the controls from that group.
+
+The creation and configuration of `cgroups` is handled through a specific
+kind of filesystem, which by default can be found under `/sys/fs/cgroup` path:
+
+```bash
+root@ip-172-31-19-81:/sys/fs/cgroup# ls -F -la
+total 0
+dr-xr-xr-x 11 root root 0 Oct 17 20:16 ./
+drwxr-xr-x  8 root root 0 Oct 17 20:16 ../
+-r--r--r--  1 root root 0 Oct 17 20:16 cgroup.controllers
+-rw-r--r--  1 root root 0 Oct 17 20:17 cgroup.max.depth
+-rw-r--r--  1 root root 0 Oct 17 20:17 cgroup.max.descendants
+-rw-r--r--  1 root root 0 Oct 17 20:16 cgroup.procs
+-r--r--r--  1 root root 0 Oct 17 20:17 cgroup.stat
+-rw-r--r--  1 root root 0 Oct 17 20:43 cgroup.subtree_control
+-rw-r--r--  1 root root 0 Oct 17 20:17 cgroup.threads
+-rw-r--r--  1 root root 0 Oct 17 20:17 cpu.pressure
+-r--r--r--  1 root root 0 Oct 17 20:17 cpu.stat
+-r--r--r--  1 root root 0 Oct 17 20:17 cpuset.cpus.effective
+-r--r--r--  1 root root 0 Oct 17 20:17 cpuset.mems.effective
+drwxr-xr-x  2 root root 0 Oct 17 20:17 dev-hugepages.mount/
+drwxr-xr-x  2 root root 0 Oct 17 20:17 dev-mqueue.mount/
+drwxr-xr-x  2 root root 0 Oct 17 20:16 init.scope/
+-rw-r--r--  1 root root 0 Oct 17 20:17 io.cost.model
+-rw-r--r--  1 root root 0 Oct 17 20:17 io.cost.qos
+-rw-r--r--  1 root root 0 Oct 17 20:17 io.pressure
+-rw-r--r--  1 root root 0 Oct 17 20:17 io.prio.class
+-r--r--r--  1 root root 0 Oct 17 20:17 io.stat
+-r--r--r--  1 root root 0 Oct 17 20:17 memory.numa_stat
+-rw-r--r--  1 root root 0 Oct 17 20:17 memory.pressure
+-r--r--r--  1 root root 0 Oct 17 20:17 memory.stat
+-r--r--r--  1 root root 0 Oct 17 20:17 misc.capacity
+drwxr-xr-x  2 root root 0 Oct 17 20:17 sys-fs-fuse-connections.mount/
+drwxr-xr-x  2 root root 0 Oct 17 20:17 sys-kernel-config.mount/
+drwxr-xr-x  2 root root 0 Oct 17 20:17 sys-kernel-debug.mount/
+drwxr-xr-x  2 root root 0 Oct 17 20:17 sys-kernel-tracing.mount/
+drwxr-xr-x 35 root root 0 Oct 17 20:43 system.slice/
+drwxr-xr-x  3 root root 0 Oct 17 20:20 user.slice/
+```
+
+Each of the entries from above defines the properties of a different resource. We can configure these properties by applying limits.
+
 ## Building Container Images
 
 Before building a container image ourselves, let's step a little bit back and investigate how are other, popular images built. We will use Docker to pull an `Apache httpd` image, which we will take it apart to see its content.
@@ -320,7 +404,9 @@ In this article, we have seen what containers are. They are not virtual machines
 2. Linux Namespaces: [https://en.wikipedia.org/wiki/Linux_namespaces](https://en.wikipedia.org/wiki/Linux_namespaces)
 3. Docker Container Network Namespace is Invisible: [https://www.baeldung.com/linux/docker-network-namespace-invisible](https://www.baeldung.com/linux/docker-network-namespace-invisible)
 4. `chroot`: [https://en.wikipedia.org/wiki/Chroot](https://en.wikipedia.org/wiki/Chroot)
-5. Dockerfile reference: [https://docs.docker.com/engine/reference/builder/](https://docs.docker.com/engine/reference/builder/)
+5. Completely Fair Scheduler: [https://en.wikipedia.org/wiki/Completely_Fair_Scheduler](https://en.wikipedia.org/wiki/Completely_Fair_Scheduler)
+6. `cgroups`: [https://en.wikipedia.org/wiki/Cgroups](https://en.wikipedia.org/wiki/Cgroups)
+7. Dockerfile reference: [https://docs.docker.com/engine/reference/builder/](https://docs.docker.com/engine/reference/builder/)
 
 ## Additional Reading
 
