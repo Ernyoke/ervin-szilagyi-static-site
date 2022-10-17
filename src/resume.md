@@ -10,7 +10,7 @@
 
 Experienced software engineer having a wide interest in distributed backend systems, software and cloud architecture, and DevOps practices.
 
-[AWS Community Builder](https://aws.amazon.com/developer/community/community-builders/) - Containers category since 2022.
+[AWS Community Builder](https://aws.amazon.com/developer/community/community-builders/community-builders-directory/?cb-cards.sort-by=item.additionalFields.cbName&cb-cards.sort-order=asc&awsf.builder-category=*all&awsf.location=*all&awsf.year=*all&cb-cards.q=ervin&cb-cards.q_operator=AND) - Containers category since 2022.
 
 ### Contact
 
