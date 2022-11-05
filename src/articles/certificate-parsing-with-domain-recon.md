@@ -2,31 +2,31 @@
 
 ## What is Certificate Parsing?
 
-Certificate parsing is a way of conducting web hacking reconnaissance when an attacker is targeting an organization. The goal is to gather information about the organization and widen the attack space by enumerating every possible domains and subdomains owned by a the organization. One methodology of enumerating domains and subdomains is to advantage of the SSL certificates used the organization to encrypt traffic. There are several online databases [crt.sh](https://crt.sh/) and [sslmate](https://sslmate.com/ct_search_api/) which can be used to enumerate certificates issued for an organization. Moreover, if we take a look at the `Subject Alternative Name` of a certificate, we might be able to enumerate other hostnames for which the certificate is used.
+Certificate parsing is a way of conducting web hacking reconnaissance when an attacker is targeting an organization. The goal is to gather information about the organization and widen the attack space by enumerating every possible domain and subdomain owned by an organization. One methodology of enumerating domains and subdomains is to take advantage of the SSL certificates used by the organization. There are several online databases like [crt.sh](https://crt.sh/) and [sslmate](https://sslmate.com/ct_search_api/) which can be used to enumerate certificates issued for domains owned by an organization. Moreover, if we take a look at the `Subject Alternative Name` of a certificate, we might be able to enumerate other hostnames for which the certificate is applied.
 
 ## What is `domain-recon`?
 
-[`domain-recon`](https://github.com/domain-recon/domain-recon-rs) is an open source command line tool written in Rust, which automates certificates parsing. It uses `[crt.sh](https://crt.sh/)` database to fetch information about certificates issued for a certain domains and all of its subdomains. It extracts all the hostnames from the `Common Name` and `Matching Identities` fields, the result of which will be a list of domains requiring further filtering. We can distinguish the following type of domains in the list:
+[`domain-recon`](https://github.com/domain-recon/domain-recon-rs) is an open-source command line tool written in Rust, which automates certificate parsing. It uses `[crt.sh](https://crt.sh/)` database to fetch information about certificates issued for a domain and all of its subdomains. It extracts all the hostnames from the `Common Name` and `Matching Identities` fields, the result of which will be a list of domains requiring further filtering. We can distinguish the following type of domains in the list:
 
-- registered domains which can be resolved as IPv4 or IPv6 IP addresses;
+- registered domains that can be resolved as IPv4 or IPv6 IP addresses;
 - unregistered domains;
-- wildcard domains, domain names which contain a wildcard character (`*`), for example: `*.example.com`. These type of domains are used that the issues certificate should be valid for all the subdomains.
+- wildcard domains, domain names which contain a wildcard character (`*`), for example: `*.example.com`. Wildcards are used to secure multiple subdomain names (hosts) pertaining to the same base domain.
 
-`domain-recon` filters out wildcard domains from the list and tries to do a domain resolution for each non-wildcard domain. It drops all the domain names which are not registered and displays a list only with the "valid" domain names.
+`domain-recon` filters out wildcard domains from the list and tries to do a domain resolution for each non-wildcard domain. It drops all the domain names which are not registered and it displays a list only with the "valid" domain names.
 
-In case of the wildcard domains, it will try to guess possible subdomains. This is accomplished by taking a [wordlist](https://github.com/domain-recon/domain-recon-rs/blob/main/words.txt) as an input and replacing the wildcards with entries from the list. In order to detect which domain names are registered, it tries to do a domain resolution for each new entry and displays a new list with the successful querries.
+In the case of the wildcard domains, it will try to guess possible subdomains. This is accomplished by taking a [wordlist](https://github.com/domain-recon/domain-recon-rs/blob/main/words.txt) as input and replacing the wildcards with entries from the list. To detect which domain names are registered, it tries to do a domain resolution for each new entry and displays a new list with the successful queries.
 
 ## Example of Usage
 
-The source code for `domain-recon` tool can be found on [GitHub](https://github.com/domain-recon/domain-recon-rs). Executables are built and released for all Linux, Mac and Windows operating systems and can be downloaded from the [releases](https://github.com/domain-recon/domain-recon-rs/releases).
+The source code for `domain-recon` tool can be found on [GitHub](https://github.com/domain-recon/domain-recon-rs). Executables are built and released for all Linux, Mac, and Windows operating systems and can be downloaded from the [releases](https://github.com/domain-recon/domain-recon-rs/releases).
 
-List all the domains and subdomains for dev.to:
+List all the domains and subdomains for `dev.to`:
 
 ```bash
 domain-recon -d dev.to -f words.txt
 ```
 
-Output of which will be something like this:
+The output of which will be something like this:
 
 ```bash
 Fetching certificates...
@@ -54,10 +54,10 @@ www.forem.com A 34.251.201.224, 54.194.170.100, 34.253.101.190
 www.dev.to A 188.114.97.13, 188.114.96.13
 ```
 
-We can omit expanding wildcards by not specifying a wordlist:
+We can omit to expand wildcards by not specifying a wordlist:
 
 ```bash
-domain-recon -d dev.to -f words.txt
+domain-recon -d dev.to
 ```
 
 Output:
@@ -95,7 +95,7 @@ $ domain-recon -d dev.to -f words.txt --plain | httpx -probe -sc -title -ip
 /_/ /_/\__/\__/ .___/_/|_|
              /_/              v1.2.5
 
-		projectdiscovery.io
+        projectdiscovery.io
 
 Use with caution. You are responsible for your actions.
 Developers assume no liability and are not responsible for any misuse or damage.
@@ -123,15 +123,15 @@ https://demo.forem.com [SUCCESS] [200] [Dunder Mifflin Community 📄] [3.19.109
 
 ## Limitations
 
-`domain-recon` can discover domain names which have public SSL certificates. Currently is scans only valid certificates, this can be easily changed to include invalid ones as well, but according to my experience, this is not as useful.
+`domain-recon` can discover domain names that have public SSL certificates. Currently, it scans only valid certificates, this can be easily changed to include invalid ones as well, but according to my experience, this is not as useful.
 
-Nowadays, most of the websites have an SSL certificates, including development and testing environments as well. It can be helpful for pain tester to scan for these environments. Obviously, it can not find environments without registered SSL certificates.
+Nowadays, most websites have SSL certificates, including development and testing environments as well. It can be helpful for a pen-tester to scan for these environments. Obviously, it can not find environments without registered SSL certificates.
 
-`domain-recon` currently uses Google, CloudFlare and Quad9 domain resolvers. By default it is set to use Google only, we can override this with `--dns_resolver` argument. We can also set to use multiple resolvers at the same time (`--dns_resolver="google,cloudflare,quad9"`). According to my experience, having only one resolver might invoke rate limiting if we are scanning a huge number of domains at the same time. Unfortunately, there are slowdowns with multiple resolvers as well. It relies on [`async-std-resolver`](https://docs.rs/async-std-resolver/latest/async_std_resolver/) crave for DNS resolution, a future improvement would be to configure the `async-std-resolver` correctly. Since it relies on async calls, we can run on errors related to having to many opened connections. This was kind of mitigated by limiting the DNS calls to a lower number, but this this could be further optimized.
+`domain-recon` currently uses Google, Cloudflare, and Quad9 domain resolvers. By default, it is set to use Google only, which we can override with `--dns_resolver` argument. We can also set to use multiple resolvers at the same time (`--dns_resolver="google,cloudflare,quad9"`). According to my experience, having only one resolver might invoke rate limiting if we are scanning a huge number of domains at the same time. Unfortunately, there are slowdowns with multiple resolvers as well. It relies on [`async-std-resolver`](https://docs.rs/async-std-resolver/latest/async_std_resolver/) crate for DNS resolution. A future improvement would be to optimize the usage of `async-std-resolver` to achieve better performance. Since it relies on async calls, we can run on errors related to having too many opened connections. This is somewhat mitigated by limiting the DNS calls to a lower number, but I'm sure there better ways to deal with it.
 
 ## Further Reading
 
-`domain-recon` tool was inspired from ["Bug Bounty Bootcamp: The Guide to Finding and Reporting Web Vulnerabilities"](https://www.amazon.com/Bug-Bounty-Bootcamp-Reporting-Vulnerabilities-ebook/dp/B08YK368Y3) book by [Vickie Li](https://vickieli.dev/about). It is great resource for anyone interested in web hacking and penetration testing.
+`domain-recon` tool was inspired by ["Bug Bounty Bootcamp: The Guide to Finding and Reporting Web Vulnerabilities"](https://www.amazon.com/Bug-Bounty-Bootcamp-Reporting-Vulnerabilities-ebook/dp/B08YK368Y3) book by [Vickie Li](https://vickieli.dev/about). It is a great resource for anyone interested in web hacking and penetration testing.
 
 ## Source Code and Contributing
 
