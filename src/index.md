@@ -6,14 +6,14 @@ Hi there!
 
 I'm Ervin, a software engineer with vast experience ranging from smaller, one-man projects to huge, distributed enterprise projects based on micro-services and event-driven architectures. In my time in the industry I raked up several IT certificates, which can be checked out in my [résumé](resume.md). 
 
-I am also an [AWS Community Builder](https://aws.amazon.com/developer/community/community-builders/community-builders-directory/?cb-cards.sort-by=item.additionalFields.cbName&cb-cards.sort-order=asc&awsf.builder-category=*all&awsf.location=*all&awsf.year=*all&cb-cards.q=ervin&cb-cards.q_operator=AND) since 2022.
+I am also an [AWS Community Builder](https://aws.amazon.com/developer/community/community-builders/) since 2022.
 
 In my free time I like to tinker with even more technology. I also enjoy reading, video-gaming and sometimes watching Netflix.
 
 # Latest Posts
 
 - 2022
-    - November 06, 2022 - [](articles/certificate-parsing-with-domain-recon)
+    - November 06, 2022 - [Certificate Parsing with `domain-recon`](articles/certificate-parsing-with-domain-recon)
     - October 16, 2022 - [Containers: Under the Hood](articles/containers-under-the-hood.md)
     - October 02, 2022 - [Electrify your NodeJS AWS Lambdas with Rust](articles/electrify-your-nodejs-aws-lambdas-with-rust.md)
     - September 14, 2022 - [Building Super Slim Containerized Lambdas on AWS](articles/building-super-slim-containerized-lambdas.md)
