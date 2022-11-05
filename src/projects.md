@@ -45,8 +45,10 @@ Imger is a collection of image processing algorithms implemented in Go. Example 
 
 `domain-recon` is a tool which can be used for reconnaissance. It helps extend the attack surface in case of a certain domain. It fetches all the available active certificates for a host and, using certificate parsing, extracts all available domains from "Common Name" and "Matching Identities" fields. Moreover, in a lot of cases it may encounter certificates issued for wildcard domains (example: `*.example.com`). For these domains, it can use a word list to extend these wildcards by filling in words from the list and generate potential subdomains.
 
-- Technologies used: Go
-- Source code: [https://github.com/Ernyoke/domain-recon](https://github.com/Ernyoke/domain-recon)
+Read the full article here: [Certificate Parsing with `domain-recon`](articles/certificate-parsing-with-domain-recon)
+
+- Technologies used: Rust
+- Source code: [https://github.com/domain-recon/domain-recon-rs](https://github.com/domain-recon/domain-recon-rs)
 
 ## Static Site Generator (ssg) + This Site
 
