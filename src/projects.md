@@ -26,29 +26,42 @@ The goal of this project was to procedurally generate 3D terrain using [Diamond-
 
 Imger is a collection of image processing algorithms implemented in Go. Example of algorithms:
 
-    - Grayscale
-    - Blend algorithms: AddScalarToGray, AddGray, AddGrayWeighted
-    - Thresholding algorithms: Binary, BinaryInv, Trunc, ToZero, ToZeroInv, Otsu
-    - Image padding: BorderConstant, BorderReplicate, BorderReflect
-    - Convolution
-    - Blur algorithms: Average - Box, Gaussian
-    - Edge detection algorithms: Sobel, Laplacian, Canny
-    - Resizing algorithms: Nearest Neighbour, Linear, Catmull-Rom, Lanczos
-    - Effects: Pixelate, Sepia, Emboss, Sharpen, Invert
-    - Transform algorithms: Rotate
-    - Generate Gradients: LinearGradient, SigmoidalGradient
+- Grayscale
+- Blend algorithms: AddScalarToGray, AddGray, AddGrayWeighted
+- Thresholding algorithms: Binary, BinaryInv, Trunc, ToZero, ToZeroInv, Otsu
+- Image padding: BorderConstant, BorderReplicate, BorderReflect
+- Convolution
+- Blur algorithms: Average - Box, Gaussian
+- Edge detection algorithms: Sobel, Laplacian, Canny
+- Resizing algorithms: Nearest Neighbour, Linear, Catmull-Rom, Lanczos
+- Effects: Pixelate, Sepia, Emboss, Sharpen, Invert
+- Transform algorithms: Rotate
+- Generate Gradients: LinearGradient, SigmoidalGradient
+
+Technology stack:
 
 - Technologies used: Go
 - Source code: [https://github.com/Ernyoke/Imger](https://github.com/Ernyoke/Imger)
 
-## Domain Recon
+## Recon Tools
+
+### *domain-recon*
 
 `domain-recon` is a tool which can be used for reconnaissance. It helps extend the attack surface in case of a certain domain. It fetches all the available active certificates for a host and, using certificate parsing, extracts all available domains from "Common Name" and "Matching Identities" fields. Moreover, in a lot of cases it may encounter certificates issued for wildcard domains (example: `*.example.com`). For these domains, it can use a word list to extend these wildcards by filling in words from the list and generate potential subdomains.
+
+![domain-recon in action](images/domain-recon.gif)
 
 Read the full article here: [Certificate Parsing with `domain-recon`](articles/certificate-parsing-with-domain-recon)
 
 - Technologies used: Rust
-- Source code: [https://github.com/domain-recon/domain-recon-rs](https://github.com/domain-recon/domain-recon-rs)
+- Source code: [https://github.com/recon-tools/domain-recon-rs](https://github.com/recon-tools/domain-recon-rs)
+
+### *simple-port-scanner (sps)*
+
+It is exactly what the name of the app says, a simple port scanner written in Rust. It is cross platform, it does TCP SYN or full TCP connect scans on hosts. It supports host discovery with TCP PING, ICMP PING and UDP PING. It is aiming to be simple to use and fast.
+
+- Technologies used: Rust
+- Source code: [https://github.com/recon-tools/simple-port-scanner-rs](https://github.com/recon-tools/simple-port-scanner-rs)
 
 ## Static Site Generator (ssg) + This Site
 
