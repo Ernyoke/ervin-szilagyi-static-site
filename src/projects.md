@@ -47,7 +47,7 @@ Technology stack:
 
 ### *domain-recon*
 
-`domain-recon` is a tool which can be used for reconnaissance. It helps extend the attack surface in case of a certain domain. It fetches all the available active certificates for a host and, using certificate parsing, extracts all available domains from "Common Name" and "Matching Identities" fields. Moreover, in a lot of cases it may encounter certificates issued for wildcard domains (example: `*.example.com`). For these domains, it can use a word list to extend these wildcards by filling in words from the list and generate potential subdomains.
+`domain-recon` is a tool which can be used for passive host reconnaissance. It helps extend the attack surface by fetching all the available active certificates for the host. Using certificate parsing, it extracts all available domains from "Common Name" and "Matching Identities" fields. Moreover, in a lot of cases, it may encounter certificates issued for wildcard domains (`example: *.example.com`). For these domains, it can use a word list to extend these wildcards by filling in words from the list and generate new potential subdomains.
 
 ![domain-recon in action](images/domain-recon.gif)
 
