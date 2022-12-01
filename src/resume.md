@@ -36,9 +36,15 @@ ___
 
 ### Accenture Romania
 
+- #### Software Product & Platform Engineering Associate Manager
+
+    *From August 2021 until the November 2022*
+
+    - I have no idea what I'm doing...
+
 - #### Software Product & Platform Engineering Specialist
 
-    *From August 2021 until the present*
+    *From August 2021 until the November 2022*
 
     - Cloud Engineer/Solutions Architect working mainly on AWS infrastructure in the automotive industry.
     - Assist in architect complex end-to-end cloud-based solutions for client needs. These solutions involved designing secure and usable APIs, and highly available and secure networks for the relevant services.
