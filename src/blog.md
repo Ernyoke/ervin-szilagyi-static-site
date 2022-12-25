@@ -1,7 +1,8 @@
 # Blog Posts
 
 - 2022
-    - November 06, 2022 - [Certificate Parsing with `domain-recon`](articles/certificate-parsing-with-domain-recon)
+    - December 26, 2022 - [AWS Lambda Extensions with Rust](articles/aws-lambda-extensions-with-rust.md)
+    - November 06, 2022 - [Certificate Parsing with `domain-recon`](articles/certificate-parsing-with-domain-recon.md)
     - October 16, 2022 - [Containers: Under the Hood](articles/containers-under-the-hood.md)
     - October 02, 2022 - [Electrify your NodeJS AWS Lambdas with Rust](articles/electrify-your-nodejs-aws-lambdas-with-rust.md)
     - September 14, 2022 - [Building Super Slim Containerized Lambdas on AWS](articles/building-super-slim-containerized-lambdas.md)
