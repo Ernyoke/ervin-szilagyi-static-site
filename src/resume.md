@@ -4,7 +4,7 @@
 
 ---
 
-<img align="right" style="padding:1em" src="images/small.jpg">
+<img align="right" style="padding:1em" src="images/small.jpeg">
 
 ## About Me
 
