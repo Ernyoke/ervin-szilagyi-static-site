@@ -11,7 +11,8 @@ I am also an [AWS Community Builder](https://aws.amazon.com/developer/community/
 In my free time I like to tinker with even more technology. I also enjoy reading, video-gaming and sometimes watching Netflix.
 
 # Latest Posts
-
+- 2023
+    - January 21, 2023 - [About OCP Exams](articles/about-ocp-exams.md)
 - 2022
     - December 26, 2022 - [AWS Lambda Extensions with Rust](articles/aws-lambda-extensions-with-rust.md)
     - November 06, 2022 - [Certificate Parsing with `domain-recon`](articles/certificate-parsing-with-domain-recon.md)
