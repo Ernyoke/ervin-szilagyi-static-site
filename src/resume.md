@@ -167,6 +167,9 @@ ___
 
 ## Certifications
 
+- **Oracle Certified Professional: Java SE 17 Developer**
+    - since January 2023
+    - Badge: [verify](https://catalog-education.oracle.com/pls/certview/sharebadge?id=41EBAA12010D28FC38171A53C685CD1445389E2BF5E8FCA2E4EE694B673E21D7)
 - **Oracle Certified Professional: Java SE 11 Developer**
     - since January 2021
     - Badge: [verify](https://www.credly.com/badges/d24ba586-7589-488b-ac86-2b5ae49e994a/public_url)
