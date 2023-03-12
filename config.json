@@ -3,16 +3,23 @@
     "destination": "ernyoke.github.io",
     "baseHref": "https://ervinszilagyi.dev",
     "meta": {
-      "og:title": "Ervin Szilágyi - Personal site",
-      "og:image": "images/glider-banner.jpg",
-      "og:description": "Personal web page and blog.",
-      "og:url": "https://ervinszilagyi.dev"
+        "og:title": "Ervin Szilágyi - Personal site",
+        "og:image": "images/glider-banner.jpg",
+        "og:description": "Personal web page and blog.",
+        "og:url": "https://ervinszilagyi.dev"
     },
-    "default_frame": "frame.html",
     "frames": [
-      {
-        "folder": "./articles",
-        "frame": "article_frame.html"
-      }
+        {
+            "file": "src/index.md",
+            "frame": "src/index_frame.html"
+        },
+        {
+            "file": "src/articles/*.md",
+            "frame": "src/articles/article_frame.html"
+        },
+        {
+            "file": "*.md",
+            "frame": "src/frame.html"
+        }
     ]
-  }
+}
