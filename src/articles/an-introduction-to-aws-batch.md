@@ -265,7 +265,7 @@ resource "aws_batch_job_queue" "job_queue" {
 }
 ```
 
-The definition of a queue is pretty simple, it needs a name, a state (enabled, disabled), a priority and the compute environment to which it can schedule jobs. Next, we will need a job.
+The definition of a queue is pretty simple, it needs a name, a state (enabled, disabled), a priority, and the compute environment to which it can schedule jobs. Next, we will need a job.
 
 ### Job Definition
 
@@ -569,11 +569,11 @@ We can push the image to the ECR repository following the push command from the 
 
 ## Triggering a Batch Job
 
-There are several ways of triggering a batch job, since they are available as EventBridge targets. For our example, we could have a scheduled EventBridge rule which will invoke the job periodically.
+There are several ways to trigger batch jobs since they are available as EventBridge targets. For our example, we could have a scheduled EventBridge rule which could be invoked periodically.
 
-In order to make my life more easier and being able to debug the job, I opted to create a simple [Step Function](https://docs.aws.amazon.com/step-functions/latest/dg/welcome.html) that will invoke the batch job and report on its status.
+To make my life easier and be able to debug my job, I opted to create a simple [Step Function](https://docs.aws.amazon.com/step-functions/latest/dg/welcome.html).
 
-Step Functions are state machines used for serverless orchestration. They are a perfect candidate for invoking a batch job, offering a way to easily see and monitor the running state of it and last but not least report the finishing status of it. We can implement the states of a Step Function using in a JSON document.
+Step Functions are state machines used for serverless orchestration. They are a perfect candidate for managing running jobs, offering a way to easily see and monitor the running state of the job and report the finishing status of it. We can implement the states of a Step Function using some JSON code.
 
 ```lang-hcl
 resource "aws_sfn_state_machine" "sfn_state_machine" {
@@ -602,7 +602,7 @@ EOF
 }
 ```
 
-Like everything in AWS, Step Functions require an IAM role as well. The IAM role and the function implementation as well is similar to the example given in the [AWS documentation](https://docs.aws.amazon.com/step-functions/latest/dg/batch-job-notification.html).
+Like everything in AWS, Step Functions require an IAM role as well. The IAM role used in our example is similar to what is given in the [AWS documentation](https://docs.aws.amazon.com/step-functions/latest/dg/batch-job-notification.html).
 
 ```lang-hcl
 data "aws_iam_policy_document" "sfn_policy" {
@@ -642,7 +642,7 @@ resource "aws_iam_role_policy_attachment" "sfn_policy_attachment" {
 }
 ```
 
-Like with other IAM roles we've encountered during our project, the AWS documentation may seem a little bit lacking about the policies themselves. Out Step Function is required to be able to listen to and create CloudWatch Events, this is why it is necessary to have the policy for the `rule/StepFunctionsGetEventsForBatchJobsRule` resource (see [this StackOverflow answer](https://docs.aws.amazon.com/AmazonCloudWatch/latest/events/WhatIsCloudWatchEvents.html)).
+Out Step Function is required to be able to listen to and create CloudWatch Events, this is why it is necessary to have the policy for the `rule/StepFunctionsGetEventsForBatchJobsRule` resource (see [this StackOverflow answer](https://docs.aws.amazon.com/AmazonCloudWatch/latest/events/WhatIsCloudWatchEvents.html)).
 
 Ultimately we will end up with this simplistic Step Function with only one intermediary state:
 
@@ -650,9 +650,9 @@ Ultimately we will end up with this simplistic Step Function with only one inter
 
 ## Conclusions
 
-In this article we've seen an fairly in-depth introduction about AWS Batch service. We also talked about when to use AWS Batch and when to consider other services that might be more adequate for the task in hand. We have also build a batch job from the scratch using Terraform, Docker and Python.
+In this article, we've seen a fairly in-depth introduction to the AWS Batch service. We also talked about when to use AWS Batch and when to consider other services that might be more adequate for the task at hand. We have also built a batch job from the scratch using Terraform, Docker, and Python.
 
-In conclusion, I think AWS Batch is a powerful service and it gets over shadowed by other offerings targeting more specific tasks. While the service itself abstracts away the provisioning of the underlying infrastructure, the whole setup process of a batch job can be still challenging and the official documentation in many cases lacks clarity. Ultimately, if we don't want to get in the weeds, we can rely on a [Terraform module](https://registry.terraform.io/modules/terraform-aws-modules/batch/aws/latest) maintained by the community.
+In conclusion, I think AWS Batch is a powerful service and it gets overshadowed by other offerings targeting more specific tasks. While the service itself abstracts away the provisioning of the underlying infrastructure, the whole setup process of a batch job can be still challenging and the official documentation in many cases lacks clarity. Ultimately, if we don't want to get in the weeds, we can rely on a [Terraform module](https://registry.terraform.io/modules/terraform-aws-modules/batch/aws/latest) maintained by the community to spin up a batch job.
 
 The source code used for this article can also be found on GitHub at this URL: [https://github.com/Ernyoke/aws-batch-demo](https://github.com/Ernyoke/aws-batch-demo).
 
