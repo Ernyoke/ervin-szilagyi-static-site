@@ -1,6 +1,7 @@
 # Blog Posts
 
 - 2023
+    - March 19, 2023 - [An Introduction to AWS Batch](articles/an-introduction-to-aws-batch.md)
     - January 21, 2023 - [About OCP Exams](articles/about-ocp-exams.md)
 - 2022
     - December 26, 2022 - [AWS Lambda Extensions with Rust](articles/aws-lambda-extensions-with-rust.md)
