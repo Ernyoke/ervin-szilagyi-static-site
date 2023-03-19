@@ -79,6 +79,10 @@ For the movies dataset, we will use one from [Kaggle](https://www.kaggle.com/dat
 
 Also, one may question the usage of a batch job considering the fact the data size might not be that big. A Lambda function may be sufficient to accomplish the same goal. While this is true, for the sake of this exercise we will stick to batch.
 
+A simplified architectural diagram of what we would want to accomplish can be seen here:
+
+![Import Movie Ratings Architecture](img-an-introduction-to-aws-batch/aws-batch.png)
+
 Creating a batch job requires the provisioning of several of its components. To make this exercise redoable, we will use Terraform for the infrastructure. The upcoming steps can be accomplished from AWS console as well or with the usage of other IaC tools such as CDK. Terraform is mainly a preference of mine.
 
 ### Compute Environment
@@ -563,10 +567,100 @@ Note: the platform flag is important if we are using a MacBook M1, since AWS Bat
 
 We can push the image to the ECR repository following the push command from the AWS console.
 
-## How do we Trigger our Batch Job
+## Triggering a Batch Job
 
+There are several ways of triggering a batch job, since they are available as EventBridge targets. For our example, we could have a scheduled EventBridge rule which will invoke the job periodically.
 
+In order to make my life more easier and being able to debug the job, I opted to create a simple [Step Function](https://docs.aws.amazon.com/step-functions/latest/dg/welcome.html) that will invoke the batch job and report on its status.
+
+Step Functions are state machines used for serverless orchestration. They are a perfect candidate for invoking a batch job, offering a way to easily see and monitor the running state of it and last but not least report the finishing status of it. We can implement the states of a Step Function using in a JSON document.
+
+```lang-hcl
+resource "aws_sfn_state_machine" "sfn_state_machine" {
+  name     = "${var.module_name}-sfn"
+  role_arn = aws_iam_role.sfn_role.arn
+
+  definition = <<EOF
+{
+    "Comment": "Run AWS Batch job",
+    "StartAt": "Submit Batch Job",
+    "TimeoutSeconds": 3600,
+    "States": {
+        "Submit Batch Job": {
+            "Type": "Task",
+            "Resource": "arn:aws:states:::batch:submitJob.sync",
+            "Parameters": {
+                "JobName": "ImportMovies",
+                "JobQueue": "${aws_batch_job_queue.job_queue.arn}",
+                "JobDefinition": "${aws_batch_job_definition.job_definition.arn}"
+            },
+            "End": true
+        }
+    }
+}
+EOF
+}
+```
+
+Like everything in AWS, Step Functions require an IAM role as well. The IAM role and the function implementation as well is similar to the example given in the [AWS documentation](https://docs.aws.amazon.com/step-functions/latest/dg/batch-job-notification.html).
+
+```lang-hcl
+data "aws_iam_policy_document" "sfn_policy" {
+  statement {
+    actions = [
+      "batch:SubmitJob",
+      "batch:DescribeJobs",
+      "batch:TerminateJob"
+    ]
+
+    resources = ["*"]
+
+    effect = "Allow"
+  }
+
+  statement {
+    actions = [
+      "events:PutTargets",
+      "events:PutRule",
+      "events:DescribeRule"
+    ]
+
+    resources = ["arn:aws:events:${var.aws_region}:${data.aws_caller_identity.current.account_id}:rule/StepFunctionsGetEventsForBatchJobsRule"]
+
+    effect = "Allow"
+  }
+}
+
+resource "aws_iam_policy" "sfn_policy" {
+  name   = "${var.module_name}-sfn-policy"
+  policy = data.aws_iam_policy_document.sfn_policy.json
+}
+
+resource "aws_iam_role_policy_attachment" "sfn_policy_attachment" {
+  role       = aws_iam_role.sfn_role.name
+  policy_arn = aws_iam_policy.sfn_policy.arn
+}
+```
+
+Like with other IAM roles we've encountered during our project, the AWS documentation may seem a little bit lacking about the policies themselves. Out Step Function is required to be able to listen to and create CloudWatch Events, this is why it is necessary to have the policy for the `rule/StepFunctionsGetEventsForBatchJobsRule` resource (see [this StackOverflow answer](https://docs.aws.amazon.com/AmazonCloudWatch/latest/events/WhatIsCloudWatchEvents.html)).
+
+Ultimately we will end up with this simplistic Step Function with only one intermediary state:
+
+![Step Function](img-an-introduction-to-aws-batch/step-function.png)
+
+## Conclusions
+
+In this article we've seen an fairly in-depth introduction about AWS Batch service. We also talked about when to use AWS Batch and when to consider other services that might be more adequate for the task in hand. We have also build a batch job from the scratch using Terraform, Docker and Python.
+
+In conclusion, I think AWS Batch is a powerful service and it gets over shadowed by other offerings targeting more specific tasks. While the service itself abstracts away the provisioning of the underlying infrastructure, the whole setup process of a batch job can be still challenging and the official documentation in many cases lacks clarity. Ultimately, if we don't want to get in the weeds, we can rely on a [Terraform module](https://registry.terraform.io/modules/terraform-aws-modules/batch/aws/latest) maintained by the community.
+
+The source code used for this article can also be found on GitHub at this URL: [https://github.com/Ernyoke/aws-batch-demo](https://github.com/Ernyoke/aws-batch-demo).
 
 ## References
 
-1. [AWS Batch Documentation](https://docs.aws.amazon.com/batch/latest/userguide/what-is-batch.html)
+1. AWS Batch Documentation: [https://docs.aws.amazon.com/batch/latest/userguide/what-is-batch.html](https://docs.aws.amazon.com/batch/latest/userguide/what-is-batch.html)
+2. Terraform Documentation - Compute Environment: [https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/batch_compute_environment#service_role](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/batch_compute_environment#service_role)
+3. Stateful Firewall: [https://en.wikipedia.org/wiki/Stateful_firewall](https://en.wikipedia.org/wiki/Stateful_firewall)
+4. AWS Batch - Execution IAM Role: [https://docs.aws.amazon.com/batch/latest/userguide/execution-IAM-role.html](https://docs.aws.amazon.com/batch/latest/userguide/execution-IAM-role.html)
+5. AWS Batch - Container Properties: [https://docs.aws.amazon.com/batch/latest/APIReference/API_ContainerProperties.html](https://docs.aws.amazon.com/batch/latest/APIReference/API_ContainerProperties.html)
+6. Step Functions: [https://docs.aws.amazon.com/step-functions/latest/dg/welcome.html](https://docs.aws.amazon.com/step-functions/latest/dg/welcome.html)
