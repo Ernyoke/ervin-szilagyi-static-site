@@ -37,6 +37,8 @@ AWS Batch supports multi-node parallel jobs that span on multiple EC2 instances.
 
 In addition to multi-node jobs, we can enhance the underlying EC2 instances with graphics cards (GPUs). This can be useful for operations relying on parallel processing, such as deep learning.
 
+AWS Batch also supports applications that use EFA. An [Elastic Fabric Adapter (EFA)](https://docs.aws.amazon.com/batch/latest/userguide/efa.html) is a network device used to accelerate High Performance Computing (HPC) applications using Message Passing Interface (MPI). Moreover, if we would like even better performance for parallel computing, we can have direct GPU-to-GPU communication via [NVIDIA Collective Communication Library (NCCL)](https://aws.amazon.com/blogs/compute/optimizing-deep-learning-on-p3-and-p3dn-with-efa-part-1/), which is also built on EFA.
+
 ## AWS Batch - When to use it?
 
 AWS Batch is recommended for any task which requires a lot of time/memory/computing power to run. This can be a vague statement, so let's see some examples of use cases for AWS Batch:
@@ -664,3 +666,5 @@ The source code used for this article can also be found on GitHub at this URL: [
 4. AWS Batch - Execution IAM Role: [https://docs.aws.amazon.com/batch/latest/userguide/execution-IAM-role.html](https://docs.aws.amazon.com/batch/latest/userguide/execution-IAM-role.html)
 5. AWS Batch - Container Properties: [https://docs.aws.amazon.com/batch/latest/APIReference/API_ContainerProperties.html](https://docs.aws.amazon.com/batch/latest/APIReference/API_ContainerProperties.html)
 6. Step Functions: [https://docs.aws.amazon.com/step-functions/latest/dg/welcome.html](https://docs.aws.amazon.com/step-functions/latest/dg/welcome.html)
+7. EFA for AWS Batch: [https://docs.aws.amazon.com/batch/latest/userguide/efa.html](https://docs.aws.amazon.com/batch/latest/userguide/efa.html)
+8. Optimizing deep learning on P3 and P3dn with EFA: [https://docs.aws.amazon.com/batch/latest/userguide/efa.html](https://docs.aws.amazon.com/batch/latest/userguide/efa.html)
