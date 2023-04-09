@@ -63,6 +63,13 @@ It is exactly what the name of the app says, a simple port scanner written in Ru
 - Technologies used: Rust
 - Source code: [https://github.com/recon-tools/simple-port-scanner-rs](https://github.com/recon-tools/simple-port-scanner-rs)
 
+### *cert-ripper*
+
+`cert-ripper` is tool for retrieving the certificate chain for a hostname or URL. The certificates from the chain can be simply printed out in an OpenSSL format to the standard output, or they can be saved in a folder in different formats (PEM, TXT - OpenSSL, DER, etc.)
+
+- Technologies used: Go
+- Source code: [https://github.com/recon-tools/cert-ripper-go](https://github.com/recon-tools/cert-ripper-go)
+
 ## Static Site Generator (ssg) + This Site
 
 At a certain point I wanted to have my own personal site where I can share and document what I am working on and my own experience about tech. My idea was to write everything in simple markdown files and transform them to static HTML pages. Although there are many existing solutions out there, I found everything either way too complicated to learn or having way more overhead than what I need. I decided to write a simple Python script, which can transform markdown pages to HTML. That is how `ssg` was born. It is opinionated, developed mainly for this site and not intended to be used by everyone else. But it works for me, which is good enough...
