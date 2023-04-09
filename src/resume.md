@@ -10,7 +10,7 @@
 
 Experienced software engineer having a wide interest in distributed backend systems, software and cloud architecture, and DevOps practices.
 
-I am an [AWS Community Builder](https://aws.amazon.com/developer/community/community-builders/community-builders-directory/?cb-cards.sort-by=item.additionalFields.cbName&cb-cards.sort-order=asc&awsf.builder-category=*all&awsf.location=*all&awsf.year=*all&cb-cards.q=ervin&cb-cards.q_operator=AND) - Containers Category since 2022.
+I am an [AWS Community Builder](https://aws.amazon.com/developer/community/community-builders/community-builders-directory/?cb-cards.sort-by=item.additionalFields.cbName&cb-cards.sort-order=asc&awsf.builder-category=*all&awsf.location=*all&awsf.year=*all&cb-cards.q=ervin&cb-cards.q_operator=AND) in the Containers Category.
 
 I consider myself an advocate of open-source technology. Some of my open-source projects I worked on in the past can be found on [Projects](projects.md) page and on my [GitHub](https://github.com/Ernyoke). 
 
