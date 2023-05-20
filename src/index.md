@@ -12,6 +12,7 @@ In my free time I like to tinker with even more technology. I also enjoy reading
 
 # Latest Posts
 - 2023
+    - May 22, 2023 - [Expose our AWS REST API with a Public Custom Domain](articles/expose-our-aws-rest-api-with-a-public-custom-domain.md)
     - March 19, 2023 - [An Introduction to AWS Batch](articles/an-introduction-to-aws-batch.md)
     - January 21, 2023 - [About OCP Exams](articles/about-ocp-exams.md)
 - 2022
