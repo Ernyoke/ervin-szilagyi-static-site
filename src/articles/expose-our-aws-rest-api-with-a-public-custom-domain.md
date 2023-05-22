@@ -37,11 +37,11 @@ First, we need to create a *public* Hosted Zone for the domain. We should make s
 
 In AWS Console we should go to Route 53 -> Hosted Zones -> press the Create Hosted Zone button. We should be directed to the following form, where we have to fill in our domain name:
 
-![Create Hosted Zone form](img-expose-your-aws-rest-api-with-a-public-custom-domain/create-hosted-zone.png)
+![Create Hosted Zone Form](img-expose-your-aws-rest-api-with-a-public-custom-domain/create-hosted-zone.png)
 
 We should make sure we select that we want to create a *public* Hosted Zone and we should press "Create Hosted Zone". After a few moments our hosted zone should be created:
 
-![Hosted Zone created with records](img-expose-your-aws-rest-api-with-a-public-custom-domain/records.png)
+![Hosted Zone created with Records](img-expose-your-aws-rest-api-with-a-public-custom-domain/records.png)
 
 We should notice that we have a `SOA` record and an `NS` record with 4 nameservers. What we have to do next, is go to our domain registrar (in my case is GoDaddy) and change the nameservers of our domain:
 
@@ -73,11 +73,23 @@ One way to make us of this domain is to create a subdomain under it and delegate
 
 As before, in the AWS console we should go to Route53 service and create a *public* Hosted Zone for `rest.ervinszilagyi.dev`:
 
-...
+![Create Hosted Zone for the Sub-Domain](img-expose-your-aws-rest-api-with-a-public-custom-domain/create-subdomain.png)
+
+When the Hosted Zone is created, we get the NS record with 4 namespaces:
+
+![Hosted Zone Created for the Sub-Domain with Records](img-expose-your-aws-rest-api-with-a-public-custom-domain/subdomain-records.png)
+
+We have to grab the domains names from the NS record and navigating to GoDaddy for our domain we have to create 4 NS records with each domain name:
+
+![NS Records GoDaddy](img-expose-your-aws-rest-api-with-a-public-custom-domain/ns-records-godaddy.png)
+
+After we save the records, we should wait a little for the changes to take effect. We can use the `dig +short NS tutorial.ervinszilagyi.dev` command to check if our changes are in place. 
+
+At this point we have seen how to set up nameservers for both a domain and sub-domain. Moving on with this tutorial, I will use the Hosted Zone crated for `ervinszilagyi.xyz`. Everything we do with this Hosted Zone will be applicable for the Hosted Zone created for the sub-domain as well.
 
 ## Request a TLS certificate for our domain
 
-TLS certificates are used for secure connectivity between our machine and a remote server in order to make use of the HTTPS protocol. Our plan for this tutorial is to expose a REST API, for which we would use API Gateway. API Gateway will also require a valid certificate for the basepath mapping (will see in detail bellow).
+TLS certificates are used for secure connectivity between our machine and a remote server in order to make use of the HTTPS protocol. Our plan for this tutorial is to expose a REST API, for which we would use API Gateway. API Gateway will also require a valid certificate for the base path mapping (will see in detail bellow).
 
 It is very easy to request a certificate with the usage of AWS Certificate Manager. What we have to do is to go into the AWS certificate manager portal from our AWS console and press the request button. We will be redirected to this page:
 
@@ -240,7 +252,7 @@ We should be able to see three `A` records with IP addresses. This IP addresses 
 
 We should also do a `curl` request to see if we get a response from our REST API:
 
-```
+```bash
 $ curl https://ervinszilagyi.xyz
 {
     "statusCode": 200,
@@ -250,7 +262,56 @@ $ curl https://ervinszilagyi.xyz
 
 We can notice that we get the same answer as above. This is great! We have our REST API exposed publicly using our custom domain.
 
+## Automating all these steps
+
+We can agree on the fact that there are many steps to be taken to have a custom domain set up for a REST API. Fortunately, we can have our infrastructure set up really quickly if we write some Terraform code with all these changes. This is exactly what I've done, making the code available for anybody on Github: [https://github.com/Ernyoke/aws-custom-domain-r53](https://github.com/Ernyoke/aws-custom-domain-r53)
+
+This repository contains 3 Terraform projects (let's call them stacks):
+
+```bash
+tree
+.
+├── README.md
+├── api-gw
+│   ├── api-gw.tf
+│   ├── main.tf
+│   ├── output.tf
+│   ├── route53.tf
+│   ├── terraform.tf
+│   └── variables.tf
+├── certificate
+│   ├── main.tf
+│   ├── output.tf
+│   ├── terraform.tf
+│   └── variables.tf
+└── route53
+    ├── main.tf
+    ├── output.tf
+    ├── terraform.tf
+    └── variables.tf
+```
+
+The reason for this project structure is that setting up the nameservers on GoDaddy (or any other registrar) takes time and manual steps. So, if we would like to deploy the Terraform code from my project, first thing we should do is to go inside the `route53` folder and run the following commands:
+
+```bash
+terraform init
+terraform apply
+```
+
+After it is rolled out successfully, we should see the nameservers in the output. We should copy this nameservers and do the change for our domain in the registrar. We have to make sure our changes are propagated before moving on to the next step.
+
+The `certificate` stack creates the TLS certificate and the validation for it. For the validation to succeed, our domain should point to the correct nameservers. The commands for the terraform rollout are the same as we've seen with teh `route53` stack. 
+
+Last, we should roll out our REST API. After that is successfull, we should be able to test it with a `curl` request.
+
+## Conclusions
+
+Setting up a custom domain for a REST API in AWS is not the most complicated procedure we could imagine. Also, we may not do this on a daily basis, so I think it is a good idea to have it documented. This tutorial should serve as a documentation for anybody who is wishing to do the setup for a freshly purchased domain.
+
 ## References
 
+Working with hosted zones: [https://docs.aws.amazon.com/Route53/latest/DeveloperGuide/hosted-zones-working-with.html](https://docs.aws.amazon.com/Route53/latest/DeveloperGuide/hosted-zones-working-with.html)
+DNS Records: [https://en.wikipedia.org/wiki/Domain_Name_System#Resource_records](https://en.wikipedia.org/wiki/Domain_Name_System#Resource_records)
+Choosing between alias and non-alias records: [https://docs.aws.amazon.com/Route53/latest/DeveloperGuide/resource-record-sets-choosing-alias-non-alias.html](https://docs.aws.amazon.com/Route53/latest/DeveloperGuide/resource-record-sets-choosing-alias-non-alias.html)
 Amazon API Gateway - [https://aws.amazon.com/api-gateway/](https://aws.amazon.com/api-gateway/)
 
