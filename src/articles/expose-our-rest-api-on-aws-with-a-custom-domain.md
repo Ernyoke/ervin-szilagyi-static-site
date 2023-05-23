@@ -1,4 +1,4 @@
-# Expose our AWS REST API with a Public Custom Domain
+# Expose our REST API on AWS with a Custom Domain
 
 DNS is hard.
 
@@ -38,19 +38,19 @@ First, we need to create a *public* Hosted Zone in Route 53. We should make sure
 
 In AWS Console we should go to Route 53 -> Hosted Zones -> and press the Create Hosted Zone button. We should be directed to the following form, where we have to fill in our domain name:
 
-![Create Hosted Zone Form](img-expose-your-aws-rest-api-with-a-public-custom-domain/create-hosted-zone.png)
+![Create Hosted Zone Form](img-expose-our-rest-api-on-aws-with-a-custom-domain/create-hosted-zone.png)
 
 We should make sure we select that we want to create a *public* Hosted Zone and we should press "Create Hosted Zone". After a few moments, our hosted zone should be up:
 
-![Hosted Zone created with Records](img-expose-your-aws-rest-api-with-a-public-custom-domain/records.png)
+![Hosted Zone created with Records](img-expose-our-rest-api-on-aws-with-a-custom-domain/records.png)
 
 We can notice that we have an `SOA` record and an `NS` record with 4 nameservers. What we have to do next, is to go to our domain registrar (in my case GoDaddy) and change the nameservers for the domain we purchased:
 
-![GoDaddy Nameservers](img-expose-your-aws-rest-api-with-a-public-custom-domain/change-nameservers.png)
+![GoDaddy Nameservers](img-expose-our-rest-api-on-aws-with-a-custom-domain/change-nameservers.png)
 
 We should copy the nameservers from the Hosted Zone and add them to the GoDaddy settings:
 
-![Set Nameservers](img-expose-your-aws-rest-api-with-a-public-custom-domain/set-nameservers.png)
+![Set Nameservers](img-expose-our-rest-api-on-aws-with-a-custom-domain/set-nameservers.png)
 
 GoDaddy will warn us that changing the nameservers can be dangerous. We should not worry about these alert messages, our nameservers are managed by AWS, we should be fine.
 
@@ -76,15 +76,15 @@ One way to make use of this domain is to create a subdomain under it and delegat
 
 As before, in the AWS console we should go to Route53 service and create a *public* Hosted Zone for `rest.ervinszilagyi.dev`:
 
-![Create Hosted Zone for the Sub-Domain](img-expose-your-aws-rest-api-with-a-public-custom-domain/create-subdomain.png)
+![Create Hosted Zone for the Sub-Domain](img-expose-our-rest-api-on-aws-with-a-custom-domain/create-subdomain.png)
 
 When the Hosted Zone is created, we get the NS record with 4 namespaces:
 
-![Hosted Zone Created for the Sub-Domain with Records](img-expose-your-aws-rest-api-with-a-public-custom-domain/subdomain-records.png)
+![Hosted Zone Created for the Sub-Domain with Records](img-expose-our-rest-api-on-aws-with-a-custom-domain/subdomain-records.png)
 
 We have to grab the values from the NS record and navigate to GoDaddy. Selecting our purchased domain we have to create 4 NS records, one for each value:
 
-![NS Records GoDaddy](img-expose-your-aws-rest-api-with-a-public-custom-domain/ns-records-godaddy.png)
+![NS Records GoDaddy](img-expose-our-rest-api-on-aws-with-a-custom-domain/ns-records-godaddy.png)
 
 After we save the records, we should wait a little for the changes to take effect. We can use the `dig +short NS tutorial.ervinszilagyi.dev` command to check if our changes are in place. 
 
@@ -96,23 +96,23 @@ TLS certificates are used for secure connectivity between our machine and a remo
 
 It is very easy to request a certificate with the usage of AWS Certificate Manager. We just have to go into the AWS certificate manager portal from our AWS console and press the request button. We will be redirected to this page:
 
-![Request TLS Certificate](img-expose-your-aws-rest-api-with-a-public-custom-domain/request-cert-1.png)
+![Request TLS Certificate](img-expose-our-rest-api-on-aws-with-a-custom-domain/request-cert-1.png)
 
 We need a public certificate, so we have to choose this option. Moving on, we will reach this page:
 
-![Request TLS Certificate with Details](img-expose-your-aws-rest-api-with-a-public-custom-domain/request-cert-2)
+![Request TLS Certificate with Details](img-expose-our-rest-api-on-aws-with-a-custom-domain/request-cert-2)
 
 We have to introduce our domain and we should select `DNS validation` option. We have to be able to prove somehow that the domain name for which the certificate is issued is ours. With `DNS validation`, AWS will create a record in our Hosted Zone with this proof. For the validation record to be created we may also have to press the `Create Record` button after the certificate was issued:
 
-![Create Record for Certificate Validation](img-expose-your-aws-rest-api-with-a-public-custom-domain/cert-status-create-record.png)
+![Create Record for Certificate Validation](img-expose-our-rest-api-on-aws-with-a-custom-domain/cert-status-create-record.png)
 
 If we go to our Hosted Zone, we should see the newly created record:
 
-![Certificate Validation Record](img-expose-your-aws-rest-api-with-a-public-custom-domain/cert-status-record-created.png)
+![Certificate Validation Record](img-expose-our-rest-api-on-aws-with-a-custom-domain/cert-status-record-created.png)
 
 We should make sure we have this record and our certificate validation status is green:
 
-!!!!!!!!!!!!!!!!!!!!!!!!!!
+![Certificate Validation Status](img-expose-our-rest-api-on-aws-with-a-custom-domain/certificate-status.png)
 
 ## Create a REST API
 
@@ -120,33 +120,33 @@ The next step we would want to accomplish is to create the REST API itself. Ther
 
 To create a REST API Gateway, from the console we should go to the API Gateway Service and select REST API:
 
-![Create REST API](img-expose-your-aws-rest-api-with-a-public-custom-domain/create-rest-api.png)
+![Create REST API](img-expose-our-rest-api-on-aws-with-a-custom-domain/create-rest-api.png)
 
 It is important to select the option with the *public* REST API. A private API Gateway is accessible only internally from a VPC. Since we want our API to be reachable from the internet, we need a public API Gateway.
 
 By pressing *Build* we are redirected to a page where we should select the protocol for our API Gateway (we want REST, not WebSocket) and we have to give a name to our API Gateway.
 
-![Create REST API settings](img-expose-your-aws-rest-api-with-a-public-custom-domain/api-gw-protocol-and-settings.png)
+![Create REST API settings](img-expose-our-rest-api-on-aws-with-a-custom-domain/api-gw-protocol-and-settings.png)
 
 After we press *Create API*, we should have our API Gateway up and running. We still need to add a method to handle incoming requests.
 
-![Create REST Method](img-expose-your-aws-rest-api-with-a-public-custom-domain/create-method.png)
+![Create REST Method](img-expose-our-rest-api-on-aws-with-a-custom-domain/create-method.png)
 
 A method is essentially an HTTP REST verb (GET, POST, PUT, etc.) that does exactly what we would expect, it handles REST API GET/POST/PUT/etc. requests. We can notice that methods can be nested inside resources creating more complex and lengthy request paths. For now, we will keep our path simple and we will place our method in the root of our API Gateway. If we press the tick symbol (✓), we are redirected to a page where we have to set the integration for our method. This is essentially a backend. We will build a *Mock* backend for this tutorial, which means that our API Gateway will respond with a static response each time. This is enough for our tutorial, but we can imagine that instead of a mock we could have a Lambda function or a microservice here in a production environment.
 
-![Create GET Mock](img-expose-your-aws-rest-api-with-a-public-custom-domain/create-mock.png)
+![Create GET Mock](img-expose-our-rest-api-on-aws-with-a-custom-domain/create-mock.png)
 
 Sadly, at this point, our mock will respond with no content. To have a response body, we need to set up an integration response. To do this we have to select *Integration Response*:
 
-![Create Integration Response](img-expose-your-aws-rest-api-with-a-public-custom-domain/integration-response.png)
+![Create Integration Response](img-expose-our-rest-api-on-aws-with-a-custom-domain/integration-response.png)
 
 From there we press the drop-down for the 200 response:
 
-![Create Integration Response - Edit 200 Response](img-expose-your-aws-rest-api-with-a-public-custom-domain/integration-response-edit-200.png)
+![Create Integration Response - Edit 200 Response](img-expose-our-rest-api-on-aws-with-a-custom-domain/integration-response-edit-200.png)
 
 Then we add a Mapping Template with the content type of `application/json`:
 
-![Create Integration Response - Create Content Type](img-expose-your-aws-rest-api-with-a-public-custom-domain/integration-respone-app-json.png)
+![Create Integration Response - Create Content Type](img-expose-our-rest-api-on-aws-with-a-custom-domain/integration-respone-app-json.png)
 
 If we press the tickmark, we should be able to input a response body for the template. We should paste in the following JSON:
 
@@ -157,21 +157,21 @@ If we press the tickmark, we should be able to input a response body for the tem
 }
 ```
 
-![Create Integration Response - Template](img-expose-your-aws-rest-api-with-a-public-custom-domain/integration-response-template.png)
+![Create Integration Response - Template](img-expose-our-rest-api-on-aws-with-a-custom-domain/integration-response-template.png)
 
 We should press *Save*. 
 
 Now we also have to **Deploy** our API Gateway. If we go to the *Actions* button, we will get a dropdown menu, from where we should select *Deploy API*:
 
-![Deploy API Dropdown](img-expose-your-aws-rest-api-with-a-public-custom-domain/deploy-api-dropdown.png)
+![Deploy API Dropdown](img-expose-our-rest-api-on-aws-with-a-custom-domain/deploy-api-dropdown.png)
 
 We are asked to create a new Stage. We can name it however we want, so we will simply choose `dev`. 
 
-![Create Deployment Stage](img-expose-your-aws-rest-api-with-a-public-custom-domain/deploy-api-stage.png)
+![Create Deployment Stage](img-expose-our-rest-api-on-aws-with-a-custom-domain/deploy-api-stage.png)
 
 We press *Deploy* and our REST API should be live. We also get a generated URL, where we can test our GET method with a `curl` request.
 
-![Grab the generated URL](img-expose-your-aws-rest-api-with-a-public-custom-domain/deployment-url.png)
+![Grab the generated URL](img-expose-our-rest-api-on-aws-with-a-custom-domain/deployment-url.png)
 
 ```bash
 $ curl https://ppwm7oataf.execute-api.us-east-1.amazonaws.com/dev
@@ -189,7 +189,7 @@ At this point our REST API is live, but it only responds to the URL generated by
 
 In the API Gateway console, on the top-left, we should select *Create domain names*. This will take us to another page, where we most likely should not have any domain configured yet in the list. We should press the *Create* button
 
-![Create Custom Domain](img-expose-your-aws-rest-api-with-a-public-custom-domain/create-custom-domain.png)
+![Create Custom Domain](img-expose-our-rest-api-on-aws-with-a-custom-domain/create-custom-domain.png)
 
 We are taken to another page, again. Here we have to make sure we introduce carefully the following information:
 
@@ -197,15 +197,15 @@ We are taken to another page, again. Here we have to make sure we introduce care
 - We have a Regional API Gateway, we should leave that option as it is
 - For the certificate, we should select the one for our domain. We created a certificate before (*Request a TLS certificate for our domain* step). We should be able to see this certificate in the list.
 
-![Create Domain Name Settings](img-expose-your-aws-rest-api-with-a-public-custom-domain/create-domain-name.png)
+![Create Domain Name Settings](img-expose-our-rest-api-on-aws-with-a-custom-domain/create-domain-name.png)
 
 After pressing create, shortly we are taken to another page. What we have to do now is to set up base path mapping. We tested our API before with the generated URL (`https://ppwm7oataf.execute-api.us-east-1.amazonaws.com/dev` in my case). We want to configure our API to use our custom domain (`ervinszilagyi.xzy` in my case). To accomplish this, we should select the second tab (*API mappings*) and press the *Configure API mappings* button:
 
-![Configure API Mappings](img-expose-your-aws-rest-api-with-a-public-custom-domain/configure-api-mappings.png)
+![Configure API Mappings](img-expose-our-rest-api-on-aws-with-a-custom-domain/configure-api-mappings.png)
 
 We should select our API and the stage (`dev` in my case). For the *Path* we should leave it blank.
 
-![Configure Mapping](img-expose-your-aws-rest-api-with-a-public-custom-domain/configure-mapping.png)
+![Configure Mapping](img-expose-our-rest-api-on-aws-with-a-custom-domain/configure-mapping.png)
 
 This is it. We have the mapping set up. This is good, but at this point, we are still not finished yet. We need one more step to be able to have our REST API exposed with our custom domain. We need to create a record for our API in our Hosted Zone.
 
@@ -217,13 +217,13 @@ We want to create an `A` record that is an *Alias*. We explained in the beginnin
 
 For the *Route traffic* section, we need to select `Alias to API Gateway` and we will have to find our API Gateway in the region in which we are working.
 
-![Configure Alias Record for the API Gateway](img-expose-your-aws-rest-api-with-a-public-custom-domain/create-alias-record.png)
+![Configure Alias Record for the API Gateway](img-expose-our-rest-api-on-aws-with-a-custom-domain/create-alias-record.png)
 
 We leave the routing policy at the default simple routing option.
 
 After pressing create, we should see our `A` record inside our Hosted Zone:
 
-![API Gateway A Record](img-expose-your-aws-rest-api-with-a-public-custom-domain/api-gw-a-record.png)
+![API Gateway A Record](img-expose-our-rest-api-on-aws-with-a-custom-domain/api-gw-a-record.png)
 
 To check if our domain works, we can use the `dig` command:
 
