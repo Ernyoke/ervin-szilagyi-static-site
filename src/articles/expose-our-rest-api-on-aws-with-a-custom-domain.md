@@ -100,7 +100,7 @@ It is very easy to request a certificate with the usage of AWS Certificate Manag
 
 We need a public certificate, so we have to choose this option. Moving on, we will reach this page:
 
-![Request TLS Certificate with Details](img-expose-our-rest-api-on-aws-with-a-custom-domain/request-cert-2)
+![Request TLS Certificate with Details](img-expose-our-rest-api-on-aws-with-a-custom-domain/request-cert-2.png)
 
 We have to introduce our domain and we should select `DNS validation` option. We have to be able to prove somehow that the domain name for which the certificate is issued is ours. With `DNS validation`, AWS will create a record in our Hosted Zone with this proof. For the validation record to be created we may also have to press the `Create Record` button after the certificate was issued:
 
