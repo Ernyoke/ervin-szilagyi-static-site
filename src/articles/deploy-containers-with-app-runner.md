@@ -103,5 +103,5 @@ In the case of App Runner we pay per hour depending on how much vCPU and memory 
 
 ## References:
 
-1. AWS App Runner: [https://aws.amazon.com/apprunner/](https://aws.amazon.com/apprunner/)
-2. GitHub - aws-apprunner-nest-example project: [https://github.com/Ernyoke/aws-apprunner-nest-example](https://github.com/Ernyoke/aws-apprunner-nest-example)
+1. AWS App Runner: [AWS docs](https://aws.amazon.com/apprunner/)
+2. GitHub - aws-apprunner-nest-example project: [GitHub](https://github.com/Ernyoke/aws-apprunner-nest-example)

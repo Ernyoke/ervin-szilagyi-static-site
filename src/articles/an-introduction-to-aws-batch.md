@@ -660,11 +660,11 @@ The source code used for this article can also be found on GitHub at this URL: [
 
 ## References
 
-1. AWS Batch Documentation: [https://docs.aws.amazon.com/batch/latest/userguide/what-is-batch.html](https://docs.aws.amazon.com/batch/latest/userguide/what-is-batch.html)
-2. Terraform Documentation - Compute Environment: [https://registry.terraform.io/providers/hashicorp/aws/lat...](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/batch_compute_environment#service_role)
-3. Stateful Firewall: [https://en.wikipedia.org/wiki/Stateful_firewall](https://en.wikipedia.org/wiki/Stateful_firewall)
-4. AWS Batch - Execution IAM Role: [https://docs.aws.amazon.com/batch/latest/userguide/execution-IAM-role.html](https://docs.aws.amazon.com/batch/latest/userguide/execution-IAM-role.html)
-5. AWS Batch - Container Properties: [https://docs.aws.amazon.com/batch/latest/APIReference/API_ContainerPro...](https://docs.aws.amazon.com/batch/latest/APIReference/API_ContainerProperties.html)
-6. Step Functions: [https://docs.aws.amazon.com/step-functions/latest/dg/welcome.html](https://docs.aws.amazon.com/step-functions/latest/dg/welcome.html)
-7. EFA for AWS Batch: [https://docs.aws.amazon.com/batch/latest/userguide/efa.html](https://docs.aws.amazon.com/batch/latest/userguide/efa.html)
-8. Optimizing deep learning on P3 and P3dn with EFA: [https://docs.aws.amazon.com/batch/latest/userguide/efa.html](https://docs.aws.amazon.com/batch/latest/userguide/efa.html)
+1. AWS Batch Documentation: [AWS docs](https://docs.aws.amazon.com/batch/latest/userguide/what-is-batch.html)
+2. Terraform Documentation - Compute Environment: [Terraform docs](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/batch_compute_environment#service_role)
+3. Stateful Firewall: [WikiPedia](https://en.wikipedia.org/wiki/Stateful_firewall)
+4. AWS Batch - Execution IAM Role: [AWS docs](https://docs.aws.amazon.com/batch/latest/userguide/execution-IAM-role.html)
+5. AWS Batch - Container Properties: [AWS docs](https://docs.aws.amazon.com/batch/latest/APIReference/API_ContainerProperties.html)
+6. Step Functions: [AWS docs](https://docs.aws.amazon.com/step-functions/latest/dg/welcome.html)
+7. EFA for AWS Batch: [AWS docs](https://docs.aws.amazon.com/batch/latest/userguide/efa.html)
+8. Optimizing deep learning on P3 and P3dn with EFA: [AWS docs](https://docs.aws.amazon.com/batch/latest/userguide/efa.html)

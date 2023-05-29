@@ -118,6 +118,6 @@ In this article, we've seen how we can have a graceful shutdown for Lambda funct
 
 ## References:
 
-1. Best practices for working with AWS Lambda functions: [https://docs.aws.amazon.com/lambda/latest/dg/best-practices.html](https://docs.aws.amazon.com/lambda/latest/dg/best-practices.html)
-2. GitHub - aws-samples/graceful-shutdown-with-aws-lambda: [https://github.com/aws-samples/graceful-shutdown-with-aws-lambda](https://github.com/aws-samples/graceful-shutdown-with-aws-lambda)
-3. Using Lambda Insights in Amazon CloudWatch: [https://docs.aws.amazon.com/lambda/latest/dg/monitoring-insights.html](https://docs.aws.amazon.com/lambda/latest/dg/monitoring-insights.html)
+1. Best practices for working with AWS Lambda functions: [AWS docs](https://docs.aws.amazon.com/lambda/latest/dg/best-practices.html)
+2. GitHub - aws-samples/graceful-shutdown-with-aws-lambda: [GitHub](https://github.com/aws-samples/graceful-shutdown-with-aws-lambda)
+3. Using Lambda Insights in Amazon CloudWatch: [AWS docs](https://docs.aws.amazon.com/lambda/latest/dg/monitoring-insights.html)

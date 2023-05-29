@@ -329,10 +329,10 @@ Probably not. While Rust is speedy if we are throwing computationally intensive 
 
 ## Links and References
 
-1. Lambda runtimes: [https://docs.aws.amazon.com/lambda/latest/dg/lambda-runtimes.html](https://docs.aws.amazon.com/lambda/latest/dg/lambda-runtimes.html)
-2. Rust Runtime for AWS Lambda: [https://aws.amazon.com/blogs/opensource/rust-runtime-for-aws-lambda/](https://aws.amazon.com/blogs/opensource/rust-runtime-for-aws-lambda/)
-3. cargo-lambda: [https://www.cargo-lambda.info/guide/what-is-cargo-lambda.html](https://www.cargo-lambda.info/guide/what-is-cargo-lambda.html)
-4. cross: [https://github.com/cross-rs/cross](https://github.com/cross-rs/cross)
-5. Container Image Support: [https://aws.amazon.com/blogs/aws/new-for-aws-lambda-container-image-support](https://aws.amazon.com/blogs/aws/new-for-aws-lambda-container-image-support)
-6. Use multi-stage builds: [https://docs.docker.com/develop/develop-images/multistage-build](https://docs.docker.com/develop/develop-images/multistage-build)
+1. Lambda runtimes: [AWS docs](https://docs.aws.amazon.com/lambda/latest/dg/lambda-runtimes.html)
+2. Rust Runtime for AWS Lambda: [AWS blogs](https://aws.amazon.com/blogs/opensource/rust-runtime-for-aws-lambda/)
+3. cargo-lambda: [cargo-lambda docs](https://www.cargo-lambda.info/guide/what-is-cargo-lambda.html)
+4. cross: [GitHub](https://github.com/cross-rs/cross)
+5. Container Image Support: [AWS blogs](https://aws.amazon.com/blogs/aws/new-for-aws-lambda-container-image-support)
+6. Use multi-stage builds: [Docker docs](https://docs.docker.com/develop/develop-images/multistage-build)
 7. Unbounded Spigot Algorithms for the Digits of PI: [http://www.cs.ox.ac.uk/jeremy.gibbons/publications/spigot.pdf](http://www.cs.ox.ac.uk/jeremy.gibbons/publications/spigot.pdf)

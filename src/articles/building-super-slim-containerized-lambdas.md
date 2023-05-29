@@ -145,8 +145,8 @@ In certain cases we might want to have larger images with a bunch of tools, an o
 
 ## Links and References
 
-1. Running Serverless Lambdas with Rust on AWS: [https://ervinszilagyi.dev/articles/running-serverless-lambdas-with-rust-aws.html](https://ervinszilagyi.dev/articles/running-serverless-lambdas-with-rust-aws.html) 
-2. "Distroless" Container Images - [https://github.com/GoogleContainerTools/distroless](https://github.com/GoogleContainerTools/distroless)
-3. Distroless Docker: Containerizing Apps, not VMs - Matthew Moore - [https://youtu.be/lviLZFciDv4](https://youtu.be/lviLZFciDv4)
-4. Optimizing Lambda functions packaged as container images: [https://aws.amazon.com/blogs/compute/optimizing-lambda-functions-packaged-as-container-images](https://aws.amazon.com/blogs/compute/optimizing-lambda-functions-packaged-as-container-images)
-5. Creating Effective Docker Images: [https://www.youtube.com/watch?v=vlS5EiapiII](https://www.youtube.com/watch?v=vlS5EiapiII)
+1. Running Serverless Lambdas with Rust on AWS: [ervinszilagyi.dev](https://ervinszilagyi.dev/articles/running-serverless-lambdas-with-rust-aws.html) 
+2. "Distroless" Container Images - [GitHub](https://github.com/GoogleContainerTools/distroless)
+3. Distroless Docker: Containerizing Apps, not VMs - Matthew Moore - [YouTube](https://youtu.be/lviLZFciDv4)
+4. Optimizing Lambda functions packaged as container images: [AWS blogs](https://aws.amazon.com/blogs/compute/optimizing-lambda-functions-packaged-as-container-images)
+5. Creating Effective Docker Images: [YouTube](https://www.youtube.com/watch?v=vlS5EiapiII)

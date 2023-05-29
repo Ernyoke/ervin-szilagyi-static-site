@@ -400,13 +400,13 @@ In this article, we have seen what containers are. They are not virtual machines
 
 ## Links and References
 
-1. Install Docker Engine on Ubuntu: [https://docs.docker.com/engine/install/ubuntu/](https://docs.docker.com/engine/install/ubuntu/)
-2. Linux Namespaces: [https://en.wikipedia.org/wiki/Linux_namespaces](https://en.wikipedia.org/wiki/Linux_namespaces)
-3. Docker Container Network Namespace is Invisible: [https://www.baeldung.com/linux/docker-network-namespace-invisible](https://www.baeldung.com/linux/docker-network-namespace-invisible)
-4. `chroot`: [https://en.wikipedia.org/wiki/Chroot](https://en.wikipedia.org/wiki/Chroot)
-5. Completely Fair Scheduler: [https://en.wikipedia.org/wiki/Completely_Fair_Scheduler](https://en.wikipedia.org/wiki/Completely_Fair_Scheduler)
-6. `cgroups`: [https://en.wikipedia.org/wiki/Cgroups](https://en.wikipedia.org/wiki/Cgroups)
-7. Dockerfile reference: [https://docs.docker.com/engine/reference/builder/](https://docs.docker.com/engine/reference/builder/)
+1. Install Docker Engine on Ubuntu: [Docker docs](https://docs.docker.com/engine/install/ubuntu/)
+2. Linux Namespaces: [Wikipedia](https://en.wikipedia.org/wiki/Linux_namespaces)
+3. Docker Container Network Namespace is Invisible: [baeldung.com](https://www.baeldung.com/linux/docker-network-namespace-invisible)
+4. `chroot`: [Wikipedia](https://en.wikipedia.org/wiki/Chroot)
+5. Completely Fair Scheduler: [Wikipedia](https://en.wikipedia.org/wiki/Completely_Fair_Scheduler)
+6. `cgroups`: [Wikipedia](https://en.wikipedia.org/wiki/Cgroups)
+7. Dockerfile reference: [Docker docs](https://docs.docker.com/engine/reference/builder/)
 
 ## Additional Reading
 
@@ -415,5 +415,5 @@ In this article, we have seen what containers are. They are not virtual machines
 
 *This article is heavily inspired by these 2 books:*
 
-1. Alan Hohn -  The Book of Kubernetes: [https://www.amazon.com/Book-Kubernetes-Comprehensive-Container-Orchestration-ebook/dp/B09WJYZKHN](https://www.amazon.com/Book-Kubernetes-Comprehensive-Container-Orchestration-ebook/dp/B09WJYZKHN)
-2. Liz Rice - Container Security: Fundamental Technology Concepts that Protect Containerized Applications: [https://www.amazon.com/Container-Security-Fundamental-Containerized-Applications-ebook/dp/B088B9KKGC](https://www.amazon.com/Container-Security-Fundamental-Containerized-Applications-ebook/dp/B088B9KKGC)
+1. Alan Hohn -  The Book of Kubernetes: [amazon.com](https://www.amazon.com/Book-Kubernetes-Comprehensive-Container-Orchestration-ebook/dp/B09WJYZKHN)
+2. Liz Rice - Container Security: Fundamental Technology Concepts that Protect Containerized Applications: [amazon.com](https://www.amazon.com/Container-Security-Fundamental-Containerized-Applications-ebook/dp/B088B9KKGC)

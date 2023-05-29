@@ -432,9 +432,9 @@ The code for this project with instructions to deploy everything can be found on
 
 ## References
 
-1. Fluent Bit Manual: [https://docs.fluentbit.io/manual](https://docs.fluentbit.io/manual)
-2. Fluent Bit Output Plugins: [https://docs.fluentbit.io/manual/pipeline/outputs](https://docs.fluentbit.io/manual/pipeline/outputs)
-3. Custom log routing: [https://docs.aws.amazon.com/AmazonECS/latest/developerguide/using_firelens.html](https://docs.aws.amazon.com/AmazonECS/latest/developerguide/using_firelens.html)
-4. Sidecar pattern: [https://docs.microsoft.com/en-us/azure/architecture/patterns/sidecar](https://docs.microsoft.com/en-us/azure/architecture/patterns/sidecar)
-5. Example of task definitions for Fluent Bit: [https://docs.aws.amazon.com/AmazonECS/latest/userguide/firelens-example-taskdefs.html](https://docs.aws.amazon.com/AmazonECS/latest/userguide/firelens-example-taskdefs.html)
-6. Fluent Bit configuration file: [https://docs.fluentbit.io/manual/v/1.2/configuration/file](https://docs.fluentbit.io/manual/v/1.2/configuration/file)
+1. Fluent Bit Manual: [Fluentbit docs](https://docs.fluentbit.io/manual)
+2. Fluent Bit Output Plugins: [Fluentbit docs](https://docs.fluentbit.io/manual/pipeline/outputs)
+3. Custom log routing: [AWS docs](https://docs.aws.amazon.com/AmazonECS/latest/developerguide/using_firelens.html)
+4. Sidecar pattern: [learn.microsoft.com](https://learn.microsoft.com/en-us/azure/architecture/patterns/sidecar)
+5. Example of task definitions for Fluent Bit: [AWS docs](https://docs.aws.amazon.com/AmazonECS/latest/userguide/firelens-example-taskdefs.html)
+6. Fluent Bit configuration file: [Fluentbit docs](https://docs.fluentbit.io/manual/v/1.2/configuration/file)

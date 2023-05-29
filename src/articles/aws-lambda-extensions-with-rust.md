@@ -162,10 +162,10 @@ A working example of a Lambda Function with a Rust Extension can be found on my 
 
 ## References
 
-1. Introducing AWS Lambda Extensions: [https://aws.amazon.com/blogs/compute/introducing-aws-lambda-extensions-in-preview](https://aws.amazon.com/blogs/compute/introducing-aws-lambda-extensions-in-preview)
-2. Lambda Extension API: [https://docs.aws.amazon.com/lambda/latest/dg/runtimes-extensions-api.html](https://docs.aws.amazon.com/lambda/latest/dg/runtimes-extensions-api.html)
-3. Getting the most of AWS Lambda free compute - wrapper scripts: [https://dev.to/aws-builders/getting-the-most-of-aws-lambda-free-compute-wrapper-scripts-3h4b](https://dev.to/aws-builders/getting-the-most-of-aws-lambda-free-compute-wrapper-scripts-3h4b)
-4. Sidecar pattern: [https://learn.microsoft.com/en-us/azure/architecture/patterns/sidecar](https://learn.microsoft.com/en-us/azure/architecture/patterns/sidecar)
-5. cargo-lambda: [https://github.com/cargo-lambda/cargo-lambda](https://github.com/cargo-lambda/cargo-lambda)
-6. Lambda Logs API: [https://docs.aws.amazon.com/lambda/latest/dg/runtimes-logs-api.html](https://docs.aws.amazon.com/lambda/latest/dg/runtimes-logs-api.html)
-7. Extension Partners: [https://docs.aws.amazon.com/lambda/latest/dg/extensions-api-partners.html](https://docs.aws.amazon.com/lambda/latest/dg/extensions-api-partners.html)
+1. Introducing AWS Lambda Extensions: [AWS blogs](https://aws.amazon.com/blogs/compute/introducing-aws-lambda-extensions-in-preview)
+2. Lambda Extension API: [AWS docs](https://docs.aws.amazon.com/lambda/latest/dg/runtimes-extensions-api.html)
+3. Getting the most of AWS Lambda free compute - wrapper scripts: [dev.to](https://dev.to/aws-builders/getting-the-most-of-aws-lambda-free-compute-wrapper-scripts-3h4b)
+4. Sidecar pattern: [learn.microsoft.com](https://learn.microsoft.com/en-us/azure/architecture/patterns/sidecar)
+5. cargo-lambda: [GitHub](https://github.com/cargo-lambda/cargo-lambda)
+6. Lambda Logs API: [AWS docs](https://docs.aws.amazon.com/lambda/latest/dg/runtimes-logs-api.html)
+7. Extension Partners: [AWS docs](https://docs.aws.amazon.com/lambda/latest/dg/extensions-api-partners.html)

@@ -69,11 +69,11 @@ After finishing the exam, the proctoring tool gives you a PASS/FAILED result. Th
 
 ## Links and References
 
-1. Associate Cloud Engineer: [https://cloud.google.com/certification/cloud-engineer](https://cloud.google.com/certification/cloud-engineer)
-2. Cloud Engineer learning path: [https://cloud.google.com/training/cloud-infrastructure#cloud-engineer-learning-path](https://cloud.google.com/training/cloud-infrastructure#cloud-engineer-learning-path)
-3. "Google Cloud Associate Cloud Engineer Course - Pass the Exam!" - by Antoni Tzavelas: [https://www.youtube.com/watch?v=jpno8FSqpc8](https://www.youtube.com/watch?v=jpno8FSqpc8)
+1. Associate Cloud Engineer: [Google docs](https://cloud.google.com/certification/cloud-engineer)
+2. Cloud Engineer learning path: [Google docs](https://cloud.google.com/training/cloud-infrastructure#cloud-engineer-learning-path)
+3. "Google Cloud Associate Cloud Engineer Course - Pass the Exam!" - by Antoni Tzavelas: [YouTube](https://www.youtube.com/watch?v=jpno8FSqpc8)
 4. Sample Questions: [https://docs.google.com/forms/d/e/.../viewform](https://docs.google.com/forms/d/e/1FAIpQLSfexWKtXT2OSFJ-obA4iT3GmzgiOCGvjrT9OfxilWC1yPtmfQ/viewform)
-5. TutorialDojo - Google Certified Associate Cloud Engineer Practice Exams: [https://portal.tutorialsdojo.com/courses/google-certified-associate-cloud-engineer-practice-exams/](https://portal.tutorialsdojo.com/courses/google-certified-associate-cloud-engineer-practice-exams/)
-6. "Google Cloud Associate Cloud Engineer Practice Tests" by Dan Sullivan [https://www.udemy.com/course/google-cloud-associate-cloud-engineer-practice-examspractice-exams](https://www.udemy.com/course/google-cloud-associate-cloud-engineer-practice-examspractice-exams)
-7. sathishvj/awesome-gcp-certifications: [https://github.com/sathishvj/awesome-gcp-certifications](https://github.com/sathishvj/awesome-gcp-certifications)
-8. My GCP Associate Cloud Engineer Notes: [https://github.com/Ernyoke/certified-gcp-cloud-engineer](https://github.com/Ernyoke/certified-gcp-cloud-engineer)
+5. TutorialDojo - Google Certified Associate Cloud Engineer Practice Exams: [portal.tutorialsdojo.com](https://portal.tutorialsdojo.com/courses/google-certified-associate-cloud-engineer-practice-exams/)
+6. "Google Cloud Associate Cloud Engineer Practice Tests" by Dan Sullivan [Udemy](https://www.udemy.com/course/google-cloud-associate-cloud-engineer-practice-examspractice-exams)
+7. sathishvj/awesome-gcp-certifications: [GitHub](https://github.com/sathishvj/awesome-gcp-certifications)
+8. My GCP Associate Cloud Engineer Notes: [GitHub](https://github.com/Ernyoke/certified-gcp-cloud-engineer)

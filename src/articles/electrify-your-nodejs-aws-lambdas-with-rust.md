@@ -273,15 +273,15 @@ On the other hand, in certain situations, it might be useful to have a native bi
 
 ## Links and References
 
-1. Foreign function interface: [https://en.wikipedia.org/wiki/Foreign_function_interface](https://en.wikipedia.org/wiki/Foreign_function_interface)
-2. NodeJS - C++ addons: [https://nodejs.org/api/addons.html](https://nodejs.org/api/addons.html)
-3. GitHub - node-ffi: [https://github.com/node-ffi/node-ffi](https://github.com/node-ffi/node-ffi)
+1. Foreign function interface: [Wikipedia](https://en.wikipedia.org/wiki/Foreign_function_interface)
+2. NodeJS - C++ addons: [NodeJS docs](https://nodejs.org/api/addons.html)
+3. GitHub - node-ffi: [GitHub](https://github.com/node-ffi/node-ffi)
 4. Neon: [https://neon-bindings.com/docs/introduction](https://neon-bindings.com/docs/introduction)
-5. Node-API (N-API): [https://nodejs.org/api/n-api.html#node-api](https://nodejs.org/api/n-api.html#node-api)
-6. Tokio Runtimes: [https://docs.rs/tokio/1.20.1/tokio/runtime/index.html](https://docs.rs/tokio/1.20.1/tokio/runtime/index.html)
-7. Building Rust binaries in CI that work with older GLIBC: [https://kobzol.github.io/rust/ci/2021/05/07/building-rust-binaries-in-ci-that-work-with-older-glibc.html](https://kobzol.github.io/rust/ci/2021/05/07/building-rust-binaries-in-ci-that-work-with-older-glibc.html)
-8. `cross` - Custom Docker images: [https://github.com/cross-rs/cross#custom-docker-images](https://github.com/cross-rs/cross#custom-docker-images)
-9. Lambda runtimes: [https://docs.aws.amazon.com/lambda/latest/dg/lambda-runtimes.html](https://docs.aws.amazon.com/lambda/latest/dg/lambda-runtimes.html)
-10. Running Serverless Lambdas with Rust on AWS: [https://ervinszilagyi.dev/articles/running-serverless-lambdas-with-rust-aws.html](https://ervinszilagyi.dev/articles/running-serverless-lambdas-with-rust-aws.html)
+5. Node-API (N-API): [NodeJS docs](https://nodejs.org/api/n-api.html#node-api)
+6. Tokio Runtimes: [docs.rs](https://docs.rs/tokio/1.20.1/tokio/runtime/index.html)
+7. Building Rust binaries in CI that work with older GLIBC: [kobzol.github.io](https://kobzol.github.io/rust/ci/2021/05/07/building-rust-binaries-in-ci-that-work-with-older-glibc.html)
+8. `cross` - Custom Docker images: [GitHub](https://github.com/cross-rs/cross#custom-docker-images)
+9. Lambda runtimes: [AWS docs](https://docs.aws.amazon.com/lambda/latest/dg/lambda-runtimes.html)
+10. Running Serverless Lambdas with Rust on AWS: [ervinszilagyi.dev](https://ervinszilagyi.dev/articles/running-serverless-lambdas-with-rust-aws.html)
 
 The code used in this article can be found on GitHub at [https://github.com/Ernyoke/aws-lambda-js-with-rust](https://github.com/Ernyoke/aws-lambda-js-with-rust)
