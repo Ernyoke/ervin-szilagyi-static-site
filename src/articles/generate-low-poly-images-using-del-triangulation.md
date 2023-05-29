@@ -248,10 +248,10 @@ java -jar delaunay.jar res/img3.jpg res/out.jpg -ea laplacian -bk 25 -sk 5 -max 
 
 ## References:
 
-1. Delaunay triangulation: [Wikipedia](https://en.wikipedia.org/wiki/Delaunay_triangulation)
-2. Circumcircle of a triangle: [Wikipedia](https://en.wikipedia.org/wiki/Circumscribed_circle#Triangles)
-3. Bowyer-Watson algorithm: [Wikipedia](https://en.wikipedia.org/wiki/Bowyer%E2%80%93Watson_algorithm)
-4. Gaussian blur: [Wikipedia](https://en.wikipedia.org/wiki/Gaussian_blur)
-5. Grayscale image: [Wikipedia](https://en.wikipedia.org/wiki/Grayscale)
-6. Sobel operator: [Wikipedia](https://en.wikipedia.org/wiki/Sobel_operator)
-7. Thresholding: [Wikipedia](https://en.wikipedia.org/wiki/Thresholding_(image_processing))
+1. Delaunay triangulation: [Wikipedia page](https://en.wikipedia.org/wiki/Delaunay_triangulation)
+2. Circumcircle of a triangle: [Wikipedia page](https://en.wikipedia.org/wiki/Circumscribed_circle#Triangles)
+3. Bowyer-Watson algorithm: [Wikipedia page](https://en.wikipedia.org/wiki/Bowyer%E2%80%93Watson_algorithm)
+4. Gaussian blur: [Wikipedia page](https://en.wikipedia.org/wiki/Gaussian_blur)
+5. Grayscale image: [Wikipedia page](https://en.wikipedia.org/wiki/Grayscale)
+6. Sobel operator: [Wikipedia page](https://en.wikipedia.org/wiki/Sobel_operator)
+7. Thresholding: [Wikipedia page](https://en.wikipedia.org/wiki/Thresholding_(image_processing))

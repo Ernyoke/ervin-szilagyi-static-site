@@ -316,6 +316,6 @@ Setting up a custom domain for a REST API in AWS is not the most complicated pro
 ## References
 
 1. Working with hosted zones: [AWS docs](https://docs.aws.amazon.com/Route53/latest/DeveloperGuide/hosted-zones-working-with.html)
-2. DNS Records: [Wikipedia](https://en.wikipedia.org/wiki/Domain_Name_System#Resource_records)
+2. DNS Records: [Wikipedia page](https://en.wikipedia.org/wiki/Domain_Name_System#Resource_records)
 3. Choosing between alias and non-alias records: [AWS docs](https://docs.aws.amazon.com/Route53/latest/DeveloperGuide/resource-record-sets-choosing-alias-non-alias.html)
-4. Amazon API Gateway - [AWS docs](https://aws.amazon.com/api-gateway/)
+4. Amazon API Gateway: [AWS docs](https://aws.amazon.com/api-gateway/)

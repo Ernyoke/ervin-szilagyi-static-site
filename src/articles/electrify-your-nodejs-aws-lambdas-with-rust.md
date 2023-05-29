@@ -273,7 +273,7 @@ On the other hand, in certain situations, it might be useful to have a native bi
 
 ## Links and References
 
-1. Foreign function interface: [Wikipedia](https://en.wikipedia.org/wiki/Foreign_function_interface)
+1. Foreign function interface: [Wikipedia page](https://en.wikipedia.org/wiki/Foreign_function_interface)
 2. NodeJS - C++ addons: [NodeJS docs](https://nodejs.org/api/addons.html)
 3. GitHub - node-ffi: [GitHub](https://github.com/node-ffi/node-ffi)
 4. Neon: [https://neon-bindings.com/docs/introduction](https://neon-bindings.com/docs/introduction)

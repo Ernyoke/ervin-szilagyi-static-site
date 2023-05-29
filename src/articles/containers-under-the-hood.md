@@ -401,11 +401,11 @@ In this article, we have seen what containers are. They are not virtual machines
 ## Links and References
 
 1. Install Docker Engine on Ubuntu: [Docker docs](https://docs.docker.com/engine/install/ubuntu/)
-2. Linux Namespaces: [Wikipedia](https://en.wikipedia.org/wiki/Linux_namespaces)
+2. Linux Namespaces: [Wikipedia page](https://en.wikipedia.org/wiki/Linux_namespaces)
 3. Docker Container Network Namespace is Invisible: [baeldung.com](https://www.baeldung.com/linux/docker-network-namespace-invisible)
-4. `chroot`: [Wikipedia](https://en.wikipedia.org/wiki/Chroot)
-5. Completely Fair Scheduler: [Wikipedia](https://en.wikipedia.org/wiki/Completely_Fair_Scheduler)
-6. `cgroups`: [Wikipedia](https://en.wikipedia.org/wiki/Cgroups)
+4. `chroot`: [Wikipedia page](https://en.wikipedia.org/wiki/Chroot)
+5. Completely Fair Scheduler: [Wikipedia page](https://en.wikipedia.org/wiki/Completely_Fair_Scheduler)
+6. `cgroups`: [Wikipedia page](https://en.wikipedia.org/wiki/Cgroups)
 7. Dockerfile reference: [Docker docs](https://docs.docker.com/engine/reference/builder/)
 
 ## Additional Reading
