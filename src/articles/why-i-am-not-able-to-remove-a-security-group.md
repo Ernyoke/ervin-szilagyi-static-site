@@ -2,7 +2,7 @@
 
 If you have a slightly more extended experience with IaC, more specifically with Terraform, you might have run into the following:
 
-![Terraform Remove Security Group Attached to a Lambda](why-i-am-not-able-to-remove-a-security-group/tf.gif)
+![Terraform Remove Security Group Attached to a Lambda](img-why-i-am-not-able-to-remove-a-security-group/tf.gif)
 
 This usually happens when we are trying to remove a Lambda Function placed in a VPC. The reason for this is that the removal of the Security Group is temporarily blocked by one ore more network interface. 
 
