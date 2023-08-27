@@ -39,8 +39,47 @@ At this point we can get any other AWS resource, we most likely we have similar 
 - In most of the cases, ENIs are placed inside our VPC while we provision a resource. At the time of provisioning we have to assign a security group to the ENI
 - Usually we cannot temper with the ENI, meaning we cannot directly de-associate the security group from it. We can change the security group if we modify the AWS service which is using the ENI
 - If we want to remove a security group we have to either:
-    - remove the AWS service which is using the ENI to which our security group is assigned
-    - modify the service which is using the ENI, hence the security group, by assigning another security group to it and removing the one which we would like to remove
+    - remove the AWS service which is using the ENI to which our security group is assigned;
+    - modify the service which is using the ENI, hence the security group, by assigning another security group to it and removing the one which we would like to remove.
+
+## What is Using my Security Group?
+
+We finally decided to remove a Security Group. We suspect it is used by some resource, but we are not really sure. In the AWS console, we navigate to the Security Group and press the `Delete security groups` button. We are greeted with this:
+
+![Delete security group](img-why-i-am-not-able-to-remove-a-security-group/console-remove-sg.png)
+
+The console tells us, that we cannot remove the security groups because it is used by a few network interfaces. It also conveniently gives us a link to a list with all of these network interfaces. We click on the link, we get the list of the network interfaces, and after a few moments we realize we have no idea who is using these network interfaces. 
+
+Before moving on, you may think this scenario is unrealistic, it cannot happen to me, I know every resource I create in my account and I have good naming practices. In an ideal world, our infrastructure would be as clean as possible with well defined naming conventions, in the real world unfortunately this is not the always true. In case you had experience working in AWS accounts where multiple teams deploy their stuff, you may pretty easily end-up with resources that do not adhere to anything you predefined. Moreover, in many cases the AWS console itself offers the opportunity to create security groups with semi-randomly generated names. Now, I'm aware of the principle of least privilege in case of who can do what in an AWS account, but let's not get there, this is a discussion for a another day.
+
+Coming back, we have a list with network interfaces, but unfortunately, the console does not really help us who is using these network interfaces as long as the ENI is not attached to an EC2 instance. The question is how can we proceed next?
+
+There are a few tricks that we can use to detect who us using a network interface. In general, we can take a look at the description of the security ENI. This may contain an attachment ID or an ID to resource. For example, in case of a Lambda Function, we may have something like this in the description: `AWS Lambda VPC ENI-vpc-lambda-f8872d9f-745a-42dd-bca9-3ac0e87ac215`. Here the description tells us the ENI is used by a Lambda Function which is placed in a VPC, the name of the function is `ENI-vpc-lambda` and the identifier of the function is this uuid `f8872d9f-745a-42dd-bca9-3ac0e87ac215`. Unfortunately, this description format is not something standard and is not really documented in the AWS documentation. For other resources, we get something in a totally different format (example: `[DO NOT DELETE] ENI managed by SageMaker for Studio Domain(d-vegsk0mcgrdp) - 946a4c21ed31356ee889a8dd95fde7cf` for a security group used by Sagemaker).
+
+Also, for certain ENIs we get nothing in the description, but we get some indications in the tags.
+
+We may ask if there is a better solution to find out who is using an ENI? I, myself, did not find really find anything to help me out, so I decided to create a tool for myself. I want to introduce [`sg-ripper`](https://github.com/cloud-crafts/sg-ripper).
+
+`sg-ripper` is a CLI application, developed in Golang, who's purpose is to make our life easier in case we want to do a little bit of cleanup in our list of security groups. It can list all the security groups from an AWS account, it grabs all the ENIs for each security group, and furthermore it tries to locate all the other resources which might be relying on those ENIs.
+
+For example:
+
+- We can list all the security groups, their associated ENIs an the resources which are using those ENIs:
+
+![sg-ripper list security groups](img-why-i-am-not-able-to-remove-a-security-group/list-sg.gif)
+
+- We can list all the ENIs directly. In this case, it will show which security group is using each ENI and also which other AWS resources are relying on the ENIs:
+
+![sg-ripper list security groups](img-why-i-am-not-able-to-remove-a-security-group/list-sg.gif)
+
+With `sg-ripper` we can also filter apply filter to see only certain security group or ENI in case we don't want grab all the existing ones from our account. Aside from showing which resource is using an ENI, it can display display if Security Groups is available for removal or not. If it is not, that it will also show some explanation why is the this the case.
+
+`sg-ripper` is a work in progress project, the code itself is open-source and it can be found on GitHub: [https://github.com/cloud-crafts/sg-ripper](https://github.com/cloud-crafts/sg-ripper). Contributions are welcomed.
+
+
+## Conclusions
+
+As our infrastructure is evolving, we may tend to leave unused resources behind such as security groups. Security groups can be removed only if they are not used, not referenced or they are not default in a VPC. `sg-ripper` can make our life easier in detecting unused security groups, having an explanation why a certain security group cannot be removed and point out which ENI/which resource is blocking us from removing it.
 
 ## References:
 
