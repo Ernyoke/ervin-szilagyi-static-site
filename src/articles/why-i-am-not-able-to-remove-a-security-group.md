@@ -81,4 +81,6 @@ As our infrastructure is evolving, we may tend to leave unused resources behind 
 
 ## References:
 
+1. [Stateful Firewall](https://en.wikipedia.org/wiki/Stateful_firewall)
+1. [Elastic network interfaces](https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/using-eni.html)
 1. [Security groups Limits](https://docs.aws.amazon.com/vpc/latest/userguide/amazon-vpc-limits.html#vpc-limits-security-groups)
