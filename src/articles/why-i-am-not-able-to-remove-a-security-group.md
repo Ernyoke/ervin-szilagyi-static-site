@@ -27,7 +27,7 @@ In case we assign a security group to an AWS resource (EC2, Lambda, RDS database
 
 EC2 instances can have also secondary ENIs attached to them. These ENIs are provisioned independently, so we can change the security group assigned to them from the ENI console.
 
-- **Lambda Functions**: Lambda Functions require a security group in case we want them to have connectivity to a VPC. If we choose it so, AWS will place an ENI in each subnet we specify, the security group will be assigned to each provisioned ENI. We can change the security group freely if we modify the Lambda Function configuration, but we cannot directly temper with the ENIs. If we decide to remove our functions, the ENIs will also be removed automatically. This removal usually happens with a delay of 10-15 minutes, essentially getting stuck temporarily. We just simply have to wait until the removal is finally completed. This can be annoying if we use Terraform IaC for our infrastructure since it will try to remove the security group over and over again (see the GIF from the beginning of the article). If this removal won't happen in time, we can easily end up with an inconsistent Terraform state. What we can do is simply wait and hope that Terraform won't time out. 
+- **Lambda Functions**: Lambda Functions require a security group in case we want them to have connectivity to a VPC. If we choose it so, AWS will place an ENI in each subnet we specify, the security group will be assigned to each provisioned ENI. We can change the security group freely if we modify the Lambda Function configuration, but we cannot directly temper with the ENIs. If we decide to remove our functions, the ENIs will also be removed automatically. This removal usually happens with a delay of 10-15 minutes, essentially getting stuck temporarily. We simply have to wait until the removal is finally completed. This can be annoying if we use Terraform IaC for our infrastructure since it will try to remove the security group over and over again (see the GIF from the beginning of the article). If this removal won't happen in time, we can easily end up with an inconsistent Terraform state. What we can do is simply wait and hope that Terraform won't time out. 
 
 - **ECS Fargate Tasks**: In the case of ECS tasks, each container from the task can have an ENI, depending on the network settings. These ENIs are managed by AWS and we cannot really temper with them. We can change the security groups on the task settings. When the containers are decommissioned if we decide to remove our task, the ENIs will be automatically removed. In most of the cases, this happens instantly, but in very rare instances we can manage to end up with a stuck ENI. If this happens, we could attempt to manually remove the ENI from the AWS console. If this is unsuccessful, we have to write to AWS Support.
 
@@ -36,7 +36,7 @@ EC2 instances can have also secondary ENIs attached to them. These ENIs are prov
 We can notice a pattern here. If we take any AWS-managed resource that needs access to a VPC, we will end up with a similar networking setup with ENI placement and security group assignment to the ENI. What is important to know are the following:
 
 - Security groups are assigned to Network Interfaces. In most of the cases, an ENI cannot exist without a security group
-- In most of the cases, ENIs are placed inside our VPC while we provision a resource. At the time of provisioning, we have to assign a security group to the ENI
+- In most cases, ENIs are placed inside our VPC while we provision a resource. At the time of provisioning, we have to assign a security group to the ENI
 - Usually, we cannot temper with the ENI, meaning we cannot directly de-associate the security group from it. We can change the security group if we modify the AWS service which uses the ENI
 - If we want to remove a security group we have to either:
     - Remove the AWS service which is using the ENI to which our security group is assigned;
@@ -48,7 +48,7 @@ We finally decided to remove a security group with a random funky name, that we 
 
 ![Delete security group](img-why-i-am-not-able-to-remove-a-security-group/console-remove-sg.png)
 
-The console tells us, that we cannot remove the security groups because it is used by one ore more network interfaces. It also conveniently gives us a link to a list with all of these network interfaces. We click on the link, we get the list of the network interfaces, and after a few moments, we realize we have no idea who is using these network interfaces. 
+The console tells us, that we cannot remove the security groups because it is used by one or more network interfaces. It also conveniently gives us a link to a list with all of these network interfaces. We click on the link, we get the list of the network interfaces, and after a few moments, we realize we have no idea who is using these network interfaces. 
 
 Before moving on, you may think this scenario is unrealistic, it cannot happen to me, I know every resource I create in my account and I have good naming practices. In an ideal world, our infrastructure would be as clean as possible with well-defined naming conventions. In the real world unfortunately this is not always true. In case you had experience working in AWS accounts where multiple teams deploy their stuff, you may pretty easily end up with resources that do not adhere to any convention you predefined. Moreover, in many cases, the AWS console itself offers the opportunity to create security groups with semi-randomly generated names.
 
@@ -70,9 +70,9 @@ For example:
 
 ![sg-ripper list security groups](img-why-i-am-not-able-to-remove-a-security-group/list-eni.gif)
 
-With `sg-ripper` we can also apply a filter to see only certain security groups or ENI in case we don't want to grab all the existing ones from our account. Aside from showing which resource is using an ENI, it can display if security groups are available for removal. If it is not, it will also show some explanation why the is the removal blocked.
+With `sg-ripper` we can also apply a filter to see only certain security groups or ENI in case we don't want to grab all the existing ones from our account. Aside from showing which resource is using an ENI, it can display if security groups are available for removal. If it is not, it will also show some explanation as to why the is the removal blocked.
 
-`sg-ripper` is a work-in-progress project, the code itself is open-source and it can be found on GitHub: [https://github.com/cloud-crafts/sg-ripper](https://github.com/cloud-crafts/sg-ripper). Contributions are welcomed.
+`sg-ripper` is a work-in-progress project, the source code itself is open-source and it can be found on GitHub: [https://github.com/cloud-crafts/sg-ripper](https://github.com/cloud-crafts/sg-ripper). Contributions are welcomed.
 
 
 ## Conclusions
