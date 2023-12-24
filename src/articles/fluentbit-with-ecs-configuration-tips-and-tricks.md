@@ -51,7 +51,7 @@ For example:
 
 We create a `fluent-bit.conf` file with the following content:
 
-```
+```bash
 [INPUT]
     Name   dummy
     Dummy {"message": "custom dummy"}
@@ -63,7 +63,7 @@ We create a `fluent-bit.conf` file with the following content:
 
 We create a Dockerfile for our Fluent Bit image:
 
-```
+```bash
 FROM amazon/aws-for-fluent-bit:latest
 
 WORKDIR /
@@ -148,7 +148,7 @@ echo $content
 
 The configuration file should be modified as such:
 
-```
+```bash
 [SERVICE]
     Flush        5
     Log_Level    info
@@ -167,7 +167,7 @@ The configuration file should be modified as such:
 
 The Dockerfile should also be modified in order to have everything:
 
-```Dockerfile
+```bash
 FROM amazon/aws-for-fluent-bit:latest
 
 WORKDIR /
@@ -187,8 +187,132 @@ Running this container locally will print the following over and over again:
 [0] dummy.input: [1703444437.645291508, {"source"=>"stdout", "ecs_task_arn"=>"arn:aws:ecs:region:0123456789012:task/FluentBit-cluster/13EXAMPLE", "container_name"=>"/ecs-windows-app-task-1-sample-container-cEXAMPLE", "ecs_cluster"=>"FluentBit-cluster", "ecs_container_name"=>"sample-container", "ecs_task_definition_version"=>"1", "container_id"=>"61f5e6EXAMPLE", "log"=>"10", "ecs_task_definition_family"=>"windows-app-task"}]
 ```
 
+## Loading Parsers
+
+Parsers should be defined in a different configuration file. As noted before, Fluent Bit comes with a bunch of predefined parsers which usually can be found in the `/fluent-bit/parsers/parsers.conf` location. In order for this parsers to be used, we have to load them in the service section:
+
+```bash
+[SERVICE]
+    Parsers_File /fluent-bit/parsers/parsers.conf
+```
+
+Parsers can be used with certain input type as we have seen above. Moreover, we can have parser type filters:
+
+```bash
+[FILTER]
+    Name parser
+    Match dummy.*
+    Key_Name data
+    Parser dummy_test
+```
+
+As a reminder, filters are used to modify data. We will discuss different filters in the upcoming paragraphs.
+
+## Modify Log Entries with FILTER
+
+The most basic FILTER operation is the [Modify](https://docs.fluentbit.io/manual/pipeline/filters/modify). Modify can be used to do a bunch of changes on a log entry:
+    - add static fields
+    - overwrite fields
+    - remove fields from a log entry
+    - rename fields
+
+Adding a static value to each log entry might seem to be that useful. What makes them really cool is the ability to use environment variables. For example, we can inject the current environment/AWS region in each log entry:
+
+```bash
+[FILTER]
+    Name                      modify
+    Add environment           ${ENVIRONMENT}
+    Add region                ${AWS_REGION}
+```
+
+`ENVIRONMENT` and `AWS_REGION` are environment variables and they should be specified in the task definition.
+
+Additionally, the Modify FILTER supports conditional actions, meaning that for example we apply a renaming only if certain condition is true, such as the field stars with a certain string.
+
+```bash
+[FILTER]
+    Name                              modify
+    Match                              *
+    Rename ecs_task_definition_family family
+    Condition Key_value_matches ecs_task_definition_family windows.*
+```
+
+The above FILTER will rename the `ecs_task_definition_family` field to `family` if the value of the `ecs_task_definition_family` starts with `windows.*`. Please note `windows.*` is a regular expression. Aside from the `Key_value_matches` condition there are a bunch of other conditions we can use. All of them can be find in the [Fluent Bit documentation for Modify](https://docs.fluentbit.io/manual/pipeline/filters/modify#conditions).
+
+## Nest and Lift
+
+When working with Fluent Bit on ECS, generally it is good idea to configure our services to log in JSON format. Most of the logging libraries support this out of the box. Assuming we are logging everything in JSON format, let's say our service generate the following log entry:
+
+```json
+{
+    "type": "error",
+    "message": "Something happened!"
+}
+```
+
+In case of ECS, the log router will embed this content under the `"log"` field:
+
+
+```json
+{
+    "source": "stdout",
+    "ecs_task_arn": "arn:aws:ecs:region:0123456789012:task/FluentBit-cluster/13EXAMPLE",
+    "container_name": "/ecs-windows-app-task-1-sample-container-cEXAMPLE",
+    "ecs_cluster": "FluentBit-cluster",
+    "ecs_container_name": "sample-container",
+    "ecs_task_definition_version": "1",
+    "container_id": "61f5e6EXAMPLE",
+    "log": {
+        "type": "error",
+        "message": "Something happened!"
+    },
+    "ecs_task_definition_family": "windows-app-task"
+}
+```
+
+We decide we don't like our content to be embedded under `"log"` property, so we want everything to be on the root level. In order to do this, we can use the `Nest` FILTER. This filter has two operation, the first one being `Nest` (again, confusing I know), the second on is `Lift`. In case we want to lift out fields to the root level, we can do the following:
+
+```bash
+[FILTER]
+    Name         nest
+    Match        *
+    Operation    lift
+    Wildcard     container_id
+    Nested_under log
+    Add_prefix   LIFTED_
+```
+
+This FILTER will lift everything under the `"log"` and put it into the root. The output will be something like this:
+
+```bash
+[5] dummy.input: [1703451474.539715464, {"source"=>"stdout", "ecs_task_arn"=>"arn:aws:ecs:region:0123456789012:task/FluentBit-cluster/13EXAMPLE", "container_name"=>"/ecs-windows-app-task-1-sample-container-cEXAMPLE", "ecs_cluster"=>"FluentBit-cluster", "ecs_container_name"=>"sample-container", "ecs_task_definition_version"=>"1", "container_id"=>"61f5e6EXAMPLE", "ecs_task_definition_family"=>"windows-app-task", "LIFTED_type"=>"error", "LIFTED_message"=>"Something happened!"}]
+```
+
+Usually, I recommend add prefix to the lifted fields, but this can be omitted.
+
+Now we are happy with this, but unfortunately our colleague is not so. He suggest we keep the `"log"` object as it is and we move the `"container_id"` inside that object. We can accomplish this withe `Nest` operation:
+
+```bash
+[FILTER]
+    Name       nest
+    Match      *
+    Operation  nest
+    Wildcard   container_id
+    Nest_under log
+    Add_prefix NESTED_
+```
+
+The output for this might be a little funky, since it appears there are two `"log"` objects. In reality there is only one, this output itself is the representation of a map (dictionary) in Lua and it is a bit misleading.
+
+```bash
+[3] dummy.input: [1703451786.500213512, {"source"=>"stdout", "ecs_task_arn"=>"arn:aws:ecs:region:0123456789012:task/FluentBit-cluster/13EXAMPLE", "container_name"=>"/ecs-windows-app-task-1-sample-container-cEXAMPLE", "ecs_cluster"=>"FluentBit-cluster", "ecs_container_name"=>"sample-container", "ecs_task_definition_version"=>"1", "log"=>{"type"=>"error", "message"=>"Something happened!"}, "ecs_task_definition_family"=>"windows-app-task", "log"=>{"NESTED_container_id"=>"61f5e6EXAMPLE"}}]
+```
+
+## Routing and Multiple Outputs
+
 ## References:
 
 1. Fluent Bit outputs: [Official Documentation](https://docs.fluentbit.io/manual/pipeline/outputs)
 1. Fluent Bit filters: [Official Documentation](https://docs.fluentbit.io/manual/pipeline/filters)
+1. Fluent Bit Modify: [Official Documentation](https://docs.fluentbit.io/manual/pipeline/filters/modify)
 
