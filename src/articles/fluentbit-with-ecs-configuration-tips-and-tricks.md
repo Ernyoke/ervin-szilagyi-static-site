@@ -35,17 +35,17 @@ Fluent Bit can be configured with a `fluent-bit.conf` configuration file or with
 We can notice that a configuration file can have the following sections:
 
 - *Service*: defines global properties for the Fluent Bit container. Some example for these kind of properties are how often should the container flush its content, the logging level of the Fluent Bit container (not the service from which we gather the log entries) or if we would like to add additional plugins or parsers (more about parsers bellow).
-- *Input*: defines the source from where we will attempt to collect log entries.
-- *Output*: defines the sink, the destination where certain log entries will go. Fluent Bit supports multiple destinations, such as: ElasticSearch, AWS S3, Kafka our event stdout. For a full list, see the official documentation for [outputs](https://docs.fluentbit.io/manual/pipeline/outputs).
-- *Filter*: the name of this section is somewhat misleading in my oppinion. Filters can be used to manipulate data, not just for filtering certain entries. With filters we can modify certain fields from the log entries or we can add/remove/rename certain information. Full list of filters can be found [here](https://docs.fluentbit.io/manual/pipeline/filters).
+- *Input*: defines the source from where we will attempt to collect records. Fluent Bit can receive records from multiple sources, such as log streams created by applications and services, Linux/Unix system log, hardware metrics, Docker events, etc. Full list of inputs can be found in the [documentation](https://docs.fluentbit.io/manual/pipeline/inputs). When we talk about Fluent Bit usage together with ECS containers, these records are log events (log messages with additional metadata).
+- *Output*: defines the sink, the destination where certain records will go. Fluent Bit supports multiple destinations, such as: ElasticSearch, AWS S3, Kafka our event stdout. For a full list, see the official documentation for [outputs](https://docs.fluentbit.io/manual/pipeline/outputs).
+- *Filter*: the name of this section is somewhat misleading in my oppinion. Filters can be used to manipulate data, not just for filtering certain entries. With filters we can modify certain fields from the records or we can add/remove/rename certain information. Full list of filters can be found [here](https://docs.fluentbit.io/manual/pipeline/filters).
 
-Not all of this sections are mandatory. Generally we need at least the input and output sections. Usually the `fluent-bit.conf` file is also refered as the main configuration file. Besides this we can have additional configuration, such as parsers. Parsers are used to parse the log entries, essentially transforming the each entry from a blob of unstructured text into an structured object, such as JSON. We can write our own parsers and save it into a `parser.conf` file. Before attempting to do this, it is important to know that Fluent Bit comes with its own pre-configured `parser.conf` file (https://github.com/fluent/fluent-bit/blob/master/conf/parsers.conf). This supports most of the popular log formats, such a Docker, nginx or syslog.
+Not all of this sections are mandatory. Generally we need at least the input and output sections. The `fluent-bit.conf` file is also referred as the main configuration file. Besides this file we can have additional configuration, such as parsers. Parsers are used transform input records into an structured object, such as JSON. We can write our own parsers and save it into a `parser.conf` file. Before attempting to do this, it is important to know that Fluent Bit comes with its own pre-configured `parser.conf` file (https://github.com/fluent/fluent-bit/blob/master/conf/parsers.conf). This supports most of the popular log formats, such a Docker, nginx or syslog.
 
 ## Debugging and Troubleshooting Fluent Bit Configuration File
 
 While working with Fluent Bit I found myself loosing a lot of time with deployments. If I wanted to see the effects certain changes I made in the configuration file, I had to rebuild the Fluent Bit image, push it to an ECR repo, restart the main service which will load the newest version of the sidecar container and the just wait for the log messages to arrive and hopefully see some meaningful change. This can be very annoying and time consuming. It is wiser to attempt to run the container locally and provide some dummy input for testing a modification in the configuration file.
 
-What I recommend doing is building a container with a test configuration file. In this test configuration file we can set a input type to `dummy`. What will this `dummy` input do, you might ask? We can give a predefined log entry to it as input, and it will repeat this input over and over again. Additionally, if we set the output to be `stdout`, we will create a way of doing "printf debugging".
+What I recommend doing is building a container with a test configuration file. In this test configuration file we can set a input type to `dummy`. What will this `dummy` input do, you might ask? We can give a predefined record as input, and it will repeat this input over and over again. Additionally, if we set the output to be `stdout`, we will create a way of doing "printf debugging".
 
 For example:
 
@@ -132,7 +132,7 @@ The problem with `dummy` is that it requires the content of the message to be in
 }
 ```
 
-We can provide this input as an one-liner, but it would be more ideal if we could put this into a file a stream the content of the file. A work-around which I've been using is the write a simple bash script and use `exec` type input.
+We can provide this JSON document as an one-liner, but it would be more ideal if we could put this into a file, and point the input to use that to generate records. Unfortunately, this is not supported with `dummy`. A work-around which I've been using to accomplish this is use `exec` instead of `dummy`. `exec` can take the content from standard output of the script and generate records based on that.
 
 The bash script would look like this:
 
@@ -208,15 +208,15 @@ Parsers can be used with certain input type as we have seen above. Moreover, we 
 
 As a reminder, filters are used to modify data. We will discuss different filters in the upcoming paragraphs.
 
-## Modify Log Entries with FILTER
+## Modify Records with FILTER
 
-The most basic FILTER operation is the [Modify](https://docs.fluentbit.io/manual/pipeline/filters/modify). Modify can be used to do a bunch of changes on a log entry:
+The most basic FILTER operation is the [Modify](https://docs.fluentbit.io/manual/pipeline/filters/modify). Modify can be used to do a bunch of changes on a record:
     - add static fields
     - overwrite fields
-    - remove fields from a log entry
+    - remove fields
     - rename fields
 
-Adding a static value to each log entry might seem to be that useful. What makes them really cool is the ability to use environment variables. For example, we can inject the current environment/AWS region in each log entry:
+Adding a static value to each record might seem to be that useful. What makes them really cool is the ability to use environment variables. For example, we can inject the current environment/AWS region in each record:
 
 ```bash
 [FILTER]
@@ -241,11 +241,56 @@ The above FILTER will rename the `ecs_task_definition_family` field to `family` 
 
 ## Routing and Multiple Outputs
 
-TODO
+One of the most important ability of Fluent Bit is to have support for multiple outputs. For example, we can deliver a log message to a centralized logging aggregator which is built upon ElasticSearch, while we can also have native CloudWatch alerts and notifications at the same time, since our error logs are delivered to an SQS topic and being processed by a Lambda Function. In order to achieve this architecture, aside from having support for multiple output sink, we also need a way to determine which record goes to which output. This is solved routing.
+
+In case of a Fluent Bit configuration file, routing requires the presence of two important concepts: `Tag` and `Match`. When we create an input, we can add an optional `Tag` property. Every record from this input will have this tag. For example:
+
+```bash
+[INPUT]
+    Name cpu
+    Tag  cpu_usage
+```
+
+In this example we use the CPU usage to generate records. Each record will be tagged to `cpu_usage` tag. If we want to process records which have this tag, we can use `Match` property:
+
+```bash
+[FILTER]
+    Name          modify
+    Match         cpu_usage
+    Add   brand   AMD
+    Add   mark    Ryzen
+```
+
+Each record tagged with `cpu_usage` will have a `brand` and a `mark` field. If we also have add another input for memory usage with the tag of `mem_usage`, the records originating from this input wont receive the `brand` and `mark` fields. 
+
+Similarly, we can create multiple outputs with the `Match` property. For example, we can create mach the `cpu_usage` only and create a CloudWatch metric for our CPU usage, while we also save every event in an S3 bucket:
+
+```bash
+[OUTPUT]
+    Name              cloudwatch_logs
+    Match             cpu_usage
+    log_stream_name   fluent-bit-cloudwatch
+    log_group_name    fluent-bit-cloudwatch
+    region            us-west-2
+    log_format        json/emf
+    metric_namespace  local_cpu_metrics
+    metric_dimensions amd_ryzen_7700x
+    auto_create_group true
+
+[OUTPUT]
+    Name                         s3
+    Match                        *
+    bucket                       fluent-bit-metrics
+    region                       us-west-2
+    s3_key_format                /$TAG[2]/$TAG[0]/%Y/%m/%d/%H/%M/%S/$UUID.gz
+    s3_key_format_tag_delimiters .-
+```
+
+Note, `Match` accepts a regular expression. We can have a wildcard (`*`) to mach everything.
 
 ## Nest and Lift
 
-When working with Fluent Bit on ECS, generally it is good idea to configure our services to log in JSON format. Most of the logging libraries support this out of the box. Assuming we are logging everything in JSON format, let's say our service generate the following log entry:
+When working with Fluent Bit on ECS, generally it is good idea to configure our services to log in JSON format. Most of the logging libraries support this out of the box. Assuming we are logging everything in JSON format, let's say our service generate the following record:
 
 ```json
 {
@@ -336,7 +381,7 @@ In case we would like to lift only the `"code"` property to the root, we simply 
 
 ## Lua Scripting
 
-In case we want more flexibility for processing log entries, we can write our own embedded filters using Lua language. [Lua](https://www.lua.org/) is a highly efficient programming language used mainly for embedded scripting.
+In case we want more flexibility for processing records, we can write our own [embedded filters using Lua](https://docs.fluentbit.io/manual/pipeline/filters/lua) language. [Lua](https://www.lua.org/) is a highly efficient programming language used mainly for embedded scripting.
 
 It is very easy to integrated a Lua script into a Fluent Bit configuration. First we have to define a FILTER which will call our script:
 
@@ -348,7 +393,7 @@ It is very easy to integrated a Lua script into a Fluent Bit configuration. Firs
     call    transform
 ```
 
-Then, we have to create a script file (named `script.lua` in this case, but we can name it however we want) and write our function (named `transform` in this case, but again, we can name this as we wish) which will be invoked for each log entry.
+Then, we have to create a script file (named `script.lua` in this case, but we can name it however we want) and write our function (named `transform` in this case, but again, we can name this as we wish) which will be invoked for each record.
 
 ```lua
 function transform(tag, timestamp, record)
@@ -359,25 +404,27 @@ end
 
 There are a few restriction for this function. The function should accept the following arguments:
 
-- `tag`: tag of the log entry, we discussed tags in detail at the routing section of the blog post;
-- `timestamp`: unix timestamp of each log entry
-- `record`: the log entry itself. The type of this argument is a Lua [table](https://www.lua.org/pil/2.5.html)
+- `tag`: tag attached to the record, we discussed tags in detail at the routing section of the blog post;
+- `timestamp`: unix timestamp of each record
+- `record`: the record itself. The type of this argument is a Lua [table](https://www.lua.org/pil/2.5.html)
 
 This function has to return 3 values:
 - `code`: must be one of the following values:
-    - `-1`: tells Fluent Bit to drop the current log entry
-    - `0`: the current log entry was not modified
-    - `1`: the current log entry was modified
+    - `-1`: tells Fluent Bit to drop the current record
+    - `0`: the current record was not modified
+    - `1`: the current record was modified
     - `2`: the timestamp was modified
-- `timestamp`: the unix timestamp of the log entry, usually it is returned as it was received in the arguments
-- `record`: log entry itself, in the form of a Lua table.
+- `timestamp`: the unix timestamp of the record, usually it is returned as it was received in the arguments
+- `record`: record itself, in the form of a Lua table.
 
-We can do some fairly complex transformation with Lua, since we have infinite flexibility. My suggestion is to keep it to the minimal. We have to remember that this script will be execute for each and every log entry (as long as we did not do a filter before that). Having a heavy and time consuming transformation will result in our log stream lagging behind, or even drop records in the worst possible case. Moreover, sidecar containers usually use the same resources allocated to the main service. If we attempt to consume a significant amount of resources from the main service, we might disturb its operation. 
+We can do some fairly complex transformation with Lua, since we have infinite flexibility. My suggestion is to keep it to the minimal. We have to remember that this script will be execute for each and every record (as long as we did not do a filter before that). Having a heavy and time consuming transformation will result in our log stream lagging behind, or even drop records in the worst possible case. Moreover, sidecar containers usually use the same resources allocated to the main service. If we attempt to consume a significant amount of resources from the main service, we might disturb its operation. 
 
 ## References:
 
-1. Fluent Bit outputs: [Official Documentation](https://docs.fluentbit.io/manual/pipeline/outputs)
-1. Fluent Bit filters: [Official Documentation](https://docs.fluentbit.io/manual/pipeline/filters)
+1. Fluent Bit Inputs: [Official Documentation](https://docs.fluentbit.io/manual/pipeline/inputs)
+1. Fluent Bit Outputs: [Official Documentation](https://docs.fluentbit.io/manual/pipeline/outputs)
+1. Fluent Bit Filters: [Official Documentation](https://docs.fluentbit.io/manual/pipeline/filters)
 1. Fluent Bit Modify: [Official Documentation](https://docs.fluentbit.io/manual/pipeline/filters/modify)
+1. Fluent Bit Lua Filter: [Official Documentation](https://docs.fluentbit.io/manual/pipeline/filters/lua)
 1. Lua programming language: [Official Documentation](https://www.lua.org)
 1. Lua - Tables: [Official Documentation](https://www.lua.org/pil/2.5.html)
