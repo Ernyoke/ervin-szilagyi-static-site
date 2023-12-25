@@ -239,6 +239,10 @@ Additionally, the Modify FILTER supports conditional actions, meaning that for e
 
 The above FILTER will rename the `ecs_task_definition_family` field to `family` if the value of the `ecs_task_definition_family` starts with `windows.*`. Please note `windows.*` is a regular expression. Aside from the `Key_value_matches` condition there are a bunch of other conditions we can use. All of them can be find in the [Fluent Bit documentation for Modify](https://docs.fluentbit.io/manual/pipeline/filters/modify#conditions).
 
+## Routing and Multiple Outputs
+
+TODO
+
 ## Nest and Lift
 
 When working with Fluent Bit on ECS, generally it is good idea to configure our services to log in JSON format. Most of the logging libraries support this out of the box. Assuming we are logging everything in JSON format, let's say our service generate the following log entry:
@@ -302,17 +306,78 @@ Now we are happy with this, but unfortunately our colleague is not so. He sugges
     Add_prefix NESTED_
 ```
 
-The output for this might be a little funky, since it appears there are two `"log"` objects. In reality there is only one, this output itself is the representation of a map (dictionary) in Lua and it is a bit misleading.
+The output after adding this section to the configuration will look similar to this:
 
 ```bash
 [3] dummy.input: [1703451786.500213512, {"source"=>"stdout", "ecs_task_arn"=>"arn:aws:ecs:region:0123456789012:task/FluentBit-cluster/13EXAMPLE", "container_name"=>"/ecs-windows-app-task-1-sample-container-cEXAMPLE", "ecs_cluster"=>"FluentBit-cluster", "ecs_container_name"=>"sample-container", "ecs_task_definition_version"=>"1", "log"=>{"type"=>"error", "message"=>"Something happened!"}, "ecs_task_definition_family"=>"windows-app-task", "log"=>{"NESTED_container_id"=>"61f5e6EXAMPLE"}}]
 ```
 
-## Routing and Multiple Outputs
+We can notice that this output is a little bit funky, since it appears there are two `"log"` objects. This is actually a ["bug"](https://github.com/fluent/fluent-bit/issues/1177) in the Fluent Bit version used for this blog post. The demos in provided here are using the latest Fluent Bit docker image maintained by AWS, which under the hood at, the moment of writing, is based on Fluent Bit `1.9.10`. Technically, this issue was [fixed](https://github.com/fluent/fluent-bit/commit/1d148860a8825d5f80aef40efd0d6d2812419740) in a later version of Fluent Bit by maintaining only the latest key in the table, which may or may not be the appropriate behavior...
+
+So, there are few caveats for Nest and Lift:
+
+- As we have seen before, if we would like to nest an field into an already existing field, technically that will overwrite the existing one, even if the field itself is a nested object. Personally, I would have preferred to merge them, but I'm fully aware that this will come with its own baggage of challenges and edge cases.
+- Lets say we have a deeply nested object such as this:
+
+```json
+{
+    "source": "stdout",
+    "log": {
+        "type": "error",
+        "message": "Something happened!",
+        "details": {
+            "code": 128,
+            "stacktrace": "..."
+        }
+    },
+}
+```
+In case we would like to lift only the `"code"` property to the root, we simply can not do this easily. We will have to lift the content of the `"log"` first and then the content of `"details"`. At this point we essentially decimated the original structure of our JSON, which is probably not what we wanted in the first place. A similar limitation applied to Nest operation as well. We are able to nest only one level deep.
+
+## Lua Scripting
+
+In case we want more flexibility for processing log entries, we can write our own embedded filters using Lua language. [Lua](https://www.lua.org/) is a highly efficient programming language used mainly for embedded scripting.
+
+It is very easy to integrated a Lua script into a Fluent Bit configuration. First we have to define a FILTER which will call our script:
+
+```bash
+[FILTER]
+    Name    lua
+    Match   *
+    script  script.lua
+    call    transform
+```
+
+Then, we have to create a script file (named `script.lua` in this case, but we can name it however we want) and write our function (named `transform` in this case, but again, we can name this as we wish) which will be invoked for each log entry.
+
+```lua
+function transform(tag, timestamp, record)
+    record["from_lua"] = "hello from lua"
+    return 1, timestamp, record
+end
+```
+
+There are a few restriction for this function. The function should accept the following arguments:
+
+- `tag`: tag of the log entry, we discussed tags in detail at the routing section of the blog post;
+- `timestamp`: unix timestamp of each log entry
+- `record`: the log entry itself. The type of this argument is a Lua [table](https://www.lua.org/pil/2.5.html)
+
+This function has to return 3 values:
+- `code`: must be one of the following values:
+    - `-1`: tells Fluent Bit to drop the current log entry
+    - `0`: the current log entry was not modified
+    - `1`: the current log entry was modified
+    - `2`: the timestamp was modified
+- `timestamp`: the unix timestamp of the log entry, usually it is returned as it was received in the arguments
+- `record`: log entry itself, in the form of a Lua table.
+
+We can do some fairly complex transformation with Lua, since we have infinite flexibility. My suggestion is to keep it to the minimal. We have to remember that this script will be execute for each and every log entry (as long as we did not do a filter before that). Having a heavy and time consuming transformation will result in our log stream lagging behind, or even drop records in the worst possible case. Moreover, sidecar containers usually use the same resources allocated to the main service. If we attempt to consume a significant amount of resources from the main service, we might disturb its operation. 
 
 ## References:
 
 1. Fluent Bit outputs: [Official Documentation](https://docs.fluentbit.io/manual/pipeline/outputs)
 1. Fluent Bit filters: [Official Documentation](https://docs.fluentbit.io/manual/pipeline/filters)
 1. Fluent Bit Modify: [Official Documentation](https://docs.fluentbit.io/manual/pipeline/filters/modify)
-
+1. Lua programming language: [Official Documentation](https://www.lua.org)
+1. Lua - Tables: [Official Documentation](https://www.lua.org/pil/2.5.html)
