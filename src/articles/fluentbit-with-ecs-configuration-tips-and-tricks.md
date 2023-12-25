@@ -417,7 +417,15 @@ This function has to return 3 values:
 - `timestamp`: the unix timestamp of the record, usually it is returned as it was received in the arguments
 - `record`: record itself, in the form of a Lua table.
 
-We can do some fairly complex transformation with Lua, since we have infinite flexibility. My suggestion is to keep it to the minimal. We have to remember that this script will be execute for each and every record (as long as we did not do a filter before that). Having a heavy and time consuming transformation will result in our log stream lagging behind, or even drop records in the worst possible case. Moreover, sidecar containers usually use the same resources allocated to the main service. If we attempt to consume a significant amount of resources from the main service, we might disturb its operation. 
+We can do some fairly complex transformation with Lua, since we have infinite flexibility. My suggestion is to keep it to the minimal. We have to remember that this script will be execute for each and every record (as long as we did not do a filter before that). Having a heavy and time consuming transformation will result in our log stream lagging behind, or even drop records in the worst possible case. Moreover, sidecar containers usually use the same resources allocated to the main service. If we attempt to consume a significant amount of resources from the main service, we might disturb its operation.
+
+## Final Toughts
+
+The motivation behind this blog post was to share certain ideas aquired while working with Fluent Bit side-car container in production. Some of these might seem boring or obvious if you have experience with this tool. That is absolutely fine. Logging should be boring, without any unforseen surprises. It should just work. 
+
+That being said, I hope some of these ideas could be helpful for somebody out there. Cheers!
+
+The code for the examples presented in this blog post can be found on GitHub: [https://github.com/Ernyoke/ecs-with-fluentbit](https://github.com/Ernyoke/ecs-with-fluentbit)
 
 ## References:
 
