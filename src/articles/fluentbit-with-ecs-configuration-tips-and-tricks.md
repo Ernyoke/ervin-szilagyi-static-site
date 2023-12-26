@@ -1,16 +1,18 @@
 # Fluent Bit with ECS: Configuration Tips and Tricks
 
-A while ago I wrote an [blog post](./ecs-custom-logging-with-fluentbit.md) about Fluent Bit integration with containers running in an ECS cluster. According to my statistics, this post is one of the most viewed on my blog, so I was determined to write a follow-up for it. I've been using FluentBit with ECS for more than year in a consumer application in production. During this period I had the change to make use of and even abuse several features provided by Fluent Bit.
+A while ago I wrote a [blog post](./ecs-custom-logging-with-fluentbit.md) about Fluent Bit integration with containers running in an ECS cluster. According to my statistics, this post is one of the most viewed on my blog, so I was determined to write a follow-up for it. I've been using FluentBit with ECS for more than a year in a business application running in production. During this period I had the chance to make use of and even abuse several features provided by Fluent Bit.
 
-Generally speaking my experience with Fluent Bit in the last year was positive. In certain cases I found that it had a steep learning curve and in certain cases I felt I was doing things which I should not supposed to be doing. In the end, I managed to reconcile myself with how it operates and I can say for sure that it is a fast and very polished product which can handle huge production workloads.
+Generally speaking my experience with Fluent Bit in the last year was positive. In many cases, I found that it had a steep learning curve, and several times I felt I was doing things that I should not supposed to be doing. In the end, I managed to reconcile myself with how it operates and I can say for sure that it is a fast and very polished product that can handle huge production workloads.
 
-In this blog post I will talk about certain tips and tricks for the Fluent Bit configuration file that I found useful. Some of them might be trivial if you already have experience with Fluent Bit. I feel that they might be helpful for anybody interested in introducing Fluent Bit in an ECS cluster.
+In this blog post, I will talk about certain tips and tricks for the Fluent Bit configuration file that I found useful. Some of them might be trivial if you already have experience with it. Nevertheless, I think that they might be helpful for anybody interested in introducing Fluent Bit to their cluster of services.
 
-In this blog post we will not talk about how to set up Fluent Bit. If you are interested about that, please read my previous post in this topic: [ECS Fargate Custom Logging with Fluent Bit](./ecs-custom-logging-with-fluentbit.md). Moreover, there are several useful articles from AWS, such as this one: [Centralized Container Logging with Fluent Bit](https://aws.amazon.com/blogs/opensource/centralized-container-logging-fluent-bit/).
+This post will not provide a guideline on how to set up Fluent Bit. If you are interested in that, please read my previous post on this topic: [ECS Fargate Custom Logging with Fluent Bit](./ecs-custom-logging-with-fluentbit.md). Moreover, there are several useful articles from AWS, such as this one: [Centralized Container Logging with Fluent Bit](https://aws.amazon.com/blogs/opensource/centralized-container-logging-fluent-bit/).
 
 ## Fluent Bit Configuration Basics
 
-Fluent Bit can be configured with a `fluent-bit.conf` configuration file or with YAML configuration. In this blog post we will focus on the so called classic `.conf` format. A basic configuration file would look like this:
+Fluent Bit can be configured with a `fluent-bit.conf` configuration file or with YAML configuration. We will focus on the so-called classic `.conf` configuration format since at this point the YAML configuration is not that widespread. 
+
+A basic configuration file would look like this:
 
 ```
 [SERVICE]
@@ -34,18 +36,20 @@ Fluent Bit can be configured with a `fluent-bit.conf` configuration file or with
 
 We can notice that a configuration file can have the following sections:
 
-- *Service*: defines global properties for the Fluent Bit container. Some example for these kind of properties are how often should the container flush its content, the logging level of the Fluent Bit container (not the service from which we gather the log entries) or if we would like to add additional plugins or parsers (more about parsers bellow).
-- *Input*: defines the source from where we will attempt to collect records. Fluent Bit can receive records from multiple sources, such as log streams created by applications and services, Linux/Unix system log, hardware metrics, Docker events, etc. Full list of inputs can be found in the [documentation](https://docs.fluentbit.io/manual/pipeline/inputs). When we talk about Fluent Bit usage together with ECS containers, these records are log events (log messages with additional metadata).
-- *Output*: defines the sink, the destination where certain records will go. Fluent Bit supports multiple destinations, such as: ElasticSearch, AWS S3, Kafka our event stdout. For a full list, see the official documentation for [outputs](https://docs.fluentbit.io/manual/pipeline/outputs).
-- *Filter*: the name of this section is somewhat misleading in my oppinion. Filters can be used to manipulate data, not just for filtering certain entries. With filters we can modify certain fields from the records or we can add/remove/rename certain information. Full list of filters can be found [here](https://docs.fluentbit.io/manual/pipeline/filters).
+- *Service*: defines global settings for the Fluent Bit container. Some examples of these kinds of settings are how often should the container flush its content, the logging level of the Fluent Bit agent, or if we would like to add additional plugins or parsers (more about parsers below).
+- *Input*: defines the source from where the agent will attempt to collect records. Fluent Bit can receive records from multiple sources, such as log streams created by applications and services, Linux/Unix system logs, hardware metrics, Docker events, etc. A full list of inputs can be found in the [documentation](https://docs.fluentbit.io/manual/pipeline/inputs). When we talk about Fluent Bit usage together with ECS containers, most of the time these records are log events (log messages with additional metadata).
+- *Output*: defines the sink, the destination where certain records will go. Fluent Bit supports multiple destinations, such as ElasticSearch, AWS S3, Kafka our event stdout. For a full list, see the official documentation for [outputs](https://docs.fluentbit.io/manual/pipeline/outputs).
+- *Filter*: the name of this section is somewhat misleading in my opinion. Filters can be used to manipulate records, not just for filtering and dropping entries. With filters, we can modify certain fields from the records or we can add/remove/rename certain information. A full list of filters can be found [here](https://docs.fluentbit.io/manual/pipeline/filters).
 
-Not all of this sections are mandatory. Generally we need at least the input and output sections. The `fluent-bit.conf` file is also referred as the main configuration file. Besides this file we can have additional configuration, such as parsers. Parsers are used transform input records into an structured object, such as JSON. We can write our own parsers and save it into a `parser.conf` file. Before attempting to do this, it is important to know that Fluent Bit comes with its own pre-configured `parser.conf` file (https://github.com/fluent/fluent-bit/blob/master/conf/parsers.conf). This supports most of the popular log formats, such a Docker, nginx or syslog.
+Not all of these sections are mandatory in a configuration file. Generally, we need at least the input and output sections. The `fluent-bit.conf` file is also referred to as the main configuration file. Besides this file, we can have additional configurations, such as parsers. Parsers are used to read and transform raw input records into a structured object, such Lua tables (tables are the equivalent of a dictionary/map in other languages). This is required by the agent to be able to further process them with filters.  
+
+We can write our own parsers and load them, or we can rely on the ones provided by Fluent Bit itself. It comes with its own pre-configured `parser.conf` file (https://github.com/fluent/fluent-bit/blob/master/conf/parsers.conf). These parsers support most of the popular log formats, such as Docker, nginx, or syslog.
 
 ## Debugging and Troubleshooting Fluent Bit Configuration File
 
-While working with Fluent Bit I found myself loosing a lot of time with deployments. If I wanted to see the effects certain changes I made in the configuration file, I had to rebuild the Fluent Bit image, push it to an ECR repo, restart the main service which will load the newest version of the sidecar container and the just wait for the log messages to arrive and hopefully see some meaningful change. This can be very annoying and time consuming. It is wiser to attempt to run the container locally and provide some dummy input for testing a modification in the configuration file.
+While working with Fluent Bit I found myself losing a lot of time with deployments. If I wanted to see the effects of certain changes I made in the configuration file, I had to rebuild the Fluent Bit image, push it to an ECR repo, restart the main service which will load the newest version of the sidecar container, and then just wait for the log messages to arrive while hoping to see some meaningful change. This laborious process can be very annoying. It is way wiser to attempt to run the container locally and provide some test input for validating a modification in the configuration file.
 
-What I recommend doing is building a container with a test configuration file. In this test configuration file we can set a input type to `dummy`. What will this `dummy` input do, you might ask? We can give a predefined record as input, and it will repeat this input over and over again. Additionally, if we set the output to be `stdout`, we will create a way of doing "printf debugging".
+We mentioned that we can have several types of `INPUT`s. One of them, having the name of `dummy`, was purposefully implemented for quick testig. It accepts a pre-defined JSON as input. It will repeatedly send this input for processing over and over again, simulating a stream of data. Additionally, if we set the `OUTPUT` to be `stdout`, we will create a way of doing "printf debugging".
 
 For example:
 
@@ -85,7 +89,7 @@ We run the image locally:
 docker run --rm fluent-bit-dummy
 ```
 
-This will launch the container and it will run until we stop it with `Ctrl+C` key combination. It will produce and output such as this:
+This will launch the container that will run until we stop it with `Ctrl+C` key combination. This execution will produce an output similar to the following:
 
 ```bash
 $ docker run --rm fluent-bit-dummy
@@ -116,7 +120,7 @@ Fluent Bit v1.9.10
 [2023/12/24 16:07:08] [ info] [output:stdout:stdout.0] thread worker #0 stopped
 ```
 
-The problem with `dummy` is that it requires the content of the message to be inline. This can be annoying if we want to give something more complex, such a JSON file. For example, ECS containers generate log entries similar to this:
+The problem with `dummy` is that it requires the content of the message to be inline. This can be annoying if we want to give something more complex. For example, a log event generated by the log router of an ECS containers looks like this:
 
 ```json
 {
@@ -132,21 +136,23 @@ The problem with `dummy` is that it requires the content of the message to be in
 }
 ```
 
-We can provide this JSON document as an one-liner, but it would be more ideal if we could put this into a file, and point the input to use that to generate records. Unfortunately, this is not supported with `dummy`. A work-around which I've been using to accomplish this is use `exec` instead of `dummy`. `exec` can take the content from standard output of the script and generate records based on that.
+We could provide this JSON document as a one-liner and call it a day. In my opinion, it would be ideal if we could put this into a file, and point the input to use the content of that file to generate records. Unfortunately, `dummy` input is dummy and does not support reading stuff from a file. 
 
-The bash script would look like this:
+A workaround that I've been using to overcome this limitation, is to have `exec` instead of `dummy`. `exec` can take the content from the standard output of a script and generate records based on that.
+
+We can provide a simple bash script that reads and outputs the content of a file:
 
 ```bash
 #!/bin/bash
 
-# Read content of the log entry from a file
+# Read the content of the log entry from a file
 content=$(cat log.json)
 
 # Echo the output, which will be the input for Fluent Bit
 echo $content
 ```
 
-The configuration file should be modified as such:
+We can alter the configuration file as such:
 
 ```bash
 [SERVICE]
@@ -165,7 +171,7 @@ The configuration file should be modified as such:
     Match  *
 ```
 
-The Dockerfile should also be modified in order to have everything:
+The Dockerfile should also be modified to have the bash script and the log entry JSON file:
 
 ```bash
 FROM amazon/aws-for-fluent-bit:latest
@@ -189,14 +195,14 @@ Running this container locally will print the following over and over again:
 
 ## Loading Parsers
 
-Parsers should be defined in a different configuration file. As noted before, Fluent Bit comes with a bunch of predefined parsers which usually can be found in the `/fluent-bit/parsers/parsers.conf` location. In order for this parsers to be used, we have to load them in the service section:
+Parsers should not be part of the main configuration file, they should be placed into a separate file. Adhering to this requirement, Fluent Bit provides a set of parsers located under `/fluent-bit/parsers/parsers.conf` path. For these parsers to be used, we have to load them in the service section:
 
 ```bash
 [SERVICE]
     Parsers_File /fluent-bit/parsers/parsers.conf
 ```
 
-Parsers can be used with certain input type as we have seen above. Moreover, we can have parser type filters:
+Parsers can work together with INPUTs, as we have already seen in the case of `exec` INPUT. We can also have separate FILTER doing the parsing:
 
 ```bash
 [FILTER]
@@ -206,28 +212,28 @@ Parsers can be used with certain input type as we have seen above. Moreover, we 
     Parser dummy_test
 ```
 
-As a reminder, filters are used to modify data. We will discuss different filters in the upcoming paragraphs.
+As a reminder, FILTERs are used to modify data. We will discuss different types of FILTERs in the upcoming paragraphs.
 
 ## Modify Records with FILTER
 
 The most basic FILTER operation is the [Modify](https://docs.fluentbit.io/manual/pipeline/filters/modify). Modify can be used to do a bunch of changes on a record:
-    - add static fields
-    - overwrite fields
+    - add  fields with static values
+    - overwrite fields with static values
     - remove fields
     - rename fields
 
-Adding a static value to each record might seem to be that useful. What makes them really cool is the ability to use environment variables. For example, we can inject the current environment/AWS region in each record:
+Aside from static fields, we can refer to environment variables as well.  For example, we can inject the current environment/AWS region in each record:
 
 ```bash
 [FILTER]
-    Name                      modify
-    Add environment           ${ENVIRONMENT}
+    Name                        modify
+    Add environment     ${ENVIRONMENT}
     Add region                ${AWS_REGION}
 ```
 
 `ENVIRONMENT` and `AWS_REGION` are environment variables and they should be specified in the task definition.
 
-Additionally, the Modify FILTER supports conditional actions, meaning that for example we apply a renaming only if certain condition is true, such as the field stars with a certain string.
+Additionally, the Modify FILTER supports conditional actions. For example, we could apply a renaming only if a certain condition is met, such as the field stars with a particular string:
 
 ```bash
 [FILTER]
@@ -237,13 +243,13 @@ Additionally, the Modify FILTER supports conditional actions, meaning that for e
     Condition Key_value_matches ecs_task_definition_family windows.*
 ```
 
-The above FILTER will rename the `ecs_task_definition_family` field to `family` if the value of the `ecs_task_definition_family` starts with `windows.*`. Please note `windows.*` is a regular expression. Aside from the `Key_value_matches` condition there are a bunch of other conditions we can use. All of them can be find in the [Fluent Bit documentation for Modify](https://docs.fluentbit.io/manual/pipeline/filters/modify#conditions).
+The above FILTER will rename the `ecs_task_definition_family` field to `family` if the value of the `ecs_task_definition_family` starts with `windows.*`. Please note `windows.*` is a regular expression. Aside from the `Key_value_matches` condition, there are several other conditions we can use. All of them can be found in the [Fluent Bit documentation for Modify](https://docs.fluentbit.io/manual/pipeline/filters/modify#conditions).
 
 ## Routing and Multiple Outputs
 
-One of the most important ability of Fluent Bit is to have support for multiple outputs. For example, we can deliver a log message to a centralized logging aggregator which is built upon ElasticSearch, while we can also have native CloudWatch alerts and notifications at the same time, since our error logs are delivered to an SQS topic and being processed by a Lambda Function. In order to achieve this architecture, aside from having support for multiple output sink, we also need a way to determine which record goes to which output. This is solved routing.
+One of the most important abilities of the Fluent Bit agent is to offer support for multiple outputs. For example, we could deliver every log message to a centralized logging aggregator which is built upon ElasticSearch, while at the same time, we could direct error messages to an alerting system. To achieve this architecture, we need to introduce the concept of routing records.
 
-In case of a Fluent Bit configuration file, routing requires the presence of two important concepts: `Tag` and `Match`. When we create an input, we can add an optional `Tag` property. Every record from this input will have this tag. For example:
+Routing requires the presence of two important other entry properties: `Tag` and `Match`. When we create an INPUT, we can add an optional `Tag` property. Every record originating from this INPUT will carry this tag. For example:
 
 ```bash
 [INPUT]
@@ -251,7 +257,7 @@ In case of a Fluent Bit configuration file, routing requires the presence of two
     Tag  cpu_usage
 ```
 
-In this example we use the CPU usage to generate records. Each record will be tagged to `cpu_usage` tag. If we want to process records which have this tag, we can use `Match` property:
+We collect the CPU usage to generate records. Each record will be tagged with `cpu_usage`. Now we can define FILTERs to process only these records with the help of `Match`:
 
 ```bash
 [FILTER]
@@ -261,9 +267,9 @@ In this example we use the CPU usage to generate records. Each record will be ta
     Add   mark    Ryzen
 ```
 
-Each record tagged with `cpu_usage` will have a `brand` and a `mark` field. If we also have add another input for memory usage with the tag of `mem_usage`, the records originating from this input wont receive the `brand` and `mark` fields. 
+Each record tagged with `cpu_usage` will have a `brand` and a `mark` field. In case we add another input for collecting the memory usage and we tag these records with `mem_usage`, the records originating from the memory INPUT won't receive the `brand` and `mark` fields. 
 
-Similarly, we can create multiple outputs with the `Match` property. For example, we can create mach the `cpu_usage` only and create a CloudWatch metric for our CPU usage, while we also save every event in an S3 bucket:
+Similarly, we can create multiple outputs possessing the `Match` property. As an example, we can create an OUTPUT to match everything with `cpu_usage` only and build a CloudWatch metric based on this information, while we also could save every event in an S3 bucket:
 
 ```bash
 [OUTPUT]
@@ -286,11 +292,11 @@ Similarly, we can create multiple outputs with the `Match` property. For example
     s3_key_format_tag_delimiters .-
 ```
 
-Note, `Match` accepts a regular expression. We can have a wildcard (`*`) to mach everything.
+Note, `Match` accepts a regular expression. We can have a wildcard (`*`) to match everything.
 
 ## Nest and Lift
 
-When working with Fluent Bit on ECS, generally it is good idea to configure our services to log in JSON format. Most of the logging libraries support this out of the box. Assuming we are logging everything in JSON format, let's say our service generate the following record:
+When working with Fluent Bit on ECS, generally it is a good idea to configure our services to log in JSON format. Most of the logging libraries support this out of the box. Assuming we are logging everything in JSON format, let's imagine our service generates the following log messages:
 
 ```json
 {
@@ -299,8 +305,7 @@ When working with Fluent Bit on ECS, generally it is good idea to configure our 
 }
 ```
 
-In case of ECS, the log router will embed this content under the `"log"` field:
-
+The log router from ECS will embed the content of every log message under the `"log"` field, the final event having a similar format:
 
 ```json
 {
@@ -319,7 +324,7 @@ In case of ECS, the log router will embed this content under the `"log"` field:
 }
 ```
 
-We decide we don't like our content to be embedded under `"log"` property, so we want everything to be on the root level. In order to do this, we can use the `Nest` FILTER. This filter has two operation, the first one being `Nest` (again, confusing I know), the second on is `Lift`. In case we want to lift out fields to the root level, we can do the following:
+We decided we don't like our log content to be embedded under `"log"` property, so we want everything to be on the root level of the record. To do this, we can use the `Nest` FILTER. This filter has two operations, the first one being `Nest` (again, confusing I know), and the second one is `Lift`. In case we want to lift out fields to the root level, we can do the following:
 
 ```bash
 [FILTER]
@@ -331,15 +336,15 @@ We decide we don't like our content to be embedded under `"log"` property, so we
     Add_prefix   LIFTED_
 ```
 
-This FILTER will lift everything under the `"log"` and put it into the root. The output will be something like this:
+This FILTER will lift everything situated under the `"log"` and put it into the root. The output will be something like this:
 
 ```bash
 [5] dummy.input: [1703451474.539715464, {"source"=>"stdout", "ecs_task_arn"=>"arn:aws:ecs:region:0123456789012:task/FluentBit-cluster/13EXAMPLE", "container_name"=>"/ecs-windows-app-task-1-sample-container-cEXAMPLE", "ecs_cluster"=>"FluentBit-cluster", "ecs_container_name"=>"sample-container", "ecs_task_definition_version"=>"1", "container_id"=>"61f5e6EXAMPLE", "ecs_task_definition_family"=>"windows-app-task", "LIFTED_type"=>"error", "LIFTED_message"=>"Something happened!"}]
 ```
 
-Usually, I recommend add prefix to the lifted fields, but this can be omitted.
+Usually, I recommend adding a prefix to the lifted fields, but this can be omitted.
 
-Now we are happy with this, but unfortunately our colleague is not so. He suggest we keep the `"log"` object as it is and we move the `"container_id"` inside that object. We can accomplish this withe `Nest` operation:
+Now we are happy with how our record looks, but unfortunately, our colleague does not agree with us. He suggests we keep the `"log"` object as it is and move the `"container_id"` inside that object. We can accomplish this with `Nest` operation:
 
 ```bash
 [FILTER]
@@ -357,12 +362,12 @@ The output after adding this section to the configuration will look similar to t
 [3] dummy.input: [1703451786.500213512, {"source"=>"stdout", "ecs_task_arn"=>"arn:aws:ecs:region:0123456789012:task/FluentBit-cluster/13EXAMPLE", "container_name"=>"/ecs-windows-app-task-1-sample-container-cEXAMPLE", "ecs_cluster"=>"FluentBit-cluster", "ecs_container_name"=>"sample-container", "ecs_task_definition_version"=>"1", "log"=>{"type"=>"error", "message"=>"Something happened!"}, "ecs_task_definition_family"=>"windows-app-task", "log"=>{"NESTED_container_id"=>"61f5e6EXAMPLE"}}]
 ```
 
-We can notice that this output is a little bit funky, since it appears there are two `"log"` objects. This is actually a ["bug"](https://github.com/fluent/fluent-bit/issues/1177) in the Fluent Bit version used for this blog post. The demos in provided here are using the latest Fluent Bit docker image maintained by AWS, which under the hood at, the moment of writing, is based on Fluent Bit `1.9.10`. Technically, this issue was [fixed](https://github.com/fluent/fluent-bit/commit/1d148860a8825d5f80aef40efd0d6d2812419740) in a later version of Fluent Bit by maintaining only the latest key in the table, which may or may not be the appropriate behavior...
+We can notice that this output is a little bit funky, since it appears there are two `"log"` objects. This is a ["bug"](https://github.com/fluent/fluent-bit/issues/1177) in the Fluent Bit version used for this blog post. The demos and examples presented in this post are using the latest Fluent Bit docker image maintained by AWS, which at the moment of writing, is based on Fluent Bit `1.9.10`. Technically, this issue was [fixed](https://github.com/fluent/fluent-bit/commit/1d148860a8825d5f80aef40efd0d6d2812419740) in a later version of Fluent Bit. The fix consists of maintaining only the latest key in the table, resulting in an effective overwrite in case the key existed before.
 
-So, there are few caveats for Nest and Lift:
+So, we can enumerate a few caveats for Nest and Lift:
 
-- As we have seen before, if we would like to nest an field into an already existing field, technically that will overwrite the existing one, even if the field itself is a nested object. Personally, I would have preferred to merge them, but I'm fully aware that this will come with its own baggage of challenges and edge cases.
-- Lets say we have a deeply nested object such as this:
+- As we have seen before, if we would like to nest a field into an already existing field, that is not really possible, even if the receiving field itself is a nested object. Personally, I would have preferred a possibility to merge them, but I'm fully aware that this will come with its own baggage of challenges and edge cases.
+- Let's say we have a deeply nested object such as this:
 
 ```json
 {
@@ -377,13 +382,13 @@ So, there are few caveats for Nest and Lift:
     },
 }
 ```
-In case we would like to lift only the `"code"` property to the root, we simply can not do this easily. We will have to lift the content of the `"log"` first and then the content of `"details"`. At this point we essentially decimated the original structure of our JSON, which is probably not what we wanted in the first place. A similar limitation applied to Nest operation as well. We are able to nest only one level deep.
+In case we would like to lift only the `"code"` property to the root, we simply can not do this easily. We will have to lift the content of the `"log"` first and then the content of `"details"`. At this point, we essentially broke the original structure of our JSON, which is probably not what we wanted in the first place.
 
 ## Lua Scripting
 
-In case we want more flexibility for processing records, we can write our own [embedded filters using Lua](https://docs.fluentbit.io/manual/pipeline/filters/lua) language. [Lua](https://www.lua.org/) is a highly efficient programming language used mainly for embedded scripting.
+If we think we need more flexibility for processing records, we can write our own [embedded filters using Lua](https://docs.fluentbit.io/manual/pipeline/filters/lua) language. [Lua](https://www.lua.org/) is a highly efficient programming language used mainly for embedded scripting.
 
-It is very easy to integrated a Lua script into a Fluent Bit configuration. First we have to define a FILTER which will call our script:
+It is relatively easy to integrate a Lua script into a Fluent Bit configuration. First, we have to define a FILTER which will call our script:
 
 ```bash
 [FILTER]
@@ -402,10 +407,10 @@ function transform(tag, timestamp, record)
 end
 ```
 
-There are a few restriction for this function. The function should accept the following arguments:
+There are a few restrictions for this function. The function should accept the following arguments:
 
-- `tag`: tag attached to the record, we discussed tags in detail at the routing section of the blog post;
-- `timestamp`: unix timestamp of each record
+- `tag`: tag attached to the record, we discussed tags in detail in the routing section above;
+- `timestamp`: an Unix timestamp attached to each record
 - `record`: the record itself. The type of this argument is a Lua [table](https://www.lua.org/pil/2.5.html)
 
 This function has to return 3 values:
@@ -414,16 +419,16 @@ This function has to return 3 values:
     - `0`: the current record was not modified
     - `1`: the current record was modified
     - `2`: the timestamp was modified
-- `timestamp`: the unix timestamp of the record, usually it is returned as it was received in the arguments
-- `record`: record itself, in the form of a Lua table.
+- `timestamp`: the Unix timestamp of the record, usually it is returned as it was received in the arguments
+- `record`: the record itself, in the form of a Lua table.
 
-We can do some fairly complex transformation with Lua, since we have infinite flexibility. My suggestion is to keep it to the minimal. We have to remember that this script will be execute for each and every record (as long as we did not do a filter before that). Having a heavy and time consuming transformation will result in our log stream lagging behind, or even drop records in the worst possible case. Moreover, sidecar containers usually use the same resources allocated to the main service. If we attempt to consume a significant amount of resources from the main service, we might disturb its operation.
+We can do some fairly complex transformations with Lua. My suggestion is to keep it to a minimum. We have to remember that this script will be executed for every record (as long as we did not do a filter before that). Having a heavy and time-consuming transformation will result in our processing lagging, or we will end up dropping records in the worst possible scenario. Moreover, sidecar containers usually use the same resources allocated to the main service. If we attempt to steal a significant amount of resources from the main service, we might disturb its operation.
 
-## Final Toughts
+## Final Thoughts
 
-The motivation behind this blog post was to share certain ideas aquired while working with Fluent Bit side-car container in production. Some of these might seem boring or obvious if you have experience with this tool. That is absolutely fine. Logging should be boring, without any unforseen surprises. It should just work. 
+The motivation behind this blog post was to share several ideas acquired while working with Fluent Bit sidecar container in production. Some of these might seem boring or obvious to experienced people and that is absolutely fine. Logging should be boring, without any unforeseen surprises. It should just work. 
 
-That being said, I hope some of these ideas could be helpful for somebody out there. Cheers!
+That being said, I hope some of these tips may be helpful for somebody out there.
 
 The code for the examples presented in this blog post can be found on GitHub: [https://github.com/Ernyoke/ecs-with-fluentbit](https://github.com/Ernyoke/ecs-with-fluentbit)
 
