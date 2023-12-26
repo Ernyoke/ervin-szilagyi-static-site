@@ -11,6 +11,7 @@ I am also an [AWS Community Builder](https://aws.amazon.com/developer/community/
 In my free time I like to tinker with even more technology. I also enjoy reading, video-gaming and sometimes watching Netflix.
 
 # Latest Posts
+
 - 2023
     - December 26, 2023 - [Fluent Bit with ECS: Configuration Tips and Tricks](articles/fluentbit-with-ecs-configuration-tips-and-tricks.md)
     - September 10, 2023 - [Why I Am Not Able to Remove a Security Group?](articles/why-i-am-not-able-to-remove-a-security-group.md)
