@@ -1,6 +1,7 @@
 # Blog Posts
 
 - 2023
+    - December 26, 2023 - [Fluent Bit with ECS: Configuration Tips and Tricks](articles/fluentbit-with-ecs-configuration-tips-and-tricks.md)
     - September 10, 2023 - [Why I Am Not Able to Remove a Security Group?](articles/why-i-am-not-able-to-remove-a-security-group.md)
     - March 19, 2023 - [An Introduction to AWS Batch](articles/an-introduction-to-aws-batch.md)
     - January 21, 2023 - [About OCP Exams](articles/about-ocp-exams.md)
