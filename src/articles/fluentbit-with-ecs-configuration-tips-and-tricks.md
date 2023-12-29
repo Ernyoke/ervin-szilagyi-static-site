@@ -14,11 +14,11 @@ Fluent Bit can be configured with a `fluent-bit.conf` configuration file or with
 
 A basic configuration file would look like this:
 
-```
+```bash
 [SERVICE]
-    Flush           5
-    Daemon          off
-    Log_Level       debug
+    Flush     5
+    Daemon    off
+    Log_Level debug
 
 [INPUT]
     Name cpu
@@ -226,9 +226,9 @@ Aside from static fields, we can refer to environment variables as well.  For ex
 
 ```bash
 [FILTER]
-    Name                        modify
-    Add environment     ${ENVIRONMENT}
-    Add region                ${AWS_REGION}
+    Name            modify
+    Add environment ${ENVIRONMENT}
+    Add region      ${AWS_REGION}
 ```
 
 `ENVIRONMENT` and `AWS_REGION` are environment variables and they should be specified in the task definition.
@@ -237,10 +237,10 @@ Additionally, the Modify FILTER supports conditional actions. For example, we co
 
 ```bash
 [FILTER]
-    Name                              modify
-    Match                              *
-    Rename ecs_task_definition_family family
-    Condition Key_value_matches ecs_task_definition_family windows.*
+    Name                                   modify
+    Match                                  *
+    Rename    ecs_task_definition_family   family
+    Condition Key_value_matches            ecs_task_definition_family windows.*
 ```
 
 The above FILTER will rename the `ecs_task_definition_family` field to `family` if the value of the `ecs_task_definition_family` starts with `windows.*`. Please note `windows.*` is a regular expression. Aside from the `Key_value_matches` condition, there are several other conditions we can use. All of them can be found in the [Fluent Bit documentation for Modify](https://docs.fluentbit.io/manual/pipeline/filters/modify#conditions).
