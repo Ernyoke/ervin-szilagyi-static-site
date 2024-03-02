@@ -193,6 +193,9 @@ ___
 - **AWS Certified Advanced Networking – Specialty**
     - valid between December 2021 and December 2024
     - Badge: [verify](https://www.credly.com/badges/8c68b90f-3aeb-4a45-a205-bd9428889702/public_url)
+- **AWS Certified Machine Learning – Specialty**
+    - valid between February 2024 and February 2027
+    - Badge: [verify](https://www.credly.com/badges/f0099e97-f4ab-47c5-a809-eab1e6b8def0/public_url)
 - **Microsoft Certified: Azure Fundamentals**
     - since September 2020
     - Badge: [verify](https://www.credly.com/badges/3e2a89c1-0ef3-4a45-9e22-ccd54ac6e0ef/public_url)
