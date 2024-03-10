@@ -8,7 +8,7 @@
 
 ## About Me
 
-Experienced software engineer having a wide interest in distributed backend systems, software and cloud architecture, and DevOps practices.
+Experienced software engineer having a wide interest in highly scalable and distributed systems, software and cloud architecture, and DevOps practices.
 
 I am an [AWS Community Builder](https://aws.amazon.com/developer/community/community-builders/community-builders-directory/?cb-cards.sort-by=item.additionalFields.cbName&cb-cards.sort-order=asc&awsf.builder-category=*all&awsf.location=*all&awsf.year=*all&cb-cards.q=ervin&cb-cards.q_operator=AND) in the Containers Category.
 
@@ -41,19 +41,20 @@ ___
 
 ### Accenture Romania
 
-- #### Software Product & Platform Engineering Associate Manager
+- #### **Software Product & Platform Engineering Associate Manager**
+
+    *From August 2021 until the now*
+
+    - Platform Engineer/Solutions Architect working mainly on AWS infrastructure.
+    - Main areas of experience: system design for highly available software product; big data ingestion and ETL workflows; distributed and event based systems.
+
+- #### **Software Product & Platform Engineering Specialist**
 
     *From August 2021 until the November 2022*
 
-    - I have no idea what I'm doing...
-
-- #### Software Product & Platform Engineering Specialist
-
-    *From August 2021 until the November 2022*
-
-    - Cloud Engineer/Solutions Architect working mainly on AWS infrastructure in the automotive industry.
+    - Platform Engineer/Solutions Architect working mainly on AWS infrastructure in the automotive industry.
     - Assist in architect complex end-to-end cloud-based solutions for client needs. These solutions involved designing secure and usable APIs, and highly available and secure networks for the relevant services.
-    - Take part in the end-to-end development of a set of microservices with all the additional infrastructure requirements (main technology stack: API Gateway, networking (AWS VPC, Route53, Elastic Load Balancers), AWS Lambda (Python, JavaScript, Go), Java microservices (ECS, Docker).
+    - Take part in the end-to-end development of a set of microservices with all the additional infrastructure requirements (main technology stack: API Gateway, networking (AWS VPC, Route53, Elastic Load Balancers), AWS Lambda (Python, JavaScript, Go), Java microservices (ECS, Docker)).
     - Doing cloud automation and monitoring with CloudWatch/Event Bridge and Lambda.
     - Develop, design, and refactor cloud-based infrastructure using IoC tools such as Terraform.
     - Design and implement disaster recovery plans for services and platforms running on a global scale
@@ -62,7 +63,7 @@ ___
 
 ### RIA Solutions Group
 
-- #### Senior Software Engineer
+- #### **Senior Software Engineer**
 
     *From December 2019 until August 2021*
 
@@ -70,7 +71,7 @@ ___
     - Main technology stack for integration consisted of Spring Integration and Java EE technologies such as JBoss for the underlying web server, Java EE 8, JMS (ActiveMQ, IBM MQ), and JPA (EclipseLink).
     - Participate in architecture design and implementation. Discuss and present technical solutions for clients.
 
-- #### Software Engineer/Team Leader
+- #### **Software Engineer/Team Leader**
 
     *From August 2019 until November 2019*
 
@@ -88,7 +89,7 @@ ___
 
 ### Endava Romania
 
-- #### Software Engineer
+- #### **Software Engineer**
 
     *From August 2017 to September 2019*
 
@@ -105,7 +106,7 @@ ___
     - Gather requirements from the external clients, actively participate in client and internal agile meetings;
     - Develop REST-based Web Services used by third parties and implement REST end-points;
     - Secure REST endpoints using Spring Security. Write and generate documentation for these end-points using Swagger;
-    - Initiate extensive refactorings of older functionalities, focus on the usage of design patterns;
+    - Initiate extensive code refactoring initiatives for older functionalities, focus on the usage of design patterns;
     - Integrate with the external services which were exposing both REST and SOAP end-points;
     - Create user-friendly GUIs using HTML, CSS and Javascript, implement single-page front-end applications using Angular;
     - Extensively involved in code reviews (platforms used: BitBucket);
@@ -114,7 +115,7 @@ ___
 
 ### Accenture Industrial Software Solutions Romania
 
-- ### Software Engineer
+- ### **Software Engineering Associate**
 
     *From May 2015 to July 2017*
 
@@ -152,7 +153,7 @@ ___
 
 - **Studied**: Agile Methodologies, Numerical Math and Statistics, Virtual Reality and Game Development, Genetic Algorithms, Concurrent Computing (CUDA), Distributed Systems (Java EE), Software Verification and Synthesis, Software Testing, Modern Databases, Component-Based Software Development
 - **Final grade**: 10/10
-- **Thesis**: Parallel artistic style transfer using deep convolutional neural network
+- **Thesis**: Parallel Artistic Style Transfer using Deep Convolutional Neural Networks
 
 ### **Bachelor's Degree in Computer Science** at *Sapientia Hungarian University of Transylvania [Târgu-Mureş, Romania]* 
 
