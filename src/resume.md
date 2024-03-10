@@ -43,7 +43,7 @@ ___
 
 - #### **Software Product & Platform Engineering Associate Manager**
 
-    *From August 2021 until the now*
+    *From August 2021 until now*
 
     - Platform Engineer/Solutions Architect working mainly on AWS infrastructure.
     - Main areas of experience: system design for highly available software product; big data ingestion and ETL workflows; distributed and event based systems.
