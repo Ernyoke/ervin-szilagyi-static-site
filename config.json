@@ -14,6 +14,10 @@
             "frame": "src/index_frame.html"
         },
         {
+            "file": "src/resume.md",
+            "frame": "src/resume_frame.html"
+        },
+        {
             "file": "src/articles/*.md",
             "frame": "src/articles/article_frame.html"
         },
