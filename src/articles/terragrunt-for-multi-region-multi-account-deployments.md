@@ -32,7 +32,124 @@ To answer our initial question, we chose Terragrunt because:
 - It fits the multi-region/multi-account approach. In case we dour our modules wisely, we use only the necessary modules for each region/environment. The caveat here is that we have to modularize our code and we do it adequately, which is might be not as easy as we would expect.
 - By introducing versioning for our modules, we could evolve different environments at their own pace.
 
-Now all of these come with a price: refactoring. Terragrunt relies on Terraform modules and our initial code was not as modular as one might expect. So we had to refactor a lot, which also came with an even bigger challenge: state management and transfering resources between state.
+Now all of these come with a price: refactoring. Terragrunt relies on Terraform modules and our initial code was not as modular as one might expect. So we had to refactor a lot, which also came with an even bigger challenge: state management and transferring resources between state.
+
+## Ho to Use Terragrunt?
+
+To use Terragrunt, first we have to be comfortable with [Terraform modules](https://developer.hashicorp.com/terraform/language/modules). The concept of modularization is simple:
+
+- Terraform provides building blocks such as resources and data sources;
+- Some of these resources are often used together (for example: a database and Route 53 record for its hostname)
+- It might make group these resources together in a reusable container. These reusable containers are called modules.
+
+Modules can communicate between themselves with inputs and outputs. Terragrunt requires us that all of our Terraform resources are part of modules.
+
+In the official Terragrunt documentation there is [a good article](https://terragrunt.gruntwork.io/docs/features/keep-your-terraform-code-dry/) about how to setup a Terragrunt project and where to place modules. In fact, there is an [repository](https://github.com/gruntwork-io/terragrunt-infrastructure-live-example) on GitHub hosting a example project on how the creators recommend to set up Terragrunt. I certainly recommend going to through that project, because it is as good as a reference could be. Having that project as a starting point I like to structure mine a little bit different. My recommendation is to have different AWS accounts for each environment. Usually this is relatively easy to accomplish even if we are working in a corporate job (your workplace most likely is using AWS Organizations to manage accounts), and multiple accounts do not inquire additional costs by themselves, we only pay for the resources and services we use. 
+
+In the [terragrunt-infrastructure-live-example](https://github.com/gruntwork-io/terragrunt-infrastructure-live-example) the split for the environments is done by **prod** an **non-prod** accounts. Each of this is split by region, while the **non-prod** account is also used for **qa** and **stage** environments. This is fine, the one downside being that you have to think about a naming convention for your resources, since in **non-prod** you will have same thing for both **qa** and **stage**. While this is not that big of a deal, I personally prefer to have one environment per region. My proposal for a Terragrunt project setup would look like this:
+
+```bash
+tg-multi-account
+│   .gitignore
+│   global.hcl
+│   terragrunt.hcl
+│
+├───dev
+│   │   account.hcl
+│   │
+│   └───us-east-1
+│       │   region.hcl
+│       │
+│       ├───alb
+│       │       terragrunt.hcl
+│       │
+│       ├───ecs-cluster
+│       │       terragrunt.hcl
+│       │
+│       ├───ecs-services
+│       │   └───frontend
+│       │           terragrunt.hcl
+│       │
+│       └───vpc
+│               terragrunt.hcl
+│
+├───prod
+│   │   account.hcl
+│   │
+│   ├───eu-west-1
+│   │   │   region.hcl
+│   │   │
+│   │   ├───alb
+│   │   │       terragrunt.hcl
+│   │   │
+│   │   ├───ecs-cluster
+│   │   │       terragrunt.hcl
+│   │   │
+│   │   ├───ecs-services
+│   │   │   └───frontend
+│   │   │           terragrunt.hcl
+│   │   │
+│   │   └───vpc
+│   │           terragrunt.hcl
+│   │
+│   └───us-east-1
+│       │   region.hcl
+│       │
+│       ├───alb
+│       │       terragrunt.hcl
+│       │
+│       ├───ecs-cluster
+│       │       terragrunt.hcl
+│       │
+│       ├───ecs-services
+│       │   └───frontend
+│       │           terragrunt.hcl
+│       │
+│       └───vpc
+│               terragrunt.hcl
+│
+├───qa
+│   │   account.hcl
+│   │
+│   ├───eu-west-1
+│   │   │   region.hcl
+│   │   │
+│   │   ├───alb
+│   │   │       terragrunt.hcl
+│   │   │
+│   │   ├───ecs-cluster
+│   │   │       terragrunt.hcl
+│   │   │
+│   │   ├───ecs-services
+│   │   │   └───frontend
+│   │   │           terragrunt.hcl
+│   │   │
+│   │   └───vpc
+│   │           terragrunt.hcl
+│   │
+│   └───us-east-1
+│       │   region.hcl
+│       │
+│       ├───alb
+│       │       terragrunt.hcl
+│       │
+│       ├───ecs-cluster
+│       │       terragrunt.hcl
+│       │
+│       ├───ecs-services
+│       │   └───frontend
+│       │           terragrunt.hcl
+│       │
+│       └───vpc
+│               terragrunt.hcl
+│
+└───_env
+        alb.hcl
+        frontend.hcl
+        vpc.hcl
+```
+
+Here we have 3 environments: **dev**, **qa** and **prod**. Each environment should be living in a single AWS account. The root of the project contains variables (`locals`) shared by each and every environment. If we go inside an environment, we have the account specific properties (`account.hcl`) and the regions in which we would like to deploy. Inside a region we have the region specific configuration (`region.hcl`) and all the modules we would like to have in the specific region.
 
 
 ## References:
@@ -40,3 +157,4 @@ Now all of these come with a price: refactoring. Terragrunt relies on Terraform 
 1. [Terraform Modules](https://developer.hashicorp.com/terraform/language/modules)
 1. [Terragrunt Dependency Blocs](https://terragrunt.gruntwork.io/docs/reference/config-blocks-and-attributes/#dependency)
 1. [The terraform_remote_state Data Source](https://developer.hashicorp.com/terraform/language/state/remote-state-data)
+1. [Keep your Terraform code DRY](https://terragrunt.gruntwork.io/docs/features/keep-your-terraform-code-dry/)
