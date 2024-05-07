@@ -1,5 +1,7 @@
 # Blog Posts
 
+- 2024
+    - May 08 - [Terragrunt for Multi-Region/Multi-Account Deployments](articles/terragrunt-for-multi-region-multi-account-deployments.md)
 - 2023
     - December 26, 2023 - [Fluent Bit with ECS: Configuration Tips and Tricks](articles/fluentbit-with-ecs-configuration-tips-and-tricks.md)
     - September 10, 2023 - [Why I Am Not Able to Remove a Security Group?](articles/why-i-am-not-able-to-remove-a-security-group.md)
