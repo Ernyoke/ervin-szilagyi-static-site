@@ -48,7 +48,7 @@ Modules can communicate between themselves with inputs and outputs. Terragrunt r
 
 In the official Terragrunt documentation there is [a good article](https://terragrunt.gruntwork.io/docs/features/keep-your-terraform-code-dry/) about how to set up a Terragrunt project and where to place modules. In fact, there is also a [repository](https://github.com/gruntwork-io/terragrunt-infrastructure-live-example) on GitHub providing an example project on how the creators recommend setting up Terragrunt. I certainly recommend going through that repository, because it is a good reference for a starting point. Having that said, I like to structure mine a little bit differently. My recommendation is to have different AWS accounts for each environment. Getting a new account usually is relatively easy to accomplish even if we are working in a corporate environment (your workplace most likely is using AWS Organizations to manage accounts). The existence of multiple accounts does not require additional costs, we only pay for what we use. 
 
-In the [terragrunt-infrastructure-live-example](https://github.com/gruntwork-io/terragrunt-infrastructure-live-example) the split for the environments is done by **prod** and **non-prod** accounts. Each of these is further split by region. The **non-prod** account is also used for **qa** and **stage** environments. This setup can be perfectly acceptable, the one downside being that we will have to think about a naming convention for our resources, since in **non-prod** we will have the same cloud resources for both **qa** and **stage**. While this is not that big of a deal, I prefer to have one environment per account. My proposal for a Terragrunt project setup would look like this:
+In the [terragrunt-infrastructure-live-example](https://github.com/gruntwork-io/terragrunt-infrastructure-live-example) the split for the environments is done by **prod** and **non-prod** accounts. Each of these is further split by region. The **non-prod** account is also used for **qa** and **stage** environments. This setup can be perfectly acceptable, the one downside being that we will have to think about a naming convention for our resources, since in **non-prod** we will have the same cloud resources for both **qa** and **stage**. While this is not that big of a deal, I prefer to have one environment per account. My proposal for a Terragrunt project setup would look like this (GitHub repository for this example project can be found here: [https://github.com/Ernyoke/tg-multi-account](https://github.com/Ernyoke/tg-multi-account)):
 
 ```bash
 tg-multi-account
@@ -155,7 +155,7 @@ Here we have 3 environments: **dev**, **qa**, and **prod**. Each environment sho
 
 Now let's focus on the Terragrunt modules. If we open a configuration, for example for the VPC, a possible implementation would be the following:
 
-```lang-hcl
+```hcl
 terraform {
   source = "tfr:///terraform-aws-modules/vpc/aws//.?version=5.8.1"
 }
@@ -194,7 +194,7 @@ Taking the "DRY" -ness a step further, we can notice that modules such as `vpc` 
 
 The extracted file will look like this:
 
-```lang-hcl
+```hcl
 # ./_env/vpc.hcl
 
 terraform {
@@ -222,7 +222,7 @@ inputs = {
 
 In case our region is not from us-east-1, we can override the availability zones with sensible ones:
 
-```lang-hcl
+```hcl
 # ./qa/eu-west-1/vpc/terragrunt.hcl
 
 include "root" {
@@ -288,14 +288,14 @@ Here are a few examples that can be considered instead of Terragrunt.
 
 1. [Terramate](https://github.com/terramate-io/terramate): It seems like a good alternative, and I think it could have been a better choice for certain issues we had. With Terramate the transition from Terraform might have been easier since Terraform projects can be imported seamlessly. Furthermore, we don't have to think right away about how to modularize everything. The reason it was not chosen, is that my team was mainly familiar with Terragrunt. We had no experience with Terramate, so we decided to play it safely.
 2. [Terraform Stacks](https://www.hashicorp.com/blog/terraform-stacks-explained): at the point of writing this post, it is still not generally available. It was not even considered by us back then, since it was in private preview and nobody had access to it. It might be a good choice in the future, but for now, it is not something we can use.
-3. Terraform Workspaces: they are a similar approach to having different tfvars files per environment/region, a solution we were extensively using. We found that it is not the best choice since it scales poorly if the infrastructure gets bigger and bigger. However, If you start a project, I still recommend sticking to workspaces at the beginning and moving to something afterward, when it is needed.
+3. [Terraform Workspaces](https://developer.hashicorp.com/terraform/language/state/workspaces): they are a similar approach to having different tfvars files per environment/region, a solution we were extensively using. We found that it is not the best choice since it scales poorly if the infrastructure gets bigger and bigger. However, If you start a project, I still recommend sticking to workspaces at the beginning and moving to something afterward, when it is needed.
 4. Insert any other tool here: understandably there are many other options out there.  When making a decision for something that will have to be maintained by multiple people for a living, usually we go with the one tool that has to most support on the internet, it is known by most of the people from the team and generally has a good reputation.
 
 ## Final Thoughts
 In conclusion, Terragrunt is a powerful tool with many functionalities. It is an opinionated way of working with infrastructure. It might not be the best choice for everyone. 
 
 Should I use it for my next project?
-It depends. If you did not encounter some of the issues that are aimed to be solved by it, then you probably may not want to use it. It will add considerable maintenance baggage. To quote the Terragrunt author here [source](https://www.reddit.com/r/Terraform/comments/15242e4/comment/jsmoedj/?utm_source=share&utm_medium=web3x&utm_name=web3xcss&utm_term=1&utm_content=share_button):
+It depends. If you did not encounter some of the issues that are aimed to be solved by it, then you probably may not want to use it. It will add considerable maintenance baggage. To quote the Terragrunt author here [[source]](https://www.reddit.com/r/Terraform/comments/15242e4/comment/jsmoedj/?utm_source=share&utm_medium=web3x&utm_name=web3xcss&utm_term=1&utm_content=share_button):
 
 > If you're working on a small project (e.g., a solo project or hobby), none of this matters, and you probably don't need Terragrunt. But if you're working at a company that is using Terraform to manage infrastructure for multiple teams and multiple environments, the items above make it hard to create code that is maintainable and understandable, and that's where Terragrunt can be a great option.
 
