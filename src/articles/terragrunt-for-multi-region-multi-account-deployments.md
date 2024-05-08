@@ -22,17 +22,17 @@ For IaC we decided to use Terraform because we have the most experience with tha
 
 1. We started writing our Terraform code. We put everything in a single Terraform project. We relied on `tfvars` files to have inputs for different environments and regions.
 1. We shortly ran into a scaling problem: attempting to do an `apply` went from a few minutes to a few tens of minutes. Moreover, we run into so communication and deployment issues in terms of certain changes being deployed to production before we wanted them.
-1. Our Terraform project got bigger and bigger. We decide to slice it somehow into smaller pieces. We introduced the internal concept of "stacks" (this was well before the introduction of Terraform Cloud Stacks). A "stack" essentially is a Terraform project deploying a part of our infrastructure. Each stack could use resources deployed by other stacks by relying on Terraform outputs and [`terraform_remote_state`](https://developer.hashicorp.com/terraform/language/state/remote-state-data) or just by simply using data sources.
+1. Our Terraform project got bigger and bigger. We decide to slice it somehow into smaller pieces. We introduced the internal concept of "stacks" (this was well before the introduction of Terraform Cloud Stacks). From our point of view, a "stack" essentially was a Terraform project deploying a well-defined part of our infrastructure. Each stack could use resources deployed by other stacks by relying on Terraform outputs and [`terraform_remote_state`](https://developer.hashicorp.com/terraform/language/state/remote-state-data) or just by simply using data sources.
 1. With the introduction of stacks we had different projects for networking, databases, ETL (we used mainly AWS Batch), storage (S3 buckets), and so on. This worked for a while until we ran into another problem. At first, it was easy to follow which stack depends on which other stack, but shortly we ran into the issue of circular dependencies. Stack A could create resources used by stack B, while also relying on resources created by stack B. Obviously, this is bad, and at this point, there is no entity to check and police our dependencies.
 1. Moreover, we run into another problem. Certain resources are needed only for certain environments. For example, I need a read replica only for prod, for testing and development I can get by with only the main database. In the beginning, we could solve this by having conditions on whether we want to deploy the resource in the current environment or not. At a certain point, we notice that we have to place these conditions in many places, adding a lot of complexity baggage to our infrastructure code.
 1. So we decided to introduce Terragrunt. 
 
-To answer our initial question, we chose Terragrunt because:
-- It solved the dependency hell we encountered. With Terragrunt we have to be explicit in defining on who does our current module depends.
+To answer the initial question, we chose Terragrunt because:
+- It solved the dependency hell we encountered. With Terragrunt we have to be explicit in defining on who our current module depends.
 - It fits the multi-region/multi-account approach. In case we dour our modules wisely, we use only the necessary modules for each region/environment. The catch here is that we have to modularize our code and we do it adequately, which might be not as easy as we would expect.
 - By introducing versioning for our modules, we could evolve different environments at their own pace.
 
-Now, all of these come with a price: refactoring. Terragrunt relies on Terraform modules. Our initial code was not as modular as we might expected. So we had to do a lot of refactoring, which also came with an even bigger challenge: state management and transferring resources between states.
+Now, all of these come with a price: refactoring. Terragrunt relies on Terraform modules. Our initial code was not as modular as we might expect. So we had to do a lot of refactoring, which also came with an even bigger challenge: state management and transferring resources between states.
 
 ## How does Terragrunt Work?
 
@@ -174,9 +174,9 @@ inputs = {
   name = "${local.project_name}-vpc"
   cidr = "10.0.0.0/16"
 
-  azs             = ["us-east-1a", "us-east-1b", "us-east-1c"]
+  azs             = ["us-east-1a", "us-east-1b", "us-east-1c"]
   private_subnets = ["10.0.1.0/24", "10.0.2.0/24", "10.0.3.0/24"]
-  public_subnets  = ["10.0.101.0/24", "10.0.102.0/24", "10.0.103.0/24"]
+  public_subnets  = ["10.0.101.0/24", "10.0.102.0/24", "10.0.103.0/24"]
 
   enable_nat_gateway = true
   enable_vpn_gateway = false
@@ -185,7 +185,7 @@ inputs = {
 
 To give a short explanation of what we have here:
 
-- In the `terraform` block we have to specify a path to a Terraform module. For example, in this case, we use the VPC module from the [terraform-aws-modules](https://github.com/terraform-aws-modules/terraform-aws-vpc) open source project. We don't necessarily need to rely on other people's code, we can use modules maintained by ourselves by providing a link to a remote Git repository, or we can even have it point to a local path on our drive.
+- In the `terraform` block we have to specify a path to a Terraform module. For example, in this case, we use the VPC module from the [terraform-aws-modules](https://github.com/terraform-aws-modules/terraform-aws-vpc) open source project for which we either could use the URL of the repository, or we could use the URL provided by the Terragrunt registry. We don't necessarily need to rely on other people's code, we can use modules maintained by ourselves by providing a link to our remote Git repository, or we can even have it point to a local path on our drive.
 - The `include` block is optional. It is used for "inheritance". By inheritance, we can think of it as if the parent configuration file is copy/pasted in the current configuration file. This can be useful because we can share common inputs with other environments/regions. Including them in the current configuration, Terragrunt will automatically provide them to the Terraform module. Also, we have the ability to append/override certain inputs as we wish.
 - The `locals` block essentially acts the same as Terraform `locals`. These are local "variables" used in the current configuration. We can also read locals from other configuration files with Terragrunt functions (`read_terragrunt_config`).
 - The `inputs` are values we provide to the Terraform module. If we use inheritance, the includes provided by the parent configuration are automatically merged with current includes, making our configuration [DRY](https://en.wikipedia.org/wiki/Don%27t_repeat_yourself), arguably less readable, more on this later.
@@ -211,9 +211,9 @@ inputs = {
   name = "${local.project_name}-vpc"
   cidr = "10.0.0.0/16"
 
-  azs             = ["us-east-1a", "us-east-1b", "us-east-1c"]
+  azs             = ["us-east-1a", "us-east-1b", "us-east-1c"]
   private_subnets = ["10.0.1.0/24", "10.0.2.0/24", "10.0.3.0/24"]
-  public_subnets  = ["10.0.101.0/24", "10.0.102.0/24", "10.0.103.0/24"]
+  public_subnets  = ["10.0.101.0/24", "10.0.102.0/24", "10.0.103.0/24"]
 
   enable_nat_gateway = true
   enable_vpn_gateway = false
@@ -234,7 +234,7 @@ include "env" {
 }
 
 inputs = {
-  azs  = ["eu-west-1a", "eu-west-1b", "eu-west-1c"]
+  azs  = ["eu-west-1a", "eu-west-1b", "eu-west-1c"]
 }
 ```
 
@@ -266,7 +266,7 @@ The following is a list of challenges that I've encountered during its adoption 
 
 2. **There `plan` command is broken (at least in certain scenarios)**: this is stated even in the documentation for the [`run-all` command](https://terragrunt.gruntwork.io/docs/reference/cli-options/#run-all)
 
-> [WARNING] Using run-all with plan is currently broken for certain use cases. If you have a stack of Terragrunt modules with dependencies between them—either via dependency blocks or `terraform_remote_state` data sources—and you’ve never deployed them, then `run-all plan` will fail as it will not be possible to resolve the dependency blocks or `terraform_remote_state` data sources!
+> [WARNING] Using `run-all` with `plan` is currently broken for certain use cases. If you have a stack of Terragrunt modules with dependencies between them—either via dependency blocks or `terraform_remote_state` data sources—and you’ve never deployed them, then `run-all plan` will fail as it will not be possible to resolve the dependency blocks or `terraform_remote_state` data sources!
 
 This might seem a non-issue at first, but if we consider also to following note for the `apply` command...
 
