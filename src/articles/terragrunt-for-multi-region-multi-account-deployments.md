@@ -146,7 +146,6 @@ tg-multi-account
 │               terragrunt.hcl
 │
 └───_env
-        alb.hcl
         frontend.hcl
         vpc.hcl
 ```
@@ -249,6 +248,8 @@ terragrunt run-all apply
 ```
 
 If we run this command from the root our our project, Terragrunt will attempt to deploy all the resources in all the accounts. This assumes we have the necessary rights to deploy to each account and we also made sure that Terragrunt knows about the IAM role it can assume to do the provisioning (see: [`iam_role`](https://terragrunt.gruntwork.io/docs/reference/config-blocks-and-attributes/#iam_role)).
+
+**LATER UPDATE**: It seems like it is not really possible to execute `run-all apply` from the root of the project in this current example. Terragrunt will fail to find either `globals.hcl` or `account.hcl`. It appears strange to be unable to find `globals.hcl`, but it is understandable to not be able to locate `account.hcl`, since this file is not in a parent folder. It was an oversight on my part while building the example project for this article and I apologize for that. Deploying from an environment should work as it is presented in the upcoming lines.
 
 In case we don't want to deploy everything everywhere at once, we can simply navigate into the folder of the environment/region where we want to provision resources, and we can execute the command there.
 
