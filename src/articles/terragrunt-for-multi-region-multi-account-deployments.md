@@ -14,7 +14,7 @@ Essentially, Terragrunt is a wrapper around Terraform, acting as an orchestrator
 
 ## Why Terragrunt?
 
-To understand why Terragrunt was chosen, it would make sense to go through a timeline of challenges we encountered. 
+To understand why Terragrunt was chosen, it would make sense to go through a timeline of challenges we encountered.
 
 Let's assume we have an application spanning through a few micro-services with an SQL database, some static assets, and a few ETL jobs bringing in some data from external providers. We decide we want to migrate everything to the AWS. Our users are from all over the globe, but our main focus is Europe and the US. We have to offer different data to the EU users and the US users, moreover, we would like to reduce the latency of the responses. So it makes sense to deploy the whole stack on 2 different regions. We also want to have the application deployed separately for development and testing, for which we can use different AWS accounts.
 
@@ -46,7 +46,7 @@ Modules can communicate between themselves with inputs and outputs. Terragrunt r
 
 ### Setting Up a Terragrunt Project
 
-In the official Terragrunt documentation there is [a good article](https://terragrunt.gruntwork.io/docs/features/keep-your-terraform-code-dry/) about how to set up a Terragrunt project and where to place modules. In fact, there is also a [repository](https://github.com/gruntwork-io/terragrunt-infrastructure-live-example) on GitHub providing an example project on how the creators recommend setting up Terragrunt. I certainly recommend going through that repository, because it is a good reference for a starting point. Having that said, I like to structure mine a little bit differently. My recommendation is to have different AWS accounts for each environment. Getting a new account usually is relatively easy to accomplish even if we are working in a corporate environment (your workplace most likely is using AWS Organizations to manage accounts). The existence of multiple accounts does not require additional costs, we only pay for what we use. 
+In the official Terragrunt documentation there is [a good article](https://terragrunt.gruntwork.io/docs/features/keep-your-terraform-code-dry/) about how to set up a Terragrunt project and where to place modules. In fact, there is also a [repository](https://github.com/gruntwork-io/terragrunt-infrastructure-live-example) on GitHub providing an example project on how the creators recommend setting up Terragrunt. I certainly recommend going through that repository, because it is a good reference for a starting point. Having that said, I like to structure mine a little bit differently. My recommendation is to have different AWS accounts for each environment. Getting a new account usually is relatively easy to accomplish even if we are working in a corporate environment (your workplace most likely is using AWS Organizations to manage accounts). The existence of multiple accounts does not require additional costs, we only pay for what we use.
 
 In the [terragrunt-infrastructure-live-example](https://github.com/gruntwork-io/terragrunt-infrastructure-live-example) the split for the environments is done by **prod** and **non-prod** accounts. Each of these is further split by region. The **non-prod** account is also used for **qa** and **stage** environments. This setup can be perfectly acceptable, the one downside being that we will have to think about a naming convention for our resources, since in **non-prod** we will have the same cloud resources for both **qa** and **stage**. While this is not that big of a deal, I prefer to have one environment per account. My proposal for a Terragrunt project setup would look like this (GitHub repository for this example project can be found here: [https://github.com/Ernyoke/tg-multi-account](https://github.com/Ernyoke/tg-multi-account)):
 
@@ -190,7 +190,7 @@ To give a short explanation of what we have here:
 - The `locals` block essentially acts the same as Terraform `locals`. These are local "variables" used in the current configuration. We can also read locals from other configuration files with Terragrunt functions (`read_terragrunt_config`).
 - The `inputs` are values we provide to the Terraform module. If we use inheritance, the includes provided by the parent configuration are automatically merged with current includes, making our configuration [DRY](https://en.wikipedia.org/wiki/Don%27t_repeat_yourself), arguably less readable, more on this later.
 
-Taking the "DRY" -ness a step further, we can notice that modules such as `vpc` are used in each environment/region with little configurational difference. What we can do is extract this configuration into a top-level folder, such as `_env`, and rely on the inheritance feature discussed before. 
+Taking the "DRY" -ness a step further, we can notice that modules such as `vpc` are used in each environment/region with little configurational difference. What we can do is extract this configuration into a top-level folder, such as `_env`, and rely on the inheritance feature discussed before.
 
 The extracted file will look like this:
 
@@ -262,17 +262,17 @@ Like every other tool, Terragrunt has its limitations, especially if we are comi
 
 The following is a list of challenges that I've encountered during its adoption and day-to-day usage. I imagine there are plenty of others faced by other people, this is not an exhaustive list.
 
-1. **Steep learning curve and complexity of usage**: if we are new to Terragrunt, we may get easily overwhelmed by all the new concepts we are introduced to. As we get more familiar with it, we are faced with other challenges, such as configuration inheritance. Having to adhere to practices that make our configuration DRY, can also make it more challenging to understand and follow. 
+1. **Steep learning curve and complexity of usage**: if we are new to Terragrunt, we may get easily overwhelmed by all the new concepts we are introduced to. As we get more familiar with it, we are faced with other challenges, such as configuration inheritance. Having to adhere to practices that make our configuration DRY, can also make it more challenging to understand and follow.
 
 2. **There `plan` command is broken (at least in certain scenarios)**: this is stated even in the documentation for the [`run-all` command](https://terragrunt.gruntwork.io/docs/reference/cli-options/#run-all)
 
-> [WARNING] Using `run-all` with `plan` is currently broken for certain use cases. If you have a stack of Terragrunt modules with dependencies between them—either via dependency blocks or `terraform_remote_state` data sources—and you’ve never deployed them, then `run-all plan` will fail as it will not be possible to resolve the dependency blocks or `terraform_remote_state` data sources!
+> [WARNING] Using `run-all` with `plan` is currently broken for certain use cases. If you have a stack of Terragrunt modules with dependencies between them—either via dependency blocks or `terraform_remote_state` data sources—and you’ve never deployed them, then `run-all plan` will fail as it will not be possible to resolve the dependency blocks or `terraform_remote_state` data sources!
 
 This might seem a non-issue at first, but if we consider also to following note for the `apply` command...
 
 > [NOTE] Using `run-all` with apply or destroy silently adds the `-auto-approve` flag to the command line arguments passed to Terraform due to issues with shared stdin making individual approvals impossible.
 
-...we can probably guess why it might be dangerous to simply do deployments. Although, it might not be such drastic of a situation. My recommendation is that if we have doubts, we should restrict roll-outs to individual modules. In the case of modules, we can execute `plan` or `apply` without the silent auto-approve flag. 
+...we can probably guess why it might be dangerous to simply do deployments. Although, it might not be such drastic of a situation. My recommendation is that if we have doubts, we should restrict roll-outs to individual modules. In the case of modules, we can execute `plan` or `apply` without the silent auto-approve flag.
 
 Also, Terragrunt is meant to be used with multiple environments in mind. Having a successful rollout in a non-prod environment should make us confident and prepared for the production rollout.
 
@@ -292,7 +292,7 @@ Here are a few examples that can be considered instead of Terragrunt.
 4. Insert any other tool here: understandably there are many other options out there.  When making a decision for something that will have to be maintained by multiple people for a living, usually we go with the one tool that has to most support on the internet, it is known by most of the people from the team and generally has a good reputation.
 
 ## Final Thoughts
-In conclusion, Terragrunt is a powerful tool with many functionalities. It is an opinionated way of working with infrastructure. It might not be the best choice for everyone. 
+In conclusion, Terragrunt is a powerful tool with many functionalities. It is an opinionated way of working with infrastructure. It might not be the best choice for everyone.
 
 Should I use it for my next project?
 It depends. If you did not encounter some of the issues that are aimed to be solved by it, then you probably may not want to use it. It will add considerable maintenance baggage. To quote the Terragrunt author here [[source]](https://www.reddit.com/r/Terraform/comments/15242e4/comment/jsmoedj/?utm_source=share&utm_medium=web3x&utm_name=web3xcss&utm_term=1&utm_content=share_button):
