@@ -20,4 +20,29 @@ A better question set comes from AWS themselves on their SkillBuilder site. Unde
 
 ## Exam Experience
 
-I took the Devops exam on May, after which I took the Solutions Architect Professional in August. Starting with the Devops exam, I must confess, I had a rough experience. I was aware 
+I took the Devops exam on May, after which I took the Solutions Architect Professional in August. To begin with my experience with the Devops exam, I must confess, I had a rough time. I was aware about the fact that there is a new version of this exam since around a year ago, but I did not think it would be so much different then 3 years ago.
+
+In my opinion, the exam is way more challenging. At least for my test case, most of the questions were lenghty, many of which being multiple selection. I understand that this is expected from a professional level exam, but I felt that this exam is crossing a threshold and it is testing my sanity instead of my knowledge. Usually I don't even bother about the clock, I tend to be fast enough to finish in time, but in this case I had to use all the time I had. 
+
+For the questions I had all the usual CICD and cloud automation questions, thinks you might expect. Aside from that, I had way to many questions about AWS Organizations and Control Tower. In fact, at some point I was rolling my eyes while encountering another Organizations related question.
+
+Aside from this there were some borderline infuriating questions. To provide an example, the exam expected my to know what kind condition should (or should not) accept a certain action from a bucket policy or what exactly does a certain AWS Config rule (more specifically it expected me to know if there is a Config rule for a certain thing). Memorizing such things is a waste of time in my opinion, and I think it proves basically nothing.
+
+Continuing with the Solutions Architect Professional exam, most of the things I was asked were in the realms of what I had expected. Even though this exam essentially throws every AWS product at you, you only need in-depth experience with a handfull of products. 
+
+Nevertheless, it is a challenging exam, and it can have some surprises. For example, I had a question involving Lambda SnapStart. SnapStart is a new thing used to improve cold starts for Lambdas written in Java. I was closely monitoring this functionality when it was released in AWS, since I am a Java developer at heart. Back then I did not consider it as revolutionary as AWS was advertising it. As a tangent, in my opinion, if you want fast cold starts you either go for GraalVM or just simply drop Java and write your Lambda in anything else. A native option such as Rust (no fanboy, I'm just stating [facts](https://maxday.github.io/lambda-perf/)) would offer way better cold starts.
+
+Anyway, aside from SnapStart, most of the questions were okay. In some cases the wording was abysmal for the either the questions or the answer options, but I'm not a native english speaker.
+
+## Is it Worth to get (Re)Certified?
+
+Is it worth go to get recertified? As cliche as it sounds, it depends. I tend to believe it worths for me. I want to maintain a status of having active certifications in my current workplace. Also, I wanted ot being up to date with all the changes.
+
+Will it worth for you? I don't know.
+
+A more important question would be if its worth to get certified?
+
+If you stumbled to this on this blog post before the exam, you must know that you did not waste your time and money. You are acquiring useful knowledge which you will be able to apply even outside of AWS cloud.
+
+In the other hand, if you are still considering an AWS certification, any certification, it does not have to be professional, you may take in consideration the followings as well:
+- 
