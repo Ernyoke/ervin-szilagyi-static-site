@@ -44,5 +44,9 @@ A more important question would be if its worth to get certified?
 
 If you stumbled to this on this blog post before the exam, you must know that you did not waste your time and money. You are acquiring useful knowledge which you will be able to apply even outside of AWS cloud.
 
-In the other hand, if you are still considering an AWS certification, any certification, it does not have to be professional, you may take in consideration the followings as well:
-- 
+In the other hand, if you are still considering an AWS certification, any certification, it does not have to be one from the professionals, you may take in consideration the followings as well:
+- You are tested on a volatile technology. What does this mean that there are a lot of changes happening for many of the AWS products. Upgrading products, making them more usable or offering more features is a good thing. From a certification perspective, these new upgrades are not introduced right away in the material. What might happen is that your knowledge might be outdated at the moment you get the certification. 
+- Admittedly, even if some certain updates are rolled out and you do learn about those, is not the end of the world. Similarly, in the ballpark of volatility, AWS can retire services. Unfortunately, this happens more often lately. For example:
+![Jeff Bar Tweet about retiring AWS products](img-recertification-and-the-current-state-aws-exams/jeff-bar-tweet.png)
+Most of this AWS products are part of the currently required learning material for certifications. In fact, CodeCommit is a pivotal part of the Devops exam. Aside from these services, there are other services which are sunset such as OpsWorks, Server Migration Service, Snowmobile, and probably other which I cannot remember now. The thing is that these are products about which the exam expects in-depth knowledge, but this knowledge is basically useless in the real world. I understand that what you are learning it might be carried over to alternatives, but many of those are not drop-in replacements.
+
