@@ -15,7 +15,7 @@
                 "file": "src/resume.md",
                 "action": "STATIC",
                 "meta": {
-                    "og:title": "Resume - ervinszilagyi.dev",
+                    "og:title": "Résumé",
                     "og:description": "Ervin's resume"
                 }
             },
