@@ -8,7 +8,8 @@
             "og:title": "Ervin Szilágyi - Personal site",
             "og:image": "images/cover.png",
             "og:description": "Personal web page and blog.",
-            "og:url": "https://ervinszilagyi.dev"
+            "og:url": "https://ervinszilagyi.dev",
+            "twitter_handle": "@ervin_szilagyi"
         },
         "matchers": [
             {
