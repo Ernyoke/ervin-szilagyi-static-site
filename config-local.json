@@ -16,7 +16,8 @@
                 "action": "STATIC",
                 "meta": {
                     "og:title": "Resume",
-                    "og:description": "Ervin's resume"
+                    "og:description": "Ervin's résumé",
+                    "og:url": "https://ervinszilagyi.dev/resume.html"
                 }
             },
             {
