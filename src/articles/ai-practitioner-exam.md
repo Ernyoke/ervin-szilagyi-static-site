@@ -1,4 +1,4 @@
-# My Experience with the AWS AI Practitioner (Beta) Exam
+# About AWS AI Practitioner (Beta) Exam
 
 In June this year AWS announced 2 new certification exams: the AI Practitioner exam and the Machine Learning Engineer Associate exams. In the same time, AWS has the Machine Learning Specialty (MLS-C01) exam. You can still take this exam, and at the point of writing this article, there are no news of being retired, although we can assume that the Machine Learning Engineer Associate will take its place.
 
@@ -61,7 +61,7 @@ For the exam you will need to have a surface level knowledge about machine learn
             - **Perplexity loss**: measures how well the model can predict the next word in a sequence of text
             - **Recall-Oriented Understudy for Gisting Evaluation (ROUGE)**: set of metrics used in the field of natural language processing to evaluate the quality of machine-generated text. I recommend remembering the **ROUGE** keyword!
 
-### 3. GenAI and AWS Services for GenAI
+### 3. Generative AI and AWS Services for GenAI
 
 The exam expects you to be familiar with GenAI models. Obviously, it does not expect you to know about their inner workings, but you should be able to have experience using them. To give you an example, you might be asked to know if for a certain problem you would want to use a GenAI based model or another "legacy" ML model.
 
@@ -83,3 +83,106 @@ I personally would not worry much about Amazon Q in terms of exam. According to 
 
 ### 4. Prompt Engineering
 
+Before taking the exam I considered prompt engineering a pseudo-science. My rule of thumb was (and it still is) that if you need better answers from a model, give it as much information as you can. Aside from, while preparing for the exam, and while building AI chat bots at my workplace, I learned that there are some useful prompting techniques with which you can get way better answers compared to what I was used before. 
+
+The exam may ask you about prompt engineering techniques. You should be aware of the following ones:
+- **Zero-Shot Prompting**: it is just a more "scientific" definition to what I was doing before adopting any prompt engineering techniques. You just throw a query to the model without any specific wording/formatting or examples and you rely on the model to give you something useful
+- **Few-Shots Prompting**: you provide 1, 2 or many examples of what you would expect from the chatbot. Unexpectedly, for me at least, this prompting technique works better then I would have imagined. In terms of the exam, you should chose this answer in case it asks for a low cost solution and precise answers to certain queries.
+- **Chain of Thought Prompting**: you divide your queries into a sequence of reasoning steps, and you use sentences like "Think step by step". As a tangent, GPT o1 model uses chain of though prompting under the hood, which made this technique very popular recently, so expect some question about this one
+- **Retrieval-Augmented Generation (RAG)**: RAG is also considered a prompting technique. It relies on using a vector database to fetch content related to the user query. This content is then injected into the user prompt as additional context.
+
+Related to the prompt engineering, the exam might ask you to know about hyper parameters we can set for a model to optimize its responses. Parameters you should be aware of are the following:
+- **Temperature**: value between 0 and 1.0, defines the creativity of a model. The higher the value, you will get more creative responses.
+- **Top P**: value between 0 and 1.0, defines from what kind of words can a model use when building an answer. For example, for a value of 0.25, the model will use the 25% most likely words.
+- **Top K**: similar to Top P, but it is an integer value. By setting a Top K value, we tell our model that it only should use words from the next Top K available options
+
+Generally, what you should remember about hyper parameters is that setting lower values will make your model more conservative and give more coherent responses, while setting a parameter to a higher value will result in more creative and less coherent responses.
+
+### 4. Amazon SageMaker
+
+Another important AWS service for the exam is Amazon SageMaker. SageMaker is a managed service used by data and machine learning engineers to build, train and deploy machine learning models. Like other AWS services, it has a bunch of features. I will try to mention only those which might appear in the exam, although I encountered some unexpectedly strange questions in my exam session. These questions were considerable more challenging, and I felt they were taken from the Machine Learning Specialty exam question set.
+
+On of the most important offering of Sagemaker is **SageMaker Studio**. At first glance, this looks like a managed Jupyter Notebook, where a machine learning engineer can write Python code. It is way more than that. Part of SageMaker Studio is **Data Wrangler**, used to for feature engineering and data preparation before training. From Data Wrangler we can publish data into **SageMaker Feature Store**.
+
+Part of SageMaker Studio is **SageMaker Clarify**. It is used to evaluate foundation models against AWS provided metrics, your metrics or you can leverage humans intervention (let your employee evaluate the model, or use Ground Truth). SageMaker Clarify has a specific feature you should be aware for the exam, this is **Model Explainability**. This is used to explain why do you get certain output from a model and what kind of feature did influence the output.
+
+**SageMaker Ground Truth** is another sub-service the exam expects you to know about. It is based on **Reinforcement Learning from Human Feedback (RLHF)**, whenever you see this keyword, think of Ground Truth and vice-versa. Ground Truth is used to review models, do customizations and do evaluations based human feedback. 
+
+In terms of ML Governance, you should be aware of **SageMaker Model Cards**, **SageMaker Model Dashboards** and **SageMaker Role Manager**. Model Cards lets you create cards with essential information about a model. Model Dashboard is a centralized repository for ML models, and displays lets you display insights for your models such as risk ratings, model quality, data quality. Role Manager lets you create and define roles for AWS users.
+
+**SageMaker Model Monitor** lets you monitor the quality of your models deployed in production. You can create alerts for your models.
+
+**SageMaker Pipelines** lets you create pipelines for training and deploying models. Whenever the exam asks about MLOps related services, most likely SageMaker Pipeline would be the correct answer.
+
+Model Fine-Tuning: in the exam you might face questions about model fine-tuning. You may want to use fine-tuning when you want to take an existing model and do some additional training on it with your own data. **SageMaker JumpStart** is one of the places where you want to start fine-tuning a model. The exam also likes to compare fine-tuning with other techniques in terms of improving performance of an LLM model. In this case, you would want to keep-in mind the following order whenever the exam asks you about model configuration:
+    1. Prompt engineering (excluding RAG): least expensive
+    2. RAGs: they are more expensive then other prompt engineering techniques, because they usually require the presence of a vector database
+    3. Instruction-based fine-tuning: it is a fine-tuning approach and it uses labeled data to modify the weights of a model. It requires model training, which requires specific hardware, so it is considered more expensive than RAGs
+    4. Domain adaptation fine-tuning: uses unlabeled data for fine-tuning, it is the most expensive approach
+
+Other SageMaker sub-services you would want to look up are the following: **SageMaker Canvas**, **MLFlow for SageMaker**, **Automatic Model Tuning**. Moreover, SageMaker provides a bunch of built-in machine learning algorithms (example: XGBoost, DeepAR, Seq2Seq, etc.). You may want to check them out, to at least recognize them if they pop-up somewhere.
+
+SageMaker is an advanced topic. It is somewhat baffling me, that it AWS expects you to have such amount of knowledge about, considering that the exam is recommended to individuals who wont ever use this product. In case you are comfortable writing a few lines of code and you know what a Jupyter Notebook is, I recommend doing some practice with SageMaker.
+
+### 5. AWS Managed AI Services
+
+AWS offers a comprehensive list AI services which are managed and trained by them. For the exam you will need to know most of them. For most of the services is it enough to know for what they are used, for some of them you should be able to know about certain features as well. The list of the services you should be aware of are the following:
+
+- Amazon Comprehend and Amazon Comprehend Medical: extract relevant information from documents of all kinds.
+- Amazon Translate: on-demand translate service, think of it an on-demand version of Google Translate.
+- Amazon Transcribe and Amazon Transcribe Medical: speech to text service.
+- Amazon Polly: text to speech service.
+- Amazon Rekognition: used for image recognition and classification.
+- Amazon Forecast: used with time series data to forecast stuff. Discontinued by AWS, but is still part of the exam.
+- Amazon Lex: it is similar to Amazon Q, or an Amazon Bedrock agent. It is technically Alexa as a service. You probably should worry about this service a lot for the exam, but it might appear as a distractor.
+- Amazon Personalize: recommendation service.
+- Amazon Textract: used to extract text from images (OCR).
+- Amazon Kendra: it is a document search service. It is somewhat similar to Amazon Q, but it is way more restricted and it cannot do summarization (good idea to remember this!)
+- Amazon Mechanical Turk: this is not necessarily an AI service, but I'm mentioning because it is important to be aware of it in terms of usage related to AI. With Mechanical Turk you rely on actual humans to carry out certain tasks for you, such as labeling, classification, data collection
+- Amazon Augmented AI (A2I): likewise Mechanical Turk, is not necessarily a managed AI service. It is a service which lets yiu conduct a human review of machine learning models. It can use Mechanical Turk under the hood.
+- AWS DeepRacer: this is also an interesting thing to mention. It is a game, where you user reinforcement learning to drive a race car. While it is still part of the exam, this service is discontinued by AWS.
+
+Again, the most important thing for the exam is to know what is the purpose of each managed AI service. The exam might present task and it might ask which service would be able to solve that task. It also, might put one this services head-to-head with Bedrock or Amazon Q.
+
+### 6. AI Challenges and Responsibilities
+
+The exam will ask you about generative AI challenges and how to overcome them. A few challenges you should keep in mind are the following:
+- Regulatory violation
+- Social risks
+- Data security and privacy concerns
+- Toxicity
+- Hallucinations
+- Nondeterminism
+The exam may ask you to detect what are the challenges based on a case study, or might ask you to find solutions to overcome some of this challenges. As an example, to overcome hallucinations, you can use Knowledge Bases and RAGs, to overcome toxicity you can use Guardrails. To reduce nondeterminism, you can configure the model's hyper parameters (temperature, Top P, Top K).
+
+Other important topic that may pop-up is governance. Governance represents a set of practices which you have to apply to develop AI services responsibly. For example: you should address ethical concerns when developing an AI solution, you should take in consideration bias and fairness, you should adhere to regulatory and compliance restrictions, you should pay attention to your data lineage and clenliness, etc. There are few AWS services you should recognize when talking about governance. These are: AWS Config, Amazon Inspector, AWS Audit Manager, AWS Artifact, AWS CloudTrail, AWS Trusted Advisor.
+
+Generative AI Security Scoping Matrix: it is a framework designed to identify and manage security risks associated with deploying GenAI applications.
+Is used to classify your app in 5 defined GenAI scopes, from low to high ownership:
+- Scope 1: your app is using public GenAI services
+- Scope 2: your app is using a SaaS with GenAI features
+- Scope 3: your app is using a pre-trained model
+- Scope 4: your app is using a fine-tuned model
+- Scope 5: your app is using a self-trained model
+
+### 7. AWS Security Services and Other Services
+
+Since this is an AWS exam, you should be aware of a list of AWS services. As the themes with other topics, you should have a surface level knowledge about them. Most importantly, you should know when to use which.
+
+The most important service you will be asked about is **AWS Identity and Access Management (IAM)**. It is used to define roles and access policies. Whenever you as human you want to do anything in your AWS account, you need permissions for that. This permission is granted by using roles and policies. Similarly, when a service wants to interract with other service, it needs to have a role assigned which grants the access. In some cases there this interraction can also be facilitated with service policies. The exam does not goes into detail when should be used one or another. The important thing to remember is that whenever you are asked about security, you should think about IAM.
+
+Another important service which will pop-up, is S3. S3 is an object storage service, think of it as Google Drive on steroid. Whenever the exam asks about storage, you would want to default to S3.
+
+EC2 is also an important service. EC2 provides virtual machines. In the context of machine learning you need EC2 instances for training and inference. There are several type of EC2 instances. For the exam, you may want to remember the following types:
+    - P3, P4, P5, G3, G6 instances: These are instances with a GPU assigned to them, they can be used for training and for inference as well;
+    - **AWS Trainium** and **AWS Inferentia**: these are instances specifically built for training and inference. They provide a lower cost for either training or for inference.
+
+Networking:
+    - You should know what is a VPC.
+    - VPC Endpoints: they are used to communicate with AWS services from a private VPC. The traffic wont reach the public internet when using a VPC Endpoint.
+
+Other services:
+    - CloudWatch: used for monitoring and logging
+    - CloudTrail: used for having a trail about any action in an AWS account
+    - AWS Config: used to enforce compliance in an account
+    - AWS Lambda Function: serverless functions which run only when needed. In the context of this exam, usually they are used for integration between 2 services
