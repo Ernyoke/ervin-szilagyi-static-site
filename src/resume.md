@@ -198,12 +198,15 @@ ___
 - **AWS Certified Machine Learning – Specialty**
     - valid between February 2024 and February 2027
     - Badge: [verify](https://www.credly.com/badges/f0099e97-f4ab-47c5-a809-eab1e6b8def0/public_url)
+- **AWS Certified AI Practitioner**
+    - valid between September 2024 and September 2027
+    - Badge: [verify](https://www.credly.com/badges/57789cb3-6896-4ab0-be6a-e1b8c19c6f38/public_url)
 - **Microsoft Certified: Azure Fundamentals**
     - since September 2020
     - Badge: [verify](https://www.credly.com/badges/3e2a89c1-0ef3-4a45-9e22-ccd54ac6e0ef/public_url)
 - **Microsoft Certified: Azure Developer Associate**
     - valid between October 2020 and October 2022
-    - Badge: [verify](https://www.credly.com/badges/93829fc2-5ed8-4bf6-9291-5912ac66af7f/public_url)
+    - Badge: [verify](https://learn.microsoft.com/en-gb/users/ervinszilagyi-2278/credentials/b2f3afc499fc533c)
 - **Associate Cloud Engineer**
     - valid between August 2022 and August 2024
     - Badge and certification: [verify](https://www.credential.net/9056a79b-89f1-4fb7-b824-76b4f752dd57)

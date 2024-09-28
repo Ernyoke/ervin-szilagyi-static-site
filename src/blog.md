@@ -1,8 +1,8 @@
 # Blog Posts
 
 - 2024
-    - September 29, 2024 [About AWS AI Practitioner (Beta) Exam](articles/about-ai-practitioner-beta-exam.md)
-    - August 14, 2024 [Recertification and the Current State of AWS Exams](articles/recertification-and-the-current-state-aws-exams.md)
+    - September 29, 2024 - [About AWS AI Practitioner (Beta) Exam](articles/about-ai-practitioner-beta-exam.md)
+    - August 14, 2024 - [Recertification and the Current State of AWS Exams](articles/recertification-and-the-current-state-aws-exams.md)
     - May 08, 2024 - [Terragrunt for Multi-Region/Multi-Account Deployments](articles/terragrunt-for-multi-region-multi-account-deployments.md)
 - 2023
     - December 26, 2023 - [Fluent Bit with ECS: Configuration Tips and Tricks](articles/fluentbit-with-ecs-configuration-tips-and-tricks.md)
