@@ -207,3 +207,26 @@ What I would recommend is to take one of the Udemy course from Stephane Maarek o
 Aside from courses, you may want to take a practice exam before going into the live exam. For this purpose, Skill Builder would be the best option. Please note, Skill Builder has also free practice exam with 20 questions. This is must for anybody taking preparing to take the exam. In case you are willing to pay, Skill Builder offers a fully-fledged practice exam with 85 questions. You will get explanation for the correct answer for each question.
 
 On Udemy, Stephane is also selling a set of practice exams. I did feel the need to use purchase this, so I cannot provide a review on that.
+
+## My Experience Taking the Exam
+
+I took the exam on Thursday morning from home through Pearson. I had no issues this time with them, every went smoothly.
+
+I bombed through all the 85 question within an hour, after which I spent the next 20 minutes going through the questions I flagged. As I hinted before, the exam was not easy, it had its fair share of challenges. Most of the questions had the difficulty I expected, many other where picked straight from the Machine Learning Specialty question set...at least this is how I felt. Moreover, some the spelling for some question felt really awkward, putting me in a situation where I felt I have to guess what the author is looking for. I suppose this is a downside fo taking a beta exam.
+
+I did not encounter any new type of questions, all of my questions were multiple choice, multiple selection. These new types of questions are not some new innovation invented by AWS. Anybody, who had the change to take a Microsoft Azure exam, should have been exposed to these types if questions. My opinion about these new types of questions is that they do not affect the difficulty of the exam. I personally detest the ordering type of questions, while I prefer the case studies.
+
+That being said, I passed without issues. My score was lower than what I expected, but in the end of the day, It is not something I care that much of.
+
+## My List of Recommendations for You for the Exam
+
+- Keep an eye on the clock. 85 questions are a lot. You have less then 1.5 minutes per question. Don't spend much time on any question. Many questions can be answered straight away as long as you have a decent preparation. Select the correct answer an move on.
+- If you are not sure about a question, flag it and move on. You will have time to return to it later and try to figure it out. In any case, do not panic.
+- You will encounter questions that you wont know the answer for. This is fine. The official exam guide is intentionally vague. Any course you take, it will have some gaps. Don't be sad if you encounter something entirely new during the exam. The one thing that matters is to pass it, the final score does not matter a lot.
+- The exam is challenging, but with adequate training anybody should be able to pass it. You should be fine.
+
+## Closing Notes
+
+Ultimately, I enjoyed the process of preparation and sitting through the exam itself. And you should be enjoying yours too. Even if it wont have any significant effect on my career, I'm proud that I was able to pass it.
+
+Happy learning and good luck for anybody preparing to be an AI Practitioner!
