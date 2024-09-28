@@ -13,6 +13,7 @@ In my free time I like to tinker with even more technology. I also enjoy reading
 # Latest Posts
 
 - 2024
+    - September 29, 2024 [About AWS AI Practitioner (Beta) Exam](articles/about-ai-practitioner-beta-exam.md)
     - August 14, 2024 [Recertification and the Current State of AWS Exams](articles/recertification-and-the-current-state-aws-exams.md)
     - May 08, 2024 - [Terragrunt for Multi-Region/Multi-Account Deployments](articles/terragrunt-for-multi-region-multi-account-deployments.md)
 - 2023
