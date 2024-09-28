@@ -86,12 +86,14 @@ I personally would not worry much about Amazon Q in terms of exam. According to 
 Before taking the exam I considered prompt engineering a pseudo-science. My rule of thumb was (and it still is) that if you need better answers from a model, give it as much information as you can. Aside from, while preparing for the exam, and while building AI chat bots at my workplace, I learned that there are some useful prompting techniques with which you can get way better answers compared to what I was used before. 
 
 The exam may ask you about prompt engineering techniques. You should be aware of the following ones:
+
 - **Zero-Shot Prompting**: it is just a more "scientific" definition to what I was doing before adopting any prompt engineering techniques. You just throw a query to the model without any specific wording/formatting or examples and you rely on the model to give you something useful
 - **Few-Shots Prompting**: you provide 1, 2 or many examples of what you would expect from the chatbot. Unexpectedly, for me at least, this prompting technique works better then I would have imagined. In terms of the exam, you should chose this answer in case it asks for a low cost solution and precise answers to certain queries.
 - **Chain of Thought Prompting**: you divide your queries into a sequence of reasoning steps, and you use sentences like "Think step by step". As a tangent, GPT o1 model uses chain of though prompting under the hood, which made this technique very popular recently, so expect some question about this one
 - **Retrieval-Augmented Generation (RAG)**: RAG is also considered a prompting technique. It relies on using a vector database to fetch content related to the user query. This content is then injected into the user prompt as additional context.
 
 Related to the prompt engineering, the exam might ask you to know about hyper parameters we can set for a model to optimize its responses. Parameters you should be aware of are the following:
+
 - **Temperature**: value between 0 and 1.0, defines the creativity of a model. The higher the value, you will get more creative responses.
 - **Top P**: value between 0 and 1.0, defines from what kind of words can a model use when building an answer. For example, for a value of 0.25, the model will use the 25% most likely words.
 - **Top K**: similar to Top P, but it is an integer value. By setting a Top K value, we tell our model that it only should use words from the next Top K available options
@@ -115,10 +117,11 @@ In terms of ML Governance, you should be aware of **SageMaker Model Cards**, **S
 **SageMaker Pipelines** lets you create pipelines for training and deploying models. Whenever the exam asks about MLOps related services, most likely SageMaker Pipeline would be the correct answer.
 
 Model Fine-Tuning: in the exam you might face questions about model fine-tuning. You may want to use fine-tuning when you want to take an existing model and do some additional training on it with your own data. **SageMaker JumpStart** is one of the places where you want to start fine-tuning a model. The exam also likes to compare fine-tuning with other techniques in terms of improving performance of an LLM model. In this case, you would want to keep-in mind the following order whenever the exam asks you about model configuration:
-    1. Prompt engineering (excluding RAG): least expensive
-    2. RAGs: they are more expensive then other prompt engineering techniques, because they usually require the presence of a vector database
-    3. Instruction-based fine-tuning: it is a fine-tuning approach and it uses labeled data to modify the weights of a model. It requires model training, which requires specific hardware, so it is considered more expensive than RAGs
-    4. Domain adaptation fine-tuning: uses unlabeled data for fine-tuning, it is the most expensive approach
+
+1. Prompt engineering (excluding RAG): least expensive
+2. RAGs: they are more expensive then other prompt engineering techniques, because they usually require the presence of a vector database
+3. Instruction-based fine-tuning: it is a fine-tuning approach and it uses labeled data to modify the weights of a model. It requires model training, which requires specific hardware, so it is considered more expensive than RAGs
+4. Domain adaptation fine-tuning: uses unlabeled data for fine-tuning, it is the most expensive approach
 
 Other SageMaker sub-services you would want to look up are the following: **SageMaker Canvas**, **MLFlow for SageMaker**, **Automatic Model Tuning**. Moreover, SageMaker provides a bunch of built-in machine learning algorithms (example: XGBoost, DeepAR, Seq2Seq, etc.). You may want to check them out, to at least recognize them if they pop-up somewhere.
 
@@ -147,18 +150,21 @@ Again, the most important thing for the exam is to know what is the purpose of e
 ### 6. AI Challenges and Responsibilities
 
 The exam will ask you about generative AI challenges and how to overcome them. A few challenges you should keep in mind are the following:
+
 - Regulatory violation
 - Social risks
 - Data security and privacy concerns
 - Toxicity
 - Hallucinations
 - Nondeterminism
+
 The exam may ask you to detect what are the challenges based on a case study, or might ask you to find solutions to overcome some of this challenges. As an example, to overcome hallucinations, you can use Knowledge Bases and RAGs, to overcome toxicity you can use Guardrails. To reduce nondeterminism, you can configure the model's hyper parameters (temperature, Top P, Top K).
 
 Other important topic that may pop-up is governance. Governance represents a set of practices which you have to apply to develop AI services responsibly. For example: you should address ethical concerns when developing an AI solution, you should take in consideration bias and fairness, you should adhere to regulatory and compliance restrictions, you should pay attention to your data lineage and clenliness, etc. There are few AWS services you should recognize when talking about governance. These are: AWS Config, Amazon Inspector, AWS Audit Manager, AWS Artifact, AWS CloudTrail, AWS Trusted Advisor.
 
 Generative AI Security Scoping Matrix: it is a framework designed to identify and manage security risks associated with deploying GenAI applications.
 Is used to classify your app in 5 defined GenAI scopes, from low to high ownership:
+
 - Scope 1: your app is using public GenAI services
 - Scope 2: your app is using a SaaS with GenAI features
 - Scope 3: your app is using a pre-trained model
@@ -174,15 +180,30 @@ The most important service you will be asked about is **AWS Identity and Access 
 Another important service which will pop-up, is S3. S3 is an object storage service, think of it as Google Drive on steroid. Whenever the exam asks about storage, you would want to default to S3.
 
 EC2 is also an important service. EC2 provides virtual machines. In the context of machine learning you need EC2 instances for training and inference. There are several type of EC2 instances. For the exam, you may want to remember the following types:
-    - P3, P4, P5, G3, G6 instances: These are instances with a GPU assigned to them, they can be used for training and for inference as well;
-    - **AWS Trainium** and **AWS Inferentia**: these are instances specifically built for training and inference. They provide a lower cost for either training or for inference.
+
+- P3, P4, P5, G3, G6 instances: These are instances with a GPU assigned to them, they can be used for training and for inference as well;
+- **AWS Trainium** and **AWS Inferentia**: these are instances specifically built for training and inference. They provide a lower cost for either training or for inference.
 
 Networking:
-    - You should know what is a VPC.
-    - VPC Endpoints: they are used to communicate with AWS services from a private VPC. The traffic wont reach the public internet when using a VPC Endpoint.
+
+- You should know what is a VPC.
+- VPC Endpoints: they are used to communicate with AWS services from a private VPC. The traffic wont reach the public internet when using a VPC Endpoint.
 
 Other services:
-    - CloudWatch: used for monitoring and logging
-    - CloudTrail: used for having a trail about any action in an AWS account
-    - AWS Config: used to enforce compliance in an account
-    - AWS Lambda Function: serverless functions which run only when needed. In the context of this exam, usually they are used for integration between 2 services
+
+- CloudWatch: used for monitoring and logging
+- CloudTrail: used for having a trail about any action in an AWS account
+- AWS Config: used to enforce compliance in an account
+- AWS Lambda Function: serverless functions which run only when needed. In the context of this exam, usually they are used for integration between 2 services
+
+## Courses and Practice Exam that I Recommend
+
+The previous section aimed to present what you need to know to pass the exam. It is not a comprehensive material, it might have missing topics or might be inaccurate. If you want a more robust preparation plan, I recommend enrolling into a payed course.
+
+[AWS Skill Builder](https://skillbuilder.aws/) is the official learning portal run by AWS Training and Certification. They have a learning path the AI practitioner exam. I personally did not use this, because the video courses in the learning path are not strictly focusing on exam topics. 
+
+What I would recommend is to take one of the Udemy course from Stephane Maarek or Frank Kane. For the preparation I used Stephane Maarek course. I'm also familiar with Frank's content, so I'm confident recommending his course as well. As an opinion about Stephane's course, it was the first course available for the exam. I purchased his course on the day he released it. I'm familiar with his teaching style from his other AWS certification courses. I like how organizes the content presented and his presentation make is easy to take notes. Since this course was the first one released, it had some gaps in terms of the required material. In the meanwhile the course was and it is still updated. So I'm confident recommanding it to anybody.
+
+Aside from courses, you may want to take a practice exam before going into the live exam. For this purpose, Skill Builder would be the best option. Please note, Skill Builder has also free practice exam with 20 questions. This is must for anybody taking preparing to take the exam. In case you are willing to pay, Skill Builder offers a fully-fledged practice exam with 85 questions. You will get explanation for the correct answer for each question.
+
+On Udemy, Stephane is also selling a set of practice exams. I did feel the need to use purchase this, so I cannot provide a review on that.
