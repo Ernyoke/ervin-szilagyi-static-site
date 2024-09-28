@@ -25,6 +25,7 @@ My training guide does not specifically respect the order of the domains enumera
 ### 1. Cloud Computing Basics
 
 For the exam, you need to have a clear understanding of some basic concepts related to cloud computing, such as:
+
 - Cloud vs on-prem: what are the advantages, what are the drawbacks of both
 - Public vs private cloud
 - Pricing of cloud services: one important keyword that you will encounter is **on-demand**. Everything in the cloud is pay-per-use, you only pay for what you use. Whenever you see a question talking about pricing, as a rule of thumb, you can default to the answer that mentions the **on-demand** keyword. Of course, there might be exceptions, so use your best judgment.
@@ -32,6 +33,7 @@ For the exam, you need to have a clear understanding of some basic concepts rela
 ### 2. Basic Machine Learning Concepts
 
 For the exam, you will need to have surface-level knowledge about machine learning concepts and algorithms. It is not expected to have any in-depth knowledge about these topics, but you should be able to recognize them and know their usage. The concepts are the following:
+
 - AI/Machine learning: what is AI and what is machine learning? What use cases are solved by AI systems?
 - AI application components: data layer, ML algorithms, model layer, application layer.
 - Neural Networks: what are neural networks? Also, you should know about their components: neurons, layers, activation functions, and loss functions.
@@ -66,6 +68,7 @@ For the exam, you will need to have surface-level knowledge about machine learni
 The exam expects you to be familiar with GenAI models. Obviously, it does not expect you to know about their inner workings, but you should have experience using them. To give you an example, you might be asked to know if, for a certain problem, you would want to use a GenAI-based model or another "legacy" ML model.
 
 Probably the most important AWS service for this exam is **AWS Bedrock**. You might expect around 15-20 questions involving Bedrock in one way or another. Bedrock is essentially a one-stop-shop for GenAI models. It gives you access to a dozen of **Foundation Models**, such as Amazon Titan, a few Anthropic models (**Claude**), and other models from AI21labs, Cohere, stability.ai, Meta (llama), Mistral, etc. Aside from giving access to build on these models, Bedrock offers a bunch of other features. Relevant for the exam are the following:
+
 - **Knowledge Bases**: a solution provisioning and using **vector databases**. You may want to use vector databases if you are building a system based on **RAG (Retrieval Augmented Generation)**.
 - **Agents**: Bedrock's way of doing function calling. You can integrate your model with an "action", meaning that aside from answering a message, the model would be able to perform tasks, such as executing a Lambda Function.
 - **Guardrails**: you can use them to limit the ability of a model in terms of what it should be able to answer. Aside from that, Guardrails offer other features such as detecting PII data and removing them from the answer.
@@ -74,6 +77,7 @@ Probably the most important AWS service for this exam is **AWS Bedrock**. You mi
 Aside from these, there are other features of Bedrock the exam might ask about (Bedrock Studio, Watermark Detection). I strongly recommend doing some hands-on practice with Bedrock and experiencing what it has to offer.
 
 Another GenAI-based AWS service is **Amazon Q**, which is a fully managed GenAI assistant for enterprise usage (whatever that means). It combines a lot of stuff into one service. It has a few flavors:
+
 - **Amazon Q Business**: it is a question-answer-based chatbot built on Amazon Bedrock. It can ingest your company-owned internal data, and it will be able to answer your questions based on that data.
 - **Amazon Q Developer**: it servers two completely different use cases:
     - It is a chatbot built on AWS documentation, so it can answer your questions related to AWS services.
