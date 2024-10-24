@@ -20,7 +20,7 @@ Let's assume we have an application spanning through a few micro-services with a
 
 For IaC we decided to use Terraform because we have the most experience with that compared to other options. Having these in mind, the following events happened afterward:
 
-1. We started writing our Terraform code. We put everything in a single Terraform project. We relied on `tfvars` files to have inputs for different environments and regions.
+1. We started writing our Terraform code. We put everything in a single Terraform project. We relied on `tfvars` files to have inputs for different environments and regions.
 1. We shortly ran into a scaling problem: attempting to do an `apply` went from a few minutes to a few tens of minutes. Moreover, we run into so communication and deployment issues in terms of certain changes being deployed to production before we wanted them.
 1. Our Terraform project got bigger and bigger. We decide to slice it somehow into smaller pieces. We introduced the internal concept of "stacks" (this was well before the introduction of Terraform Cloud Stacks). From our point of view, a "stack" essentially was a Terraform project deploying a well-defined part of our infrastructure. Each stack could use resources deployed by other stacks by relying on Terraform outputs and [`terraform_remote_state`](https://developer.hashicorp.com/terraform/language/state/remote-state-data) or just by simply using data sources.
 1. With the introduction of stacks we had different projects for networking, databases, ETL (we used mainly AWS Batch), storage (S3 buckets), and so on. This worked for a while until we ran into another problem. At first, it was easy to follow which stack depends on which other stack, but shortly we ran into the issue of circular dependencies. Stack A could create resources used by stack B, while also relying on resources created by stack B. Obviously, this is bad, and at this point, there is no entity to check and police our dependencies.
@@ -265,9 +265,9 @@ The following is a list of challenges that I've encountered during its adoption 
 
 1. **Steep learning curve and complexity of usage**: if we are new to Terragrunt, we may get easily overwhelmed by all the new concepts we are introduced to. As we get more familiar with it, we are faced with other challenges, such as configuration inheritance. Having to adhere to practices that make our configuration DRY, can also make it more challenging to understand and follow.
 
-2. **There `plan` command is broken (at least in certain scenarios)**: this is stated even in the documentation for the [`run-all` command](https://terragrunt.gruntwork.io/docs/reference/cli-options/#run-all)
+2. **There `plan` command is broken (at least in certain scenarios)**: this is stated even in the documentation for the [`run-all` command](https://terragrunt.gruntwork.io/docs/reference/cli-options/#run-all)
 
-> [WARNING] Using `run-all` with `plan` is currently broken for certain use cases. If you have a stack of Terragrunt modules with dependencies between them—either via dependency blocks or `terraform_remote_state` data sources—and you’ve never deployed them, then `run-all plan` will fail as it will not be possible to resolve the dependency blocks or `terraform_remote_state` data sources!
+> [WARNING] Using `run-all` with `plan` is currently broken for certain use cases. If you have a stack of Terragrunt modules with dependencies between them—either via dependency blocks or `terraform_remote_state` data sources—and you’ve never deployed them, then `run-all plan` will fail as it will not be possible to resolve the dependency blocks or `terraform_remote_state` data sources!
 
 This might seem a non-issue at first, but if we consider also to following note for the `apply` command...
 
