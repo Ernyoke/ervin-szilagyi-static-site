@@ -1,6 +1,7 @@
 # Blog Posts
 
 - 2024
+    - November 20, 2024 - [How to Build a BlueSky RSS-like Bot with AWS Lambda and Terraform](articles/how-to-build-a-bluesky-rss-like-bot-with-aws-lambda-and-terraform.md)
     - September 29, 2024 - [About AWS AI Practitioner (Beta) Exam](articles/about-ai-practitioner-beta-exam.md)
     - August 14, 2024 - [Recertification and the Current State of AWS Exams](articles/recertification-and-the-current-state-aws-exams.md)
     - May 08, 2024 - [Terragrunt for Multi-Region/Multi-Account Deployments](articles/terragrunt-for-multi-region-multi-account-deployments.md)
