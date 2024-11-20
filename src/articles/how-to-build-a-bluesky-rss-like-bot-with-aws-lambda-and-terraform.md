@@ -17,9 +17,9 @@ This idea is not something new. A similar bot was created a while ago by another
 How would this bot work? Pretty simple:
 
 1. Fetch the latest blog posts from DEV.to
-2. Make a nice post on BlueSky: add tags, card with the link to the origin post, mention the author, etc.
-3. Wait for N minutes
-4. Go to step 1. and repeat
+1. Make a nice post on BlueSky: add tags, card with the link to the origin post, mention the author, etc.
+1. Wait for N minutes
+1. Go to step 1. and repeat
 
 ## Implementation of the "AWS Community Builder Blog Posts" Bot
 
@@ -29,7 +29,7 @@ First, let's take a look the API provided by DEV.to. DEV.to is powered by Forem,
 
 As far as I'm concerned, there is no way to specify a timestamp in the past and get every more recent articles. So, we have to work with pagination to come up with our own solution in order to identify which article did we already share to BlueSky and which one was not yet posted.
 
-My solution is ilustrated on the following state diagram:
+My solution is illustrated on the following state diagram:
 
 ![State diagram for the actions of the bot](img-how-to-build-a-bluesky-rss-like-bot-with-aws-lambda-and-terraform/cm-blogs-state-diagram.png)
 
@@ -68,9 +68,99 @@ If you have a BlueSky account and you want to see recently published blog posts 
 
 ## Giving Another Try and Implementing an RSS Feed Bot for AWS News
 
+Finishing with "AWS Community Builder Blog Posts" bot, I wanted to move on to another topic that interests me: AWS News. AWS has an [RSS feed](https://aws.amazon.com/about-aws/whats-new/recent/feed/) for any import short announcement they make. These announcement are succinct and to the point. I think it would make sense to re-share them also on BlueSky, since there is a [similar account doing the same think on Twitter](https://x.com/awswhatsnew) with a considerable amount of followers.
 
+The approach from implementing this kid of bot is similar to the one for the community builder blog posts. One thing that differs is that in this case we have to parse an RSS feed. Usually, there are only a few announcments made by AWS on a daily basis. We can extend the fetching schedule to 30 minutes (or even more). For the DynamoDB table, we can lower the provisioned READ/WRITE capacity to a small amount, since there wont be a huge number of reads and write.
 
+Again, the implementation for this bot can also be found on GitHub: [https://github.com/Ernyoke/bsky-aws-news-feed](https://github.com/Ernyoke/bsky-aws-news-feed)
+
+In case you would like to follow the BlueSky account with RSS news feed from AWS, you can do it here: [https://bsky.app/profile/awsrecentnews.bsky.social](https://bsky.app/profile/awsrecentnews.bsky.social).
+
+After I finished developing this bot, I noticed that a fellow community builder, [Thulasiraj Komminar](https://bsky.app/profile/thulasirajkomminar.com) developed his [own variant](https://bsky.app/profile/awsnews.bsky.social). You can follow whichever account you like, the more important thing is to stay updated.
+
+## Taking it a Step Further: Re-sharing Content from Official AWS Blogs and Detecting Deprecations
+
+In case you want to be as up to date as possible with all things AWS, you most likely stumbled into the [AWS News Feed](https://aws-news.com/) page. This page is created and maintained by fellow AWS Hero, [Luc van Donkersgoed](https://bsky.app/profile/lucvandonkersgoed.com). The purpose of this page is to aggregate blog posts from all the office AWS blogs. Moreover, it can detect blog posts talking about service and feature deprecations, which unfortunately are getting more frequent lately. It is a pretty impressive work, and I absolutely recommend bookmarking and following this page.
+
+My idea was to bring both of those functionalities to my BlueSky feed. I wanted to create a bot which simply re-shares and tags all the articles from different kind of official AWS blogs, and I also wanted to create a bot which shares posts talking about AWS service deprecations.
+
+Long story short, I came up the the following event based architecture:
+
+![Event based architecture for AWS blogs and AWS deprecations Bots](img-how-to-build-a-bluesky-rss-like-bot-with-aws-lambda-and-terraform/aws-blogs-deprecations-architecture.png)
+
+I split the so called business logic in three parts (three Lambda Functions):
+
+1. Fetcher Lambda: works very similar to the previous RSS like bots I presenting. It querries AWS API for blog posts, uses a DynamoDB table to detect posts which were not yet shared on BlueSky and publishes those to an SNS topic.
+1. Blogs Publisher Lambda: uses an SQS standard queue to listen to the topic. From this queue polls the messages and simply re-shares them to BlueSky.
+1. Deprecations Lambda: the "fun" part of this architecture. It also has its own queue from which it gets the newly published blog posts. Before re-sharing them to BlueSky, it will use an LLM Model from Bedrock to detect if the article is about any kind of service deprecation. If it is, it will move forward and post the article to BlueSky.
+
+What we have here is called a fan-out architecture. We have a producer Lambda (Fetcher) which produces events for multiple consumers.
+
+### Event Sourcing with Lambda
+
+Having an SQS queue gives a lot of flexibility and control over how are our functions invoked. Using an Lambda event source mapping we get access to features such as:
+
+- Batching: we can group messages from a queue together and have our function invoked once for multiple message;
+- Error handling and partial batch processing: in case something fails while dealing with a message from the queue, we can have a number of retry attempts. Event source mapping allows partial batch processing. In case there is an error from one of the messages from the batch, we don't necessarily have to reprocess everything. We can reprocess only those for which the execution failed;
+- Parallel concurrence invocation: we can limit how many function invocations should we have in parallel.
+
+All of these features have to configured when defining the event source mapper. Since, I'm using Terraform, in my case I have the following configuration for the Blogs Publisher Lambda:
+
+```terraform
+resource "aws_lambda_event_source_mapping" "blogs_event_source_mapping" {
+  event_source_arn                   = aws_sqs_queue.blogs_queue.arn        # ARN of the source SQS queue
+  enabled                            = true                                 # Flag used mainly for debugging
+  function_name                      = aws_lambda_function.blogs_lambda.arn # Lambda ARN
+  batch_size                         = 10                                   # Accept a batch of max 10 messages
+  maximum_batching_window_in_seconds = 60                                   # Time to wait for messages to arrive to be able to be gathered in a batch
+  function_response_types            = ["ReportBatchItemFailures"]          # Used for partial error handling of a batch
+
+  scaling_config {
+    maximum_concurrency = 5  ## Limit the number of have many instances of the function can be invoked at the same time
+  }
+}
+```
+
+In case of the Deprecation Lambda I have to deal with other limitations. Since AWS decided to limit my account to 20 invocations of a base model from Bedrock, I decided to use the poor man's approach to Lambda rate limiting: setting the reserved concurrency at 1. This will allow only once instance of my function to be executed at the same time. I'm aware that with this I still can hit the rate limit imposed by Bedrock, but I feel like at this point there not much I can do. Also, important to notice, that in this case `maximum_concurrency` has to be disabled.
+
+### Working with AI
+
+I'm using AI to detect if an article is about any AWS service deprecation. This works, most of the time, but in many cases it can decide to be as disciplined as a badly behaved toddler.
+
+What I'm doing is extracting the text content of each article. This text is provided to the bot. As a response I expect answers to the following questions:
+
+1. Does the article mention any deprecation of any AWS service?
+1. If yes, what is the name of those services?
+
+Moreover, I expect to get the response in JSON format.
+
+At first, I was under impression that this should not be a big challenge for any available models Boy, I was wrong!
+
+Both of my questions require summarization. LLM models should be pretty good at summarization. The second part of my challenge to the model is to provide the answer in structured format. 
+
+I tried different models for this, with different degrees of success:
+
+1. **Amazon Bedrock Titan**: it can do summarization really well. I can answer both of my questions. But, when you try to get the answers in a JSON format... wel just forget about it. I was not able to get a valid JSON no mather how much I tried. I'm using LangChain's [`Structured Output`](https://python.langchain.com/v0.1/docs/modules/model_io/chat/structured_output/) and I explicitly provide the format instructions to the bot as part of the prompt. Titan manages to come up with something that is similar to a valid JSON, but every time something is off. In the end, I decided to drop it.
+2. **Claude Instant**: I decided to try one of the cheapest offering from Anthropic model. Summarization works well enough, and it can build JSON, most of the time. What can I do when I don't get a valid JSON response? Retry. Considering that I have 20 invocations per minutes (thanks AWS), this will be a perfect way to burn through those. So, yeah, I decided to try out another model.
+3. **Claude Haiku**: Currently I'm using Haiku, which 99% percent of the time gives a correctly formatted JSON. When not, I just retry the request. It seems stable enough for my purposes, and I can get away with the strong rate limiting imposed by AWS.
+
+Aside from that, I still need to refine the prompt, to avoid have false positive detections. Sometimes AI struggles with knowing what an AWS service is, or I just simply might be bad at prompting it.
+
+### Technology Stack
+
+In short, I'am using TypeScript for the Lambda Functions, DynamoDB for knowing what article to re-share, SNS with SQS standard for fan-out and LangChain with Claude Haiku from Bedrock. For the infrastructure I'm using Terraform.
+
+The whole codebase can be found on GitHub: [https://github.com/Ernyoke/bsky-aws-blogs](https://github.com/Ernyoke/bsky-aws-blogs)
+
+If you want to see the deprecations warning in your BlueSky feed, you can follow [https://bsky.app/profile/deprecatedbyaws.bsky.social](https://bsky.app/profile/deprecatedbyaws.bsky.social).
+
+## Final Words
+
+In conclusion, I had a lot fun developing these bots. It was just about time for me to revisit all the features we have for streaming and event sourcing. Working with AI, although it is a lot of fun, it can be challenging sometimes.
+
+BlueSky also has the concepts of starter packs. A starter pack makes easier to follow multiple accounts at the same time with a push of a button. If you having a lot of AWS related blog posts/articles/new in your feed, I created a started pack for all of these bots. You can simply follow them from here: [https://go.bsky.app/EdJArRR](https://go.bsky.app/EdJArRR)
 
 ## References
 
 1. [Forem API for Organizations](https://developers.forem.com/api/v1#tag/organizations/operation/getOrgArticles)
+2. [LangChain - Structured Output](https://python.langchain.com/v0.1/docs/modules/model_io/chat/structured_output/)
