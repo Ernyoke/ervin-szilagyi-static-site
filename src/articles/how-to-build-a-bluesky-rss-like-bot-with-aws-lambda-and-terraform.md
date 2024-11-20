@@ -152,7 +152,7 @@ In short, I'am using TypeScript for the Lambda Functions, DynamoDB for knowing w
 
 The whole codebase can be found on GitHub: [https://github.com/Ernyoke/bsky-aws-blogs](https://github.com/Ernyoke/bsky-aws-blogs)
 
-If you want to see the deprecations warning in your BlueSky feed, you can follow [https://bsky.app/profile/deprecatedbyaws.bsky.social](https://bsky.app/profile/deprecatedbyaws.bsky.social).
+If you want to see the deprecations warning in your BlueSky feed, you can follow the handle: [https://bsky.app/profile/deprecatedbyaws.bsky.social](https://bsky.app/profile/deprecatedbyaws.bsky.social).
 
 ## Final Words
 
