@@ -47,26 +47,26 @@ Technology stack:
 
 ### `bsky-aws-community-builder-blogposts` - [AWS Community Builder Blog Posts](https://bsky.app/profile/awscmblogposts.bsky.social)
 
-It is a bot that re-shares blog posts authored by AWS Community Builders on [dev.to/aws-builders](https://dev.to/aws-builders).
+It is a bot that re-shares blog posts authored by AWS Community Builders from [dev.to/aws-builders](https://dev.to/aws-builders).
 
 - Technologies used: TypeScript, AWS Lambda, Terraform
 - Source code: [https://github.com/Ernyoke/bsky-aws-community-builder-blogposts](https://github.com/Ernyoke/bsky-aws-community-builder-blogposts)
 
-### `bsky-aws-heroes-blogposts` - [AWS Heroes Blog Posts](https://bsky.app/profile/awsheroesblogposts.bsky.social)
+### bsky-aws-heroes-blogposts - [AWS Heroes Blog Posts](https://bsky.app/profile/awsheroesblogposts.bsky.social)
 
-Similarly to `bsky-aws-community-builder-blogposts`, it is a bot that re-shares blog posts authored by AWS Heroes on [dev.to/aws-heroes](https://dev.to/aws-heroes).
+Similarly to *bsky-aws-community-builder-blogposts*, it is a bot that re-shares blog posts authored by AWS Heroes from [dev.to/aws-heroes](https://dev.to/aws-heroes).
 
 - Technologies used: TypeScript, AWS Lambda, Terraform
 - Source code: [https://github.com/Ernyoke/bsky-aws-heroes-blogposts](https://github.com/Ernyoke/bsky-aws-heroes-blogposts)
 
-### `bsky-aws-news-feed` - [AWS News Feed on 🦋](https://bsky.app/profile/awsrecentnews.bsky.social)
+### bsky-aws-news-feed - [AWS News Feed on 🦋](https://bsky.app/profile/awsrecentnews.bsky.social)
 
 It is a bot that watched the RSS feed provided by AWS (http://aws.amazon.com/new) and re-shares the latest AWS cloud news on BlueSky.
 
 - Technologies used: TypeScript, AWS Lambda, Terraform
 - Source code: [https://github.com/Ernyoke/bsky-aws-news-feed](https://github.com/Ernyoke/bsky-aws-news-feed)
 
-### `bsky-aws-blogs`
+### bsky-aws-blogs
 
 This project serves to BlueSky Bots:
 
