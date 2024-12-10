@@ -80,6 +80,8 @@ The project uses an event-driven approach:
 - The AWS Blogs Lambda function simply re-shares everything on BlueSky.
 - The Deprecations Lambda function uses LLM models to detect if the blog post mentions any service or feature deprecation. If the blog post is about a deprecation, it will also be re-shared on BlueSky.
 
+Technology stack:
+
 - Technologies used: TypeScript, SNS, SQS, AWS Lambda, AWS Bedrock (AWS Titan, Anthropic Claude Haiku provided by Bedrock), LangChain, Terraform
 - Source code: [https://github.com/Ernyoke/bsky-aws-blogs](https://github.com/Ernyoke/bsky-aws-blogs)
 
