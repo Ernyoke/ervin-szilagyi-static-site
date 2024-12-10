@@ -75,10 +75,10 @@ This project serves to BlueSky Bots:
 
 The project uses an event-driven approach:
 
-    - The Fetcher Lambda function runs on a schedule and retrieves all newly created blog posts. For each blog post, a new event is published to an SNS topic.
-    - There are two SQS queues listening to these events: one for the AWS Blogs Lambda function and the other for the Deprecations Lambda function.
-    - The AWS Blogs Lambda function simply re-shares everything on BlueSky.
-    - The Deprecations Lambda function uses LLM models to detect if the blog post mentions any service or feature deprecation. If the blog post is about a deprecation, it will also be re-shared on BlueSky.
+- The Fetcher Lambda function runs on a schedule and retrieves all newly created blog posts. For each blog post, a new event is published to an SNS topic.
+- There are two SQS queues listening to these events: one for the AWS Blogs Lambda function and the other for the Deprecations Lambda function.
+- The AWS Blogs Lambda function simply re-shares everything on BlueSky.
+- The Deprecations Lambda function uses LLM models to detect if the blog post mentions any service or feature deprecation. If the blog post is about a deprecation, it will also be re-shared on BlueSky.
 
 - Technologies used: TypeScript, SNS, SQS, AWS Lambda, AWS Bedrock (AWS Titan, Anthropic Claude Haiku provided by Bedrock), LangChain, Terraform
 - Source code: [https://github.com/Ernyoke/bsky-aws-blogs](https://github.com/Ernyoke/bsky-aws-blogs)
