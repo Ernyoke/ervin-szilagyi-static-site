@@ -43,6 +43,46 @@ Technology stack:
 - Technologies used: Go
 - Source code: [https://github.com/Ernyoke/Imger](https://github.com/Ernyoke/Imger)
 
+## BlueSky Bots
+
+### `bsky-aws-community-builder-blogposts` - [AWS Community Builder Blog Posts](https://bsky.app/profile/awscmblogposts.bsky.social)
+
+It is a bot that re-shares blog posts authored by AWS Community Builders on [dev.to/aws-builders](https://dev.to/aws-builders).
+
+- Technologies used: TypeScript, AWS Lambda, Terraform
+- Source code: [https://github.com/Ernyoke/bsky-aws-community-builder-blogposts](https://github.com/Ernyoke/bsky-aws-community-builder-blogposts)
+
+### `bsky-aws-heroes-blogposts` - [AWS Heroes Blog Posts](https://bsky.app/profile/awsheroesblogposts.bsky.social)
+
+Similarly to `bsky-aws-community-builder-blogposts`, it is a bot that re-shares blog posts authored by AWS Heroes on [dev.to/aws-heroes](https://dev.to/aws-heroes).
+
+- Technologies used: TypeScript, AWS Lambda, Terraform
+- Source code: [https://github.com/Ernyoke/bsky-aws-heroes-blogposts](https://github.com/Ernyoke/bsky-aws-heroes-blogposts)
+
+### `bsky-aws-news-feed` - [AWS News Feed on 🦋](https://bsky.app/profile/awsrecentnews.bsky.social)
+
+It is a bot that watched the RSS feed provided by AWS (http://aws.amazon.com/new) and re-shares the latest AWS cloud news on BlueSky.
+
+- Technologies used: TypeScript, AWS Lambda, Terraform
+- Source code: [https://github.com/Ernyoke/bsky-aws-news-feed](https://github.com/Ernyoke/bsky-aws-news-feed)
+
+### `bsky-aws-blogs`
+
+This project serves to BlueSky Bots:
+
+- [AWS Blogs on 🦋](https://bsky.app/profile/awsblogs.bsky.social): it is an aggregate of all the blog posts from AWS employees and partners.
+- [Deprecated by AWS](https://bsky.app/profile/deprecatedbyaws.bsky.social): it is an aggregate for blog posts that talk about service and feature deprecations on AWS.
+
+The project uses an event-driven approach:
+
+    - The Fetcher Lambda function runs on a schedule and retrieves all newly created blog posts. For each blog post, a new event is published to an SNS topic.
+    - There are two SQS queues listening to these events: one for the AWS Blogs Lambda function and the other for the Deprecations Lambda function.
+    - The AWS Blogs Lambda function simply re-shares everything on BlueSky.
+    - The Deprecations Lambda function uses LLM models to detect if the blog post mentions any service or feature deprecation. If the blog post is about a deprecation, it will also be re-shared on BlueSky.
+
+- Technologies used: TypeScript, SNS, SQS, AWS Lambda, AWS Bedrock (AWS Titan, Anthropic Claude Haiku provided by Bedrock), LangChain, Terraform
+- Source code: [https://github.com/Ernyoke/bsky-aws-blogs](https://github.com/Ernyoke/bsky-aws-blogs)
+
 ## Recon Tools
 
 ### *domain-recon*

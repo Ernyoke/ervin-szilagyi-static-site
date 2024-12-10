@@ -193,7 +193,7 @@ ___
     - valid between August 2021 and August 2027
     - Badge: [verify](https://www.credly.com/badges/cf39c076-d21f-4cc1-a033-954718fe87d6/public_url)
 - **AWS Certified Advanced Networking – Specialty**
-    - valid between December 2021 and December 2024
+    - valid between December 2021 and December 2027
     - Badge: [verify](https://www.credly.com/badges/8c68b90f-3aeb-4a45-a205-bd9428889702/public_url)
 - **AWS Certified Machine Learning – Specialty**
     - valid between February 2024 and February 2027
