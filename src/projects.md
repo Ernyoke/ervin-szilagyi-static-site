@@ -45,7 +45,7 @@ Technology stack:
 
 ## BlueSky Bots
 
-### `bsky-aws-community-builder-blogposts` - [AWS Community Builder Blog Posts](https://bsky.app/profile/awscmblogposts.bsky.social)
+### bsky-aws-community-builder-blogposts - [AWS Community Builder Blog Posts](https://bsky.app/profile/awscmblogposts.bsky.social)
 
 It is a bot that re-shares blog posts authored by AWS Community Builders from [dev.to/aws-builders](https://dev.to/aws-builders).
 
