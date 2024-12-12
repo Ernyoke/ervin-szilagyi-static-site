@@ -8,7 +8,8 @@
     <link rel="stylesheet" href="styles/styles.css">
     <link rel="stylesheet" href="styles/all.min.css">
     <link rel="preconnect" href="https://fonts.gstatic.com">
-    <link href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,500,500i,700,700i,900,900i" rel="stylesheet"/>
+    <link href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,500,500i,700,700i,900,900i"
+        rel="stylesheet" />
     <link rel="stylesheet" title="light" href="styles/atom-one.css">
     <link rel="alternate stylesheet" title="dark" href="styles/atom-one-dark.css" disabled="disabled">
 
@@ -19,6 +20,15 @@
     <meta name="viewport"
         content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
+
+    <script>
+        const isDarkMode = () => window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
+        let theme = localStorage.getItem("theme");
+        if (!theme) {
+            theme = isDarkMode() ? "dark" : "light";
+        }
+        document.documentElement.setAttribute("data-theme", theme);
+    </script>
 
     <style type="text/css" media="print">
         @media print {
@@ -50,7 +60,7 @@
         <div class="nav-right">
             <ul>
                 <li>
-                    <a class="fa fa-moon" onclick="switchTheme()"></a>
+                    <a id="themeSwitcher" class="fa fa-circle" onclick="switchTheme()"></a>
                 </li>
                 <li>
                     <a href="resume.html" aria-hidden="true">Résumé</a>
