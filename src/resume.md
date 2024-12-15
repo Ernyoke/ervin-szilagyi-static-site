@@ -23,12 +23,11 @@ I consider myself an advocate of open-source technology. Some of my open-source 
 - Website: [ervinszilagyi.dev](https://ervinszilagyi.dev/)
 - LinkedIn: [in/szilagyiervin](https://www.linkedin.com/in/szilagyiervin/)
 - Twitter: [@ervin_szilagyi](https://twitter.com/ervin_szilagyi)
+- BlueSky: [@ervinszilagyi.dev](https://bsky.app/profile/ervinszilagyi.dev)
 - StackOverflow: [ervin-szilagyi](https://stackoverflow.com/users/7661119/ervin-szilagyi) (15K+ reputation, part of [top 100 Romanian users](https://data.stackexchange.com/stackoverflow/query/1625946/my-position-from-romanian-users))
 - DevOps StackExchange: [ervin-szilagyi](https://devops.stackexchange.com/users/27214/ervin-szilagyi)
 - GitHub: [ernyoke](https://github.com/Ernyoke)
-- Mastodon: [awscommunity.social/@ervinszilagyi](https://awscommunity.social/@ervinszilagyi)
 - dev.to: [dev.to/ervin_szilagyi](https://dev.to/ervin_szilagyi)
-- hashnode: [ervinszilagyi.hashnode.dev](https://ervinszilagyi.hashnode.dev/)
 
 ### Personal Information
 
@@ -46,21 +45,30 @@ ___
 
     *From August 2021 until now*
 
-    - Platform Engineer/Solutions Architect working mainly on AWS infrastructure.
-    - Main areas of experience: system design for highly available software product; big data ingestion and ETL workflows; distributed and event based systems.
+    - *Platform Engineer/Solutions Architect* primarily working on AWS infrastructure within the automotive industry.
+    - Main areas of experience: 
+        - System design for highly available software product: our system was serving more then 10 millions of requests from vehicles all around the globe;
+        - Big data ingestion and ETL workflows: 
+            - Built ingestion pipelines to provide analytics based on the system to support business needs;
+            - Ingested terabytes of data each month, with this data being stored in S3/Athena tables;
+            - Developed dashboards for visualizing key metrics using Amazon QuickSight.
+        - Working with large language models and deploying specialized AI agents for internal use:
+            - Built several AI agents on top of LLM models such as Azure OpenAI and Anthropic Claude. The purpose of these agents was to enhance productivity;
+            - Created knowledge bases using company-owned internal data to enable Retrieval-Augmented Generation (RAG);
+            - The main technology stack included AWS Lambda with LangChain and LangGraph (for chaining and tool calling), LanceDB (serverless vector store), OpenSearch, and Splunk.
 
 - #### **Software Product & Platform Engineering Specialist**
 
     *From August 2021 until the November 2022*
 
-    - Platform Engineer/Solutions Architect working mainly on AWS infrastructure in the automotive industry.
-    - Assist in architect complex end-to-end cloud-based solutions for client needs. These solutions involved designing secure and usable APIs, and highly available and secure networks for the relevant services.
-    - Take part in the end-to-end development of a set of microservices with all the additional infrastructure requirements (main technology stack: API Gateway, networking (AWS VPC, Route53, Elastic Load Balancers), AWS Lambda (Python, JavaScript, Go), Java microservices (ECS, Docker)).
-    - Doing cloud automation and monitoring with CloudWatch/Event Bridge and Lambda.
-    - Develop, design, and refactor cloud-based infrastructure using IoC tools such as Terraform.
-    - Design and implement disaster recovery plans for services and platforms running on a global scale
-    - Support a set of ETL jobs. Doing maintenance work, optimizations, monitoring, etc. (main technology stack: AWS Batch/AWS Lambda with Python, S3, AWS RDS, Redis)
-    - Manage a set of relational databases deployed on AWS RDS. Planning and leading migrations from older platforms to newer and more up-to-date versions. Building highly-available solutions by implementing replications.
+    - *Platform Engineer/Solutions Architect* primarily working on AWS infrastructure within the automotive industry.
+    - Assist in architecting complex end-to-end cloud-based solutions tailored to client needs. These solutions involve designing secure and user-friendly APIs, as well as highly available and secure networks for the relevant services.
+    - Participate in the end-to-end development of a suite of microservices, along with the necessary infrastructure requirements. (Main technology stack: API Gateway, networking (AWS VPC, Route53, Elastic Load Balancers), AWS Lambda (Python, JavaScript, Go), Java microservices (ECS, Docker)).
+    - Perform cloud automation and monitoring using CloudWatch, EventBridge, and Lambda.
+    - Develop, design, and refactor cloud-based infrastructure using Infrastructure-as-Code (IaC) tools such as Terraform.
+    - Design and implement disaster recovery plans for services and platforms operating on a global scale.
+    - Support a range of ETL jobs, including maintenance, optimization, and monitoring. (Main technology stack: AWS Batch/AWS Lambda with Python, S3, AWS RDS, Redis).
+    - Manage relational databases deployed on AWS RDS, including planning and leading migrations from older platforms to more modern and up-to-date versions. Build highly available solutions by implementing replication.
 
 ### RIA Solutions Group
 
