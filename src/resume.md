@@ -43,7 +43,7 @@ ___
 
 - #### **Software Product & Platform Engineering Associate Manager**
 
-    *From August 2021 until now*
+    *From December 2022 until now*
 
     - *Platform Engineer/Solutions Architect* primarily working on AWS infrastructure within the automotive industry.
     - Main areas of experience: 
