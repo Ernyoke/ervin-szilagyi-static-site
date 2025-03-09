@@ -42,6 +42,10 @@ The downside of using these small images is that they can be challenging to work
 
 This point is similar to the previous one, the difference being that even if you choose the smallest base image possible, you might found yourself having a bunch of unnecessary stuff added back to your image at build time. To avoid this, you can do the following:
 
-1. Use [multistage builds](https://docs.docker.com/build/building/multi-stage/): most probably your application gets built together with the docker image you publish. In many instances what people actually do is to copy over the source code the the image and after that execute the commands to create the application package. The outcome of this process is that the resulting image may contain a lot "development" dependencies, which are not need for the final package to run. You can either remove this manually, or just simply use multistage builds. In case of multistage builds, you can use different images for build and execution. In fact, you can use a fully fledged development image for the build step, after which you copy the artifacts to a stripped down image used for execution.
+1. Use multistage builds[^1]: most probably your application gets built together with the docker image you publish. In many instances what people actually do is to copy over the source code the the image and after that execute the commands to create the application package. The outcome of this process is that the resulting image may contain a lot "development" dependencies, which are not need for the final package to run. You can either remove this manually, or just simply use multistage builds. In case of multistage builds, you can use different images for build and execution. In fact, you can use a fully fledged development image for the build step, after which you copy the artifacts to a stripped down image used for execution.
 
 1. Use `.dockerignore` to copy only what you need to your image: similarly to `.gitignore`, .`dockerignore` let's you specifies files and folders which you should not copy over to your images at build time.
+
+References:
+
+[^1]: [Multistage Builds](https://docs.docker.com/build/building/multi-stage/).
