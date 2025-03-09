@@ -10,7 +10,7 @@ Around three years ago, I wrote an article about ways to reduce the size of Lamb
 
 ## Short Recap
 
-In my old article, titled [Optimize your container workloads for sustainability](https://aws.amazon.com/blogs/containers/optimize-your-container-workloads-for-sustainability/) I used Rust to build a Lambda function. Code written in Rust is compiled into a binary. To execute this binary as a Lambda function, you can either upload the binary directly to AWS Lambda or package it in a Docker image, upload the image to ECR, and configure Lambda to use that image.
+In my old article, titled [Building Super Slim Containerized Lambdas on AWS]('building-super-slim-containerized-lambdas.md') I used Rust to build a Lambda function. Code written in Rust is compiled into a binary. To execute this binary as a Lambda function, you can either upload the binary directly to AWS Lambda or package it in a Docker image, upload the image to ECR, and configure Lambda to use that image.
 
 The size of this Docker image can vary significantly. If you use the default image recommended by AWS (`public.ecr.aws/lambda/provided`), the container size can be a few hundred megabytes. However, if you go with a minimal approach, such as a Distroless image, you can get containers down to just a few dozen megabytes, depending mostly on the size of the compiled binary.
 
@@ -32,10 +32,10 @@ The general idea is that instead of base images such as `public.ecr.aws/lambda/p
 
 The downside of using these small images is that they can be challenging to work with them while developing or having to debug something. For example, we cannot straight ahead open a shell in a Distroless image, since there is no shell installed.
 
-> [!NOTE]
+> **ℹ️ Note**:
 > To start a shell inside a Distroless image, you can rebuild your image using the `:debug` tag. For example, instead of `FROM gcr.io/distroless/cc:latest-amd64` you can have `FROM gcr.io/distroless/cc:debug`. "Debug" images come with busybox which is a small container for your usual Linux binaries.
-
-> [!NOTE]
+#
+> **ℹ️ Note**:
 > Similarly, with Chainguard images, you can append the `-dev` keyword to the tag of the image. For example, if we have an image built on `FROM cgr.dev/chainguard/static:latest`, we can rebuild it with `FROM cgr.dev/chainguard/static:latest-dev` to have access to a shell and other debug tools.
 
 ### 2. Add strictly what you need to the image
