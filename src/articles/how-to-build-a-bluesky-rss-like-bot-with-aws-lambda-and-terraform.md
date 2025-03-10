@@ -25,7 +25,7 @@ How would this bot work? Pretty simple:
 
 As you can imagine, the idea is pretty simple, so the implementation would be also straightforward. That's partially true, although there might be some edge cases to handle.
 
-First, let's take a look at the API provided by DEV.to. DEV.to is powered by Forem, an open-source platform for blogging. The API [provided by Forem](https://developers.forem.com/api/v1#tag/organizations/operation/getOrgArticles) for fetching articles from an organization is as simple as it gets. We need to specify an identifier for the organization we’re interested in and provide pagination details. Articles are sorted by their publishing timestamp, from the most recent to the least recent. For pagination, we need to specify the page number (the default is 1, which contains the most recent articles) and the number of articles per page.
+First, let's take a look at the API provided by DEV.to. DEV.to is powered by Forem, an open-source platform for blogging. The API provided by Forem[^1] for fetching articles from an organization is as simple as it gets. We need to specify an identifier for the organization we’re interested in and provide pagination details. Articles are sorted by their publishing timestamp, from the most recent to the least recent. For pagination, we need to specify the page number (the default is 1, which contains the most recent articles) and the number of articles per page.
 
 As far as I know, there is no way to specify a timestamp in the past and retrieve all more recent articles. Therefore, we need to rely on pagination to create our own solution for identifying which articles we have already shared on BlueSky and which ones have not yet been posted.
 
@@ -108,15 +108,15 @@ All of these features have to be configured when defining the event source mappe
 
 ```terraform
 resource "aws_lambda_event_source_mapping" "blogs_event_source_mapping" {
- event_source_arn                   = aws_sqs_queue.blogs_queue.arn        # ARN of the source SQS queue
- enabled                            = true                                 # Flag used mainly for debugging
- function_name                      = aws_lambda_function.blogs_lambda.arn # Lambda ARN
- batch_size                         = 10                                   # Accept a batch of max 10 messages
- maximum_batching_window_in_seconds = 60                                   # Time to wait for messages to arrive to be able to be gathered in a batch
- function_response_types            = ["ReportBatchItemFailures"]          # Used for partial error handling of a batch
+ event_source_arn                   = aws_sqs_queue.blogs_queue.arn        # ARN of the source SQS queue
+ enabled                            = true                                 # Flag used mainly for debugging
+ function_name                      = aws_lambda_function.blogs_lambda.arn # Lambda ARN
+ batch_size                         = 10                                   # Accept a batch of max 10 messages
+ maximum_batching_window_in_seconds = 60                                   # Time to wait for messages to arrive to be able to be gathered in a batch
+ function_response_types            = ["ReportBatchItemFailures"]          # Used for partial error handling of a batch
 
  scaling_config {
- maximum_concurrency = 5  ## Limit the number of instances of the function that can be invoked at the same time
+ maximum_concurrency = 5 ## Limit the number of instances of the function that can be invoked at the same time
  }
 }
 ```
@@ -140,7 +140,7 @@ Both of my questions require summarization. LLM models should be pretty good at 
 
 I tried different models for this, with different degrees of success:
 
-1. **Amazon Bedrock Titan**: it can do summarization really well. It could answer both of my questions. However, when trying to get the answers in a JSON format, it was a challenge. I was unable to get a valid JSON no matter how much I tried. I used LangChain's [`Structured Output`](https://python.langchain.com/v0.1/docs/modules/model_io/chat/structured_output/) and explicitly provided the format instructions to the bot as part of the prompt. Titan managed to generate something similar to a valid JSON, but every time something was off. Ultimately, I decided to drop it.
+1. **Amazon Bedrock Titan**: it can do summarization really well. It could answer both of my questions. However, when trying to get the answers in a JSON format, it was a challenge. I was unable to get a valid JSON no matter how much I tried. I used LangChain's Structured Output[^2] and explicitly provided the format instructions to the bot as part of the prompt. Titan managed to generate something similar to a valid JSON, but every time something was off. Ultimately, I decided to drop it.
 1. **Claude Instant**: I decided to try one of the cheapest offerings from the Anthropic models. Summarization works well enough, and it can build JSON most of the time. When I don't get a valid JSON response, the solution is to retry. Considering that I have 20 invocations per minute (thanks to AWS), this will quickly consume those invocations. So, I decided to try another model.
 1. **Claude Haiku**: I'm currently using Haiku, which provides a correctly formatted JSON 99% of the time. When it doesn't, I simply retry the request. It seems stable enough for my purposes, and I can work within the strong rate limiting imposed by AWS.
 
@@ -162,5 +162,5 @@ BlueSky also has the concept of starter packs. A starter pack makes it easier to
 
 ## References
 
-1. [Forem API for Organizations](https://developers.forem.com/api/v1#tag/organizations/operation/getOrgArticles)
-2. [LangChain - Structured Output](https://python.langchain.com/v0.1/docs/modules/model_io/chat/structured_output/)
+[^1]: Forem API for Organizations - [link](https://developers.forem.com/api/v1#tag/organizations/operation/getOrgArticles)
+[^2]: LangChain - Structured Output - [LangChain docs](https://python.langchain.com/v0.1/docs/modules/model_io/chat/structured_output/)
