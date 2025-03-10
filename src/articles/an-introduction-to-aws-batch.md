@@ -1,6 +1,6 @@
 # An Introduction to AWS Batch
 
-[AWS Batch](https://docs.aws.amazon.com/batch/latest/userguide/what-is-batch.html) is a fully managed service that helps us developers run batch computing workloads on the cloud. The goal of this service is to effectively provision infrastructure for batch jobs submitted by us while we can focus on writing the code for dealing with business constraints.
+AWS Batch[^1] is a fully managed service that helps us developers run batch computing workloads on the cloud. The goal of this service is to effectively provision infrastructure for batch jobs submitted by us while we can focus on writing the code for dealing with business constraints.
 
 Batch jobs running on AWS are essentially Docker containers that can be executed on different environments. AWS Batch supports job queues deployed on EC2 instances, on ECS clusters with Fargate, and on Amazon EKS (Elastic Kubernetes Service). Regardless of what we choose for the basis of our infrastructure, the provisioning of the necessary services and orchestration of the jobs is managed by AWS.
 
@@ -37,7 +37,7 @@ AWS Batch supports multi-node parallel jobs that span on multiple EC2 instances.
 
 In addition to multi-node jobs, we can enhance the underlying EC2 instances with graphics cards (GPUs). This can be useful for operations relying on parallel processing, such as deep learning.
 
-AWS Batch also supports applications that use EFA. An [Elastic Fabric Adapter (EFA)](https://docs.aws.amazon.com/batch/latest/userguide/efa.html) is a network device used to accelerate High Performance Computing (HPC) applications using Message Passing Interface (MPI). Moreover, if we would like even better performance for parallel computing, we can have direct GPU-to-GPU communication via [NVIDIA Collective Communication Library (NCCL)](https://aws.amazon.com/blogs/compute/optimizing-deep-learning-on-p3-and-p3dn-with-efa-part-1/), which is also built on EFA.
+AWS Batch also supports applications that use EFA. An Elastic Fabric Adapter (EFA)[^7] is a network device used to accelerate High Performance Computing (HPC) applications using Message Passing Interface (MPI). Moreover, if we would like even better performance for parallel computing, we can have direct GPU-to-GPU communication via [NVIDIA Collective Communication Library (NCCL)](https://aws.amazon.com/blogs/compute/optimizing-deep-learning-on-p3-and-p3dn-with-efa-part-1/), which is also built on EFA.
 
 ## AWS Batch - When to use it?
 
@@ -115,7 +115,7 @@ resource "aws_batch_compute_environment" "compute_environment" {
 }
 ```
 
-We can notice in the resource definition that it requires a few other resources to be present. First, the compute environment needs a service role. According to the [Terraform documentation](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/batch_compute_environment#service_role) the service role "allows AWS Batch to make calls to other AWS services on your behalf". With all respect to the people who wrote the documentation, for me personally, this statement does not offer a lot of information. In all fairness, Terraform documentation offers an example of this service role, which we will use in our project:
+We can notice in the resource definition that it requires a few other resources to be present. First, the compute environment needs a service role. According to the Terraform documentation[^2] the service role "allows AWS Batch to make calls to other AWS services on your behalf". With all respect to the people who wrote the documentation, for me personally, this statement does not offer a lot of information. In all fairness, Terraform documentation offers an example of this service role, which we will use in our project:
 
 ```terraform
 data "aws_iam_policy_document" "assume_role" {
@@ -144,7 +144,7 @@ resource "aws_iam_role_policy_attachment" "service_role_attachment" {
 
 Essentially what we are doing here is creating a role with an IAM policy offered by AWS, the name of the policy being `AWSBatchServiceRole`. Moreover, we create a trust policy to allow AWS Batch to assume this role. 
 
-Another important thing required by our compute environment is a list of security groups and subnets. I tie them together because they are part of the AWS networking infrastructure needed for the project. A security group is a [stateful firewall](https://en.wikipedia.org/wiki/Stateful_firewall), while a subnet is part of a virtual private network. Networking in AWS is a complex topic, and it falls outside the scope of this article. Since AWS Batch requires the presence of a minimal networking setup, this is what we can use for our purposes:
+Another important thing required by our compute environment is a list of security groups and subnets. I tie them together because they are part of the AWS networking infrastructure needed for the project. A security group is a stateful firewall[^3], while a subnet is part of a virtual private network. Networking in AWS is a complex topic, and it falls outside the scope of this article. Since AWS Batch requires the presence of a minimal networking setup, this is what we can use for our purposes:
 
 ```terraform
 resource "aws_vpc" "vpc" {
@@ -329,7 +329,7 @@ For the `resourceRequirements` we configure the CPU and the memory usage. These 
 
 Moving on, we can specify some environment variables for the container. We are using these environment variables to be able to pass input to the container. We could also override the CMD (command) part of the Docker container and provide some input values there, but we are not doing that in this case.
 
-Last, but not least, we see that the job definition requires 2 IAM roles. The first one is the execution role, which "grants to the Amazon ECS container and AWS Fargate agents permission to make AWS API calls" (according to [AWS Batch execution IAM role](https://docs.aws.amazon.com/batch/latest/userguide/execution-IAM-role.html)). The second one is the job role, which is an "IAM role that the container can assume for AWS permissions" (according to the [ContainerProperties docs](https://docs.aws.amazon.com/batch/latest/APIReference/API_ContainerProperties.html)). Is this confusing for anybody else or just for me? Probably yes... so let's clarify these roles.
+Last, but not least, we see that the job definition requires 2 IAM roles. The first one is the execution role, which "grants to the Amazon ECS container and AWS Fargate agents permission to make AWS API calls"[^4]. The second one is the job role, which is an "IAM role that the container can assume for AWS permissions"[^5]. Is this confusing for anybody else or just for me? Probably yes... so let's clarify these roles.
 
 The service role grants permission for the ECS cluster (and the ECS Fargate agent) to do certain AWS API calls. These calls include getting the Docker image from an ECR repository or being able to create CloudWatch log streams. 
 
@@ -573,7 +573,7 @@ We can push the image to the ECR repository following the push command from the 
 
 There are several ways to trigger batch jobs since they are available as EventBridge targets. For our example, we could have a scheduled EventBridge rule which could be invoked periodically.
 
-To make my life easier and be able to debug my job, I opted to create a simple [Step Function](https://docs.aws.amazon.com/step-functions/latest/dg/welcome.html).
+To make my life easier and be able to debug my job, I opted to create a simple Step Function[^6].
 
 Step Functions are state machines used for serverless orchestration. They are a perfect candidate for managing running jobs, offering a way to easily see and monitor the running state of the job and report the finishing status of it. We can implement the states of a Step Function using some JSON code.
 
@@ -660,11 +660,10 @@ The source code used for this article can also be found on GitHub at this URL: [
 
 ## References
 
-1. AWS Batch Documentation: [AWS docs](https://docs.aws.amazon.com/batch/latest/userguide/what-is-batch.html)
-2. Terraform Documentation - Compute Environment: [Terraform docs](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/batch_compute_environment#service_role)
-3. Stateful Firewall: [WikiPedia page](https://en.wikipedia.org/wiki/Stateful_firewall)
-4. AWS Batch - Execution IAM Role: [AWS docs](https://docs.aws.amazon.com/batch/latest/userguide/execution-IAM-role.html)
-5. AWS Batch - Container Properties: [AWS docs](https://docs.aws.amazon.com/batch/latest/APIReference/API_ContainerProperties.html)
-6. Step Functions: [AWS docs](https://docs.aws.amazon.com/step-functions/latest/dg/welcome.html)
-7. EFA for AWS Batch: [AWS docs](https://docs.aws.amazon.com/batch/latest/userguide/efa.html)
-8. Optimizing deep learning on P3 and P3dn with EFA: [AWS docs](https://docs.aws.amazon.com/batch/latest/userguide/efa.html)
+[^1]: AWS Batch Documentation: [AWS docs](https://docs.aws.amazon.com/batch/latest/userguide/what-is-batch.html)
+[^2]: Terraform Documentation - Compute Environment: [Terraform docs](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/batch_compute_environment#service_role)
+[^3]: Stateful Firewall: [WikiPedia page](https://en.wikipedia.org/wiki/Stateful_firewall)
+[^4]: AWS Batch - Execution IAM Role: [AWS docs](https://docs.aws.amazon.com/batch/latest/userguide/execution-IAM-role.html)
+[^5]: AWS Batch - Container Properties: [AWS docs](https://docs.aws.amazon.com/batch/latest/APIReference/API_ContainerProperties.html)
+[^6]: Step Functions: [AWS docs](https://docs.aws.amazon.com/step-functions/latest/dg/welcome.html)
+[^7]: Optimizing deep learning on P3 and P3dn with EFA: [AWS docs](https://docs.aws.amazon.com/batch/latest/userguide/efa.html)
