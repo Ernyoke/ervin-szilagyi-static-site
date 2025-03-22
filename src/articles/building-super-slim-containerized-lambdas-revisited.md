@@ -46,6 +46,132 @@ This point is similar to the previous one, the difference being that even if you
 
 1. Use `.dockerignore` to copy only what you need to your image: similarly to `.gitignore`, .`dockerignore` let's you specifies files and folders which you should not copy over to your images at build time.
 
+### 3. Use a compiled language to build a small executable
+
+Nowadays, it is becoming increasingly challenging to distinguish between interpreted and compiled languages. Many interpreted (or so-called "scripting") languages use just-in-time (JIT) compilers, meaning the code is compiled to machine code at execution time.
+
+The key takeaway here is that, to optimize the size of our container, we may want to avoid writing our Lambda functions in languages that require an interpreter or JIT compiler. Instead, we should build an executable before creating our final Docker container.
+
+To be more specific, rather than using Python or JavaScript, we might consider Rust, Go, or C++. Of course, I fully understand that this may not always be feasible, and my intention is not to discredit Python, JavaScript, or any other language. However, it is important to recognize that if we prioritize minimizing container size, eliminating the interpreter can free up tens-if not hundreds—of megabytes.
+
+### 4. Static vs dynamic linking
+
+In case we followed previous points, our image should be really small right now. We are mainly working on reducing the size of the executable we build. One thing we run into at this point is the presence of libc (usually `glibc`) in our image. Both Distroless and Chainguard present the option to chose base image the has `glibc` and an equivalent image that does not have. Obviously, the image that has glibc is larger in size.
+
+`glibc`, or the GNU C Library, is the standard C library (libc) implementation used on Linux systems. It offers a wide range of functions that allow programs to interact with the operating system, such as handling input/output, managing memory, and manipulating strings. Rust, relies on `glibc` for interacting with the operating system. On Linux, this typically means linking against `glibc`, as Rust's standard library, `libstd`, uses it for system calls and other operations. In the other Go offers more flexibility by allowing compilation without relying on the system's C standard library. By setting `CGO_ENABLED=0`, Go programs use their own implementations for system interactions, avoiding `glibc` dependency. This means that if we build al Lambda function with Go, we can just disable linking against `glibc` and we can put our executable in an image that does not have the library. In case of Rust, we can build an executable that statically links libc by using musl[^2][^3].
+
+### 5. Building an image from Scratch
+
+The most slimmed down image that we can have is to use `scratch`[^4] image as base, simply adding our binary executable to it. This can work for AWS Lambda as well, but we may soon run into issues, depending on what our Lambda function needs to do. For example:
+
+- CA (Certificate Authority) certificates will be missing, we wont even have a  `/etc/ssl/certs/` folder. This will cause HTTPS connections to fail. To use any AWS service such as DynamoDB or S3, HTTPS must work.
+- Standard directories such as `/var`, `/home`, and `/root` will be missing. The exception is the `/tmp` directory, which will be mounted by AWS, allowing us to write to a temporary folder if needed.
+- Time zone data may cause issues, as the `/usr/share/zoneinfo` directory will be missing.
+
+Of course, we can overcome these issues by adding the necessary files and folders at build time, but that defeats the purpose of using the `scratch` base image. Instead, we would rather choose Distroless or Chainguard.
+
+## Build the Slimmest Image Possible for a Rust Lambda
+
+Following these steps let's try to build a slim but usable containerized image for a Lambda function developed in Rust. 
+
+```bash
+ARG FUNCTION_DIR="/function"
+
+FROM rust:1.84-bullseye AS builder
+
+WORKDIR /build
+
+ADD Cargo.toml Cargo.toml
+ADD Cargo.lock Cargo.lock
+ADD src src
+
+# Cache build folders, see: https://stackoverflow.com/a/60590697/7661119
+# Docker Buildkit required
+RUN --mount=type=cache,target=/usr/local/cargo/registry \
+    --mount=type=cache,target=/home/root/app/target \
+    rustup target add x86_64-unknown-linux-musl && \
+    cargo build --release --target x86_64-unknown-linux-musl
+
+# copy artifacts to a clean image
+FROM cgr.dev/chainguard/static:latest
+
+COPY --from=builder /build/target/x86_64-unknown-linux-musl/release/bootstrap bootstrap
+
+ENTRYPOINT [ "./bootstrap" ]
+```
+
+The size of this image is 4.03 MB, of which the final base image itself (`chainguard/static`) accounts for approximately 1.33 MB, while the remaining 2.7 MB is the executable. Admittedly, my Lambda function does not do a lot and has only a few dependencies (the code for the function can be found here: [GitHub](https://github.com/Ernyoke/aws-lambda-benchmarks/tree/main/aws-lambda-compute-pi-rs/src)). More importantly, we followed the steps outlined above to achieve this reduced size:
+
+1. WWe use a builder image to compile the executable.
+2. We copy only the necessary files from this image-specifically, the executable named `bootstrap`
+3. We use `chainguard/static` to run the Lambda function. We could have used Distroless as well, which would result in a slightly larger image size (4.68 MB).
+4. We use the `x86_64-unknown-linux-musl` toolchain to build the executable, ensuring that libc is statically linked.
+
+Additionally, we target the `x86_64` architecture. However, with a few modifications, we could build the same image for arm64:
+
+```bash
+ARG FUNCTION_DIR="/function"
+
+FROM rust:1.84-bullseye AS builder
+
+WORKDIR /build
+
+ADD Cargo.toml Cargo.toml
+ADD Cargo.lock Cargo.lock
+ADD src src
+
+# Cache build folders, see: https://stackoverflow.com/a/60590697/7661119
+# Docker Buildkit required
+RUN --mount=type=cache,target=/usr/local/cargo/registry \
+    --mount=type=cache,target=/home/root/app/target \
+    rustup target add aarch64-unknown-linux-musl && \
+    cargo build --release --target aarch64-unknown-linux-musl
+
+# copy artifacts to a clean image
+FROM gcr.io/distroless/static:latest-arm64
+
+COPY --from=builder /build/target/aarch64-unknown-linux-musl/release/bootstrap bootstrap
+
+ENTRYPOINT [ "./bootstrap" ]
+```
+
+The size of this image will be roughly the same - I measured 4.06 MB on my computer. There are minor variations in size depending on the target architecture, with `x86_64` typically being a few KB smaller. However, this difference is negligible.
+
+We can still get the image slimmer by using `scratch`:
+
+```bash
+ARG FUNCTION_DIR="/function"
+
+FROM rust:1.84-bullseye AS builder
+
+WORKDIR /build
+
+ADD Cargo.toml Cargo.toml
+ADD Cargo.lock Cargo.lock
+ADD src src
+
+# Cache build folders, see: https://stackoverflow.com/a/60590697/7661119
+# Docker Buildkit required
+RUN --mount=type=cache,target=/usr/local/cargo/registry \
+    --mount=type=cache,target=/home/root/app/target \
+    rustup target add x86_64-unknown-linux-musl && \
+    cargo build --release --target x86_64-unknown-linux-musl
+
+# copy artifacts to a clean image
+FROM scratch
+
+COPY --from=builder /build/target/x86_64-unknown-linux-musl/release/bootstrap bootstrap
+
+ENTRYPOINT [ "./bootstrap" ]
+```
+
+In my case, this Lambda function works - it executes successfully and produces the expected output. However, all it does is calculate the value of PI using the Unbounded Spigot Algorithm for the Digits of PI[^5]. It is a "toy" function, serving as proof that `scratch` can work for Lambda functions. Nevertheless, I do not recommend using this base image. The size of this image is 2.69 MB.
+
+
 References:
 
 [^1]: [Multistage Builds](https://docs.docker.com/build/building/multi-stage/).
+[^2]: [Rust - Static Linking](https://doc.rust-lang.org/1.15.0/book/advanced-linking.html#static-linking)
+[^3]: [The Rust Reference - Static and dynamic C runtimes](https://doc.rust-lang.org/reference/linkage.html#static-and-dynamic-c-runtimes)
+[^4]: [Docker Docs - Create a minimal base image using scratch](https://docs.docker.com/build/building/base-images/#create-a-minimal-base-image-using-scratch)
+[^5]: [Unbounded Spigot Algorithms for the Digits of Pi - Jeremy Gibbons](https://www.cs.ox.ac.uk/jeremy.gibbons/publications/spigot.pdf)
