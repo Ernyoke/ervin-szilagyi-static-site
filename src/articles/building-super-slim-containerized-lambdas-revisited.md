@@ -2,7 +2,7 @@
 
 ## Introduction
 
-Recently, I was reading through some AWS blogs when I stumbled upon this article, [Optimize your container workloads for sustainability](https://aws.amazon.com/blogs/containers/optimize-your-container-workloads-for-sustainability/). Among other topics, the article discusses reducing the size of your Lambda container images to achieve better sustainability. One of the main points discussed is how to reduce the size of Lambda containers—the idea being that smaller containers require less bandwidth to transfer over the internet, take up less storage on disk, and are usually faster to build, thereby consuming less energy.
+Recently, I was reading through some AWS blogs when I stumbled upon this article, [Optimize your container workloads for sustainability](https://aws.amazon.com/blogs/containers/optimize-your-container-workloads-for-sustainability/) from Karthik Rajendran and Isha Dua. Among other topics, the article discusses reducing the size of your Lambda container images to achieve better sustainability. One of the main points discussed is how to reduce the size of Lambda containers - the idea being that smaller containers require less bandwidth to transfer over the internet, take up less storage on disk, and are usually faster to build, thereby consuming less energy.
 
 At first glance, this might seem like a minor optimization, but when you consider that AWS has millions of customers building Docker images, it suddenly makes sense to recommend working with slimmer images. Furthermore, having smaller images is consider a best practice overall.
 
@@ -167,6 +167,8 @@ ENTRYPOINT [ "./bootstrap" ]
 
 In my case, this Lambda function works - it executes successfully and produces the expected output. However, all it does is calculate the value of PI using the Unbounded Spigot Algorithm for the Digits of PI[^5]. It is a "toy" function, serving as proof that `scratch` can work for Lambda functions. Nevertheless, I do not recommend using this base image. The size of this image is 2.69 MB.
 
+Before closing this section, here is a comparison between base images with Rust executables:
+
 ![Rust Container Image Sizes by Base Images](img-building-super-slim-containerized-lambdas-revisited/rust-container-image-sizes-by-base-images.png)
 
 ## Build the Slimmest Image Possible for a Python Lambda
@@ -236,6 +238,19 @@ CMD [ "main.handler" ]
 Admittedly, I didn’t come up with all of this by myself. The image is based on [this](https://aws.amazon.com/blogs/aws/new-for-aws-lambda-container-image-support) blogpost[^7] from [Danilo Poccia](https://bsky.app/profile/danilop.bsky.social).
 
 The final image size is 81.6 MB, which is significantly smaller than the 717 MB base image (`public.ecr.aws/lambda/python`) recommended in the AWS documentation[^8].
+
+To put into perspective what we built, here is a comparison of the Rust x86-64 images and the Python images. The size of the Alpine image is more than three times larger than the largest Distroless image. But all in all, it is still relatively small compared to the base images provided by AWS.
+
+![Rust (x86-64) and Python Container Image Sizes by Base Images](img-building-super-slim-containerized-lambdas-revisited/rust-python-container-image-sizes-by-base-images.png)
+
+## Conclusions
+
+Revisiting this topic made me realize that building smaller Docker images can be a lot of fun, but it can also be quite challenging. Returning to the original point of this article, it is true that smaller containers can contribute to sustainability. However, in order to build and work with them as developers, we must invest a significant amount of time and effort.
+
+Should you go in tomorrow and try to reduce the size of all your Lambda images running in production? Probably not. There is no such thing as a free lunch. You trade ease of use for bandwidth and storage savings. It is up to you to decide if it’s worth it.
+
+As always, the code referenced in this article can be found on Github: [https://github.com/Ernyoke/aws-lambda-benchmarks](https://github.com/Ernyoke/aws-lambda-benchmarks)
+
 
 References:
 

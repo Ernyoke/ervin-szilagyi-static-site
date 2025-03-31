@@ -12,6 +12,8 @@ In my free time I like to tinker with even more technology. I also enjoy reading
 
 # Latest Posts
 
+- 2025
+    - March 31, 2025 - [Building Super Slim Containerized Lambdas on AWS - Revisited](articles/building-super-slim-containerized-lambdas-revisited.md)
 - 2024
     - November 20, 2024 - [How to Build a BlueSky RSS-like Bot with AWS Lambda and Terraform](articles/how-to-build-a-bluesky-rss-like-bot-with-aws-lambda-and-terraform.md)
     - September 29, 2024 - [About AWS AI Practitioner (Beta) Exam](articles/about-ai-practitioner-beta-exam.md)
