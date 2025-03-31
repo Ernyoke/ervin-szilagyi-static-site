@@ -102,7 +102,7 @@ ENTRYPOINT [ "./bootstrap" ]
 
 The size of this image is 4.03 MB, of which the final base image itself (`chainguard/static`) accounts for approximately 1.33 MB, while the remaining 2.7 MB is the executable. Admittedly, my Lambda function does not do a lot and has only a few dependencies (the code for the function can be found here: [GitHub](https://github.com/Ernyoke/aws-lambda-benchmarks/tree/main/aws-lambda-compute-pi-rs/src)). More importantly, we followed the steps outlined above to achieve this reduced size:
 
-1. WWe use a builder image to compile the executable.
+1. We use a builder image to compile the executable.
 2. We copy only the necessary files from this image-specifically, the executable named `bootstrap`
 3. We use `chainguard/static` to run the Lambda function. We could have used Distroless as well, which would result in a slightly larger image size (4.68 MB).
 4. We use the `x86_64-unknown-linux-musl` toolchain to build the executable, ensuring that libc is statically linked.
@@ -167,6 +167,75 @@ ENTRYPOINT [ "./bootstrap" ]
 
 In my case, this Lambda function works - it executes successfully and produces the expected output. However, all it does is calculate the value of PI using the Unbounded Spigot Algorithm for the Digits of PI[^5]. It is a "toy" function, serving as proof that `scratch` can work for Lambda functions. Nevertheless, I do not recommend using this base image. The size of this image is 2.69 MB.
 
+![Rust Container Image Sizes by Base Images](img-building-super-slim-containerized-lambdas-revisited/rust-container-image-sizes-by-base-images.png)
+
+## Build the Slimmest Image Possible for a Python Lambda
+
+Understandably, there can be several reasons not to use a compiled language for your Lambda function. In this section of the article, we will try to build a slim image for a Lambda function written in Python.
+
+For this example, I will use a Python image based on Alpine Linux. Alpine-based images are widely known as slim images, but they are not the slimmest possible options. They come with a package manager (`apk`), a shell, and all the well-known Linux utilities, so they are not as "clean" as Distroless or Chainguard-based images.
+
+I tried to build an image for a Python Lambda using a Distroless base, but I failed miserably. The AWS Lambda Python Runtime Interface Client relies on C++ modules using CPython[^6]. These C++ modules have to be built at installation time and require a bunch of dependencies. Besides, they rely on dynamically linking several dependencies (musl vs. glibc, remember?). I tried to add all the necessary dependencies to the final runtime image, but in the end, whatever I did, it didn’t work out. So I gave up. This might be another project of mine for a later time—to try to make it work.
+
+Nevertheless, here is how a containerized Lambda function for Python would look:
+
+```bash
+ARG FUNCTION_DIR="/home/app/"
+ARG RUNTIME_VERSION="3.11"
+ARG DISTRO_VERSION="3.21"
+
+# Stage 1 - bundle base image + runtime
+# Grab a fresh copy of the image and install GCC
+FROM python:${RUNTIME_VERSION}-alpine${DISTRO_VERSION} AS python-alpine
+# Install GCC (Alpine uses musl but we compile and link dependencies with GCC)
+RUN apk add --no-cache libstdc++
+
+# Stage 2 - build function and dependencies
+FROM python-alpine AS build-image
+
+# Needed for libexecinfo-dev. Alternatives such as libunwind may build awslambdaric, but the function wont execute in the final runtime image.
+# Tanks https://stackoverflow.com/questions/77518311/dockerfile-for-node16-alpine-in-aws-lambda
+RUN apk add --no-cache --update --repository=https://dl-cdn.alpinelinux.org/alpine/v3.16/main/ libexecinfo-dev
+
+# Install aws-lambda-cpp build dependencies
+RUN apk add --no-cache \
+    build-base \
+    libtool \
+    autoconf \
+    automake \
+    libexecinfo-dev \
+    make \
+    cmake \
+    libcurl
+
+ARG FUNCTION_DIR
+ARG RUNTIME_VERSION
+
+RUN mkdir -p ${FUNCTION_DIR}
+
+COPY . ${FUNCTION_DIR}
+
+RUN python${RUNTIME_VERSION} -m pip install awslambdaric --target ${FUNCTION_DIR}
+RUN python${RUNTIME_VERSION} -m pip install -r ${FUNCTION_DIR}requirements.txt --target ${FUNCTION_DIR}
+
+# Stage 3 - final runtime image
+# Grab a fresh copy of the Python image
+FROM python-alpine
+
+ARG FUNCTION_DIR
+
+WORKDIR ${FUNCTION_DIR}
+
+COPY --from=build-image ${FUNCTION_DIR} ${FUNCTION_DIR}
+
+ENTRYPOINT [ "python", "-m", "awslambdaric"]
+
+CMD [ "main.handler" ]
+```
+
+Admittedly, I didn’t come up with all of this by myself. The image is based on [this](https://aws.amazon.com/blogs/aws/new-for-aws-lambda-container-image-support) blogpost[^7] from [Danilo Poccia](https://bsky.app/profile/danilop.bsky.social).
+
+The final image size is 81.6 MB, which is significantly smaller than the 717 MB base image (`public.ecr.aws/lambda/python`) recommended in the AWS documentation[^8].
 
 References:
 
@@ -175,3 +244,6 @@ References:
 [^3]: [The Rust Reference - Static and dynamic C runtimes](https://doc.rust-lang.org/reference/linkage.html#static-and-dynamic-c-runtimes)
 [^4]: [Docker Docs - Create a minimal base image using scratch](https://docs.docker.com/build/building/base-images/#create-a-minimal-base-image-using-scratch)
 [^5]: [Unbounded Spigot Algorithms for the Digits of Pi - Jeremy Gibbons](https://www.cs.ox.ac.uk/jeremy.gibbons/publications/spigot.pdf)
+[^6]: [GitHub Repository for AWS Lambda Python Runtime Interface Client](https://github.com/aws/aws-lambda-python-runtime-interface-client)
+[^7]: [New for AWS Lambda – Container Image Support](https://aws.amazon.com/blogs/aws/new-for-aws-lambda-container-image-support/) - in the blogpost is Danilo gives an example for Python 3.9. Based on his Dockerfile, I updated mine to use Python 3.11. At first glance, this should have been pretty easy to do, but I still had to track down dependencies (`libexecinfo-dev`) that got removed from newer version of Alpine images.
+[^8]: [Deploy Python Lambda functions with container images](https://docs.aws.amazon.com/lambda/latest/dg/python-image.html#python-image-instructions)
