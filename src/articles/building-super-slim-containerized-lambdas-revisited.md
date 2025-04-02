@@ -6,7 +6,7 @@ Recently, I was reading through some AWS blogs when I stumbled upon this article
 
 At first glance, this might seem like a minor optimization, but when you consider that AWS has millions of customers building Docker images, it suddenly makes sense to recommend working with slimmer images. Furthermore, having smaller images is considered a best practice overall.
 
-Around three years ago, I wrote an article about "how", I was discussing ways to reduce the size of Lambda containers. My article was titled (Building Super Slim Containerized Lambdas on AWS)[/articles/building-super-slim-containerized-lambdas.html] and it primarily focused on Lambda functions written in Rust. Reading the AWS blog article reminded me that I should probably revisit the topic of creating slim Lambda images and provide a more informed perspective.
+Around three years ago, I wrote an article about "how", I was discussing ways to reduce the size of Lambda containers. My article was titled [Building Super Slim Containerized Lambdas on AWS](articles/building-super-slim-containerized-lambdas.html) and it primarily focused on Lambda functions written in Rust. Reading the AWS blog article reminded me that I should probably revisit the topic of creating slim Lambda images and provide a more informed perspective.
 
 ## Short Recap
 
@@ -261,5 +261,5 @@ As always, the code referenced in this article can be found on Github: [https://
 [^4]: [Docker Docs - Create a minimal base image using scratch](https://docs.docker.com/build/building/base-images/#create-a-minimal-base-image-using-scratch)
 [^5]: [Unbounded Spigot Algorithms for the Digits of Pi - Jeremy Gibbons](https://www.cs.ox.ac.uk/jeremy.gibbons/publications/spigot.pdf)
 [^6]: [GitHub Repository for AWS Lambda Python Runtime Interface Client](https://github.com/aws/aws-lambda-python-runtime-interface-client)
-[^7]: [New for AWS Lambda – Container Image Support](https://aws.amazon.com/blogs/aws/new-for-aws-lambda-container-image-support/) - in the blogpost is Danilo gives an example for Python 3.9. Based on his Dockerfile, I updated mine to use Python 3.11. At first glance, this should have been pretty easy to do, but I still had to track down dependencies (`libexecinfo-dev`) that got removed from newer version of Alpine images.
+[^7]: [New for AWS Lambda – Container Image Support](https://aws.amazon.com/blogs/aws/new-for-aws-lambda-container-image-support/) - in the blogpost Danilo gives an example for Python 3.9. Based on his Dockerfile, I updated mine to use Python 3.11. At first glance, this should have been pretty easy to do, but I still had to track down dependencies (`libexecinfo-dev`) that got removed from newer version of Alpine images.
 [^8]: [Deploy Python Lambda functions with container images](https://docs.aws.amazon.com/lambda/latest/dg/python-image.html#python-image-instructions)
