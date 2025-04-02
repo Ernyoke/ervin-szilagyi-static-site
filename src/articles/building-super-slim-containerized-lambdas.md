@@ -119,7 +119,7 @@ All of these measurements were done in `us-east-1` region. The Lambda had the mi
 
 Comparing the init times with the the ones of the same Lambda running inside the AWS provided `ecr.aws/lambda/provided:al2 image, we get the following:
 
-![AWS Provided container init times and distroless init times comparison chart](img-build-super-slim-containerized-lambdas/aws-vs-distroless.png)
+![AWS Provided container init times and distroless init times comparison chart](img-building-super-slim-containerized-lambdas/aws-vs-distroless.png)
 
 The init times measured above are certainly great. They are way below 100 ms, in many cases below 10 ms. But we should not attribute this to the fact that we are using a distroless base image. In the comparison chart we can see that they are similar to the ones of an container image provided by AWS. What this proves is that the AWS Lambda container cache works as expected by pro-actively caching larger base images as well, but unfortunately we were not able to see meaning gains for a smaller image.
 
