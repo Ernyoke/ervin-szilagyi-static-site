@@ -46,54 +46,62 @@ ___
     *From December 2022 until now*
 
     - *Platform Engineer/Solutions Architect* primarily working on AWS infrastructure within the automotive industry.
-    - Main areas of experience: 
-        - System design for highly available software product: our system was serving more then 10 millions of requests from vehicles all around the globe;
+    - Main areas of expertise: 
+        - System design for highly a available software product: our system was serving more then *10 millions of requests* from vehicles all around the globe;
         - Big data ingestion and ETL workflows: 
             - Built ingestion pipelines to provide analytics based on the system to support business needs;
-            - Ingested terabytes of data each month, with this data being stored in S3/Athena tables;
+            - Ingested *terabytes of data each month*, with this data being stored in S3/Athena tables;
             - Developed dashboards for visualizing key metrics using Amazon QuickSight.
         - Working with large language models and deploying specialized AI agents for internal use:
-            - Built several AI agents on top of LLM models such as Azure OpenAI and Anthropic Claude. The purpose of these agents was to enhance productivity;
+            - Built several AI agents on top of LLM models such as Azure OpenAI, Anthropic Claude, Amazon Bedrock and Google Gemini. The purpose of these agents was to enhance development and business productivity;
             - Created knowledge bases using company-owned internal data to enable Retrieval-Augmented Generation (RAG);
-            - The main technology stack included AWS Lambda with LangChain and LangGraph (for chaining and tool calling), LanceDB (serverless vector store), OpenSearch, and Splunk.
+            - Built several agentic workflows using LangChain and LangGraph. Integrated AI assistance inside third party products such as Splunk dashboards;
+        - Microservice development:
+            - Developed high-performance microservices using Quarkus framework and Java 17 and above;
+            - Built scalable and efficient services optimized for cloud-native environments.
+        - DevOps and Operations:
+            - Managed containerized applications using Amazon EKS (Elastic Kubernetes Service) for scalable deployments;
+            - Implemented comprehensive monitoring and observability solutions with Prometheus for metrics collection and Grafana for visualization;
+            - Set up centralized logging infrastructure using Kibana for log analysis and troubleshooting;
+            - Maintained high system reliability through automated monitoring, alerting, and incident response procedures.
 
 - #### **Software Product & Platform Engineering Specialist**
 
     *From August 2021 until the November 2022*
 
-    - *Platform Engineer/Solutions Architect* primarily working on AWS infrastructure within the automotive industry.
-    - Assist in architecting complex end-to-end cloud-based solutions tailored to client needs. These solutions involve designing secure and user-friendly APIs, as well as highly available and secure networks for the relevant services.
-    - Participate in the end-to-end development of a suite of microservices, along with the necessary infrastructure requirements. (Main technology stack: API Gateway, networking (AWS VPC, Route53, Elastic Load Balancers), AWS Lambda (Python, JavaScript, Go), Java microservices (ECS, Docker)).
-    - Perform cloud automation and monitoring using CloudWatch, EventBridge, and Lambda.
-    - Develop, design, and refactor cloud-based infrastructure using Infrastructure-as-Code (IaC) tools such as Terraform.
-    - Design and implement disaster recovery plans for services and platforms operating on a global scale.
-    - Support a range of ETL jobs, including maintenance, optimization, and monitoring. (Main technology stack: AWS Batch/AWS Lambda with Python, S3, AWS RDS, Redis).
-    - Manage relational databases deployed on AWS RDS, including planning and leading migrations from older platforms to more modern and up-to-date versions. Build highly available solutions by implementing replication.
+    - *Platform Engineer/Solutions Architect* who primarily worked on AWS infrastructure within the automotive industry.
+    - Assisted in architecting complex end-to-end cloud-based solutions tailored to client needs. These solutions involved designing secure and user-friendly APIs, as well as highly available and secure networks for the relevant services.
+    - Participated in the end-to-end development of a suite of microservices, along with the necessary infrastructure requirements. (Main technology stack: API Gateway, networking (AWS VPC, Route53, Elastic Load Balancers), AWS Lambda (Python, JavaScript, Go), Java microservices (ECS, Docker)).
+    - Performed cloud automation and monitoring using CloudWatch, EventBridge, and Lambda.
+    - Developed, designed, and refactored cloud-based infrastructure using Infrastructure-as-Code (IaC) tools such as Terraform.
+    - Designed and implemented disaster recovery plans for services and platforms operating on a global scale.
+    - Supported a range of ETL jobs, including maintenance, optimization, and monitoring. (Main technology stack: AWS Batch/AWS Lambda with Python, S3, AWS RDS, Redis).
+    - Managed relational databases deployed on AWS RDS, including planning and leading migrations from older platforms to more modern and up-to-date versions. Built highly available solutions by implementing replication.
 
 ### RIA Solutions Group
 
 - #### **Senior Software Engineer**
 
-    *From December 2019 until August 2021*
+    *From December 2020 until August 2021*
 
-    - Doing mainly integration work for a client in the logistics industry. Apply enterprise integration patterns to achieve highly flexible and easily maintainable solutions.
+    - Did mainly integration work for a client in the logistics industry. Applied enterprise integration patterns to achieve highly flexible and easily maintainable solutions.
     - Main technology stack for integration consisted of Spring Integration and Java EE technologies such as JBoss for the underlying web server, Java EE 8, JMS (ActiveMQ, IBM MQ), and JPA (EclipseLink).
-    - Participate in architecture design and implementation. Discuss and present technical solutions for clients.
+    - Participated in architecture design and implementation. Discussed and presented technical solutions for clients.
 
 - #### **Software Engineer/Team Leader**
 
-    *From August 2019 until November 2019*
+    *From August 2019 until November 2020*
 
-    - Participate in the development of cloud-based solutions for clients from the logistics industry.
-    - Apply domain-driven design principles to implement new libraries using micro-services architecture.
-    - Implement and maintain multiple services using both event sourcing (Apache Kafka) and REST APIs as a way of communication. The stack of technologies used for service development includes languages that run on JVM, Java 8, and Groovy with the usage of Spring Boot and other Spring libraries (Spring MVC, Spring Data, Spring AOC, Spring Batch, etc.). It also includes NodeJS with the usage of JavaScript ES6 features.
-     - Develop and integrate several features which require handling both relational and non-relational data. The technology stack implies heavy usage of Elasticsearch for indexing and searching huge amounts of client data. Besides, several services use MySQL/MariaDB databases for relational data and Apache Cassandra databases for non-relational data.
-    - Work with real-time data streams using Amazon SQS and big data processing using Spring Batch.
-    - Participate in front-end development as well, implementing several features visible to the end user. The front-end stack implies the usage of HTML5, CSS3, and JavaScript with the usage of the AngularJS framework.
-    - Practice test-driven development (TDD), and implement unit tests/integration tests for code changes where testing was feasible. Have in-depth experience with the Spock framework, as well as with JUnit4 and Mochito.
-    - Work in an agile framework, collaborating with the client and business in story grooming, and reviewing story/acceptance criteria and performance metrics.
-    - Participate in interviewing new software engineer candidates.
-    - Provide mentorship and guidance for new joiners and junior colleagues.
+    - Participated in the development of cloud-based solutions for clients from the logistics industry.
+    - Applied domain-driven design principles to implement new libraries using microservices architecture.
+    - Implemented and maintained multiple services using both event sourcing (Apache Kafka) and REST APIs for communication. The technology stack used for service development included languages that run on JVM, Java 8, and Groovy with Spring Boot and other Spring libraries (Spring MVC, Spring Data, Spring AOP, Spring Batch, etc.). It also included Node.js with JavaScript ES6 features.
+    - Developed and integrated several features that required handling both relational and non-relational data. The technology stack involved heavy usage of Elasticsearch for indexing and searching large amounts of client data. Additionally, several services used MySQL/MariaDB databases for relational data and Apache Cassandra databases for non-relational data.
+    - Worked with real-time data streams using Amazon SQS and processed big data using Spring Batch.
+    - Participated in front-end development, implementing several features visible to end users. The front-end stack involved HTML5, CSS3, and JavaScript using the AngularJS framework.
+    - Practiced test-driven development (TDD) and implemented unit tests/integration tests for code changes where testing was feasible. Gained in-depth experience with the Spock framework, as well as JUnit4 and Mockito.
+    - Worked within an agile framework, collaborating with clients and business stakeholders in story grooming, and reviewing story/acceptance criteria and performance metrics.
+    - Participated in interviewing new software engineer candidates.
+    - Provided mentorship and guidance for new joiners and junior colleagues.
 
 
 ### Endava Romania
@@ -102,25 +110,24 @@ ___
 
     *From August 2017 to September 2019*
 
-    - Develop and maintain multiple full-stack business applications, working in agile teams. During my work the following technologies were used:
+    - Developed and maintained multiple full-stack business applications, working in agile teams. During my work, the following technologies were used:
         - Back-end based on Java stack: Java 8, Maven, JAX-WS, JAX-RS, Spring/Spring Boot (Spring Core, Spring MVC, Spring AOP, Spring Security, Spring Data, Spring Batch, Spring Test), Tomcat, JBoss
-        - Persistence: extensively used both SQL (Oracle database with Hibernate JPA, Liquibase for migrations) and noSQL type databases (MarkLogic 8 with JSON documents. For interaction/querying we used server-side Javascript).
-        - Front-end: AngularJS (which implies heavy usage of Javascript[ES5])/Angular 4 (TypeScript), HTML5, CSS3 (Sass) + Twitter Bootstrap 3, package-managers (npm, Bower).
+        - Persistence: extensively used both SQL (Oracle database with Hibernate JPA, Liquibase for migrations) and NoSQL type databases (MarkLogic 8 with JSON documents. For interaction/querying, we used server-side JavaScript).
+        - Front-end: AngularJS (which implied heavy usage of JavaScript [ES5])/Angular 4 (TypeScript), HTML5, CSS3 (Sass) + Twitter Bootstrap 3, package managers (npm, Bower).
         - Deployment/DevOps: Jenkins, Docker, Maven, Grunt, Gulp, npm
-        - Testing/Unit testing frameworks: JUnit, Mockito, Karma, Jasmin, Protractor, Roxy
-        - Dev environments: IntelliJ, WebStorm, VSCode, VIM, MarkLogic query console, SQL Developer
-        - Source control: git
-        - Scripting/automation: Bash, NodeJS,
-        - Other libraries/frameworks: Google Guava, Apache commons, Lombok, Dozer mapper, lodash;
-    - Gather requirements from the external clients, actively participate in client and internal agile meetings;
-    - Develop REST-based Web Services used by third parties and implement REST end-points;
-    - Secure REST endpoints using Spring Security. Write and generate documentation for these end-points using Swagger;
-    - Initiate extensive code refactoring initiatives for older functionalities, focus on the usage of design patterns;
-    - Integrate with the external services which were exposing both REST and SOAP end-points;
-    - Create user-friendly GUIs using HTML, CSS and Javascript, implement single-page front-end applications using Angular;
-    - Extensively involved in code reviews (platforms used: BitBucket);
-    - Actively involved in release management/product delivery (platforms uses: AWS EC2, AWS S3);
-- Supervise summer internship attendees
+        - Testing/Unit testing frameworks: JUnit, Mockito, Karma, Jasmine, Protractor, Roxy
+        - Development environments: IntelliJ, WebStorm, VSCode, VIM, MarkLogic query console, SQL Developer
+        - Source control: Git
+        - Scripting/automation: Bash, Node.js
+        - Other libraries/frameworks: Google Guava, Apache Commons, Lombok, Dozer mapper, Lodash
+    - Gathered requirements from external clients and actively participated in client and internal agile meetings
+    - Developed REST-based web services used by third parties and implemented REST endpoints
+    - Secured REST endpoints using Spring Security and wrote and generated documentation for these endpoints using Swagger
+    - Initiated extensive code refactoring initiatives for older functionalities, focusing on the usage of design patterns
+    - Integrated with external services that exposed both REST and SOAP endpoints
+    - Created user-friendly GUIs using HTML, CSS, and JavaScript, and implemented single-page front-end applications using Angular
+    - Was extensively involved in code reviews (platforms used: BitBucket)
+    - Was actively involved in release management/product delivery (platforms used: AWS EC2, AWS S3)
 
 ### Accenture Industrial Software Solutions Romania
 
@@ -128,17 +135,17 @@ ___
 
     *From May 2015 to July 2017*
 
-    - Develop and maintain a Railway Automation project using C++ (MFC, Boost), Visual Basic and
-    Python environments;
-    - Work in a regulated environment, the components developed by us were graded between SIL 0 and SIL 2 safety-integrity level;
-    - Develop and maintain unit tests using GTEST and GMOCK libraries;
-    - Implement regression and UI tests using AutoIT and Python languages;
-    - Configure and maintain Jenkins - continuous integration system, develop batch scripts for automatic builds;
-    - Write software documentation (use cases, release notes) and testing documentation (test cases);
-    - Actively collaborate with clients and other teams;
-    - Actively attend Scrum meetings;
-    - Supervise summer internship attendees.
-    - Other technologies used: IBM Rational Synergy (version control system), IBM Rational Doors (software documentation), PVCS Merant Tracker (bugs and tickets), Citrix, Oracle Virtual Box (virtualization and working remotely on the client's network), AutoIT (used for UI and regression/integration testing), Parasoft Static Analysis for C and C++.
+    - Developed and maintained a Railway Automation project using C++ (MFC, Boost), Visual Basic, and Python environments;
+    - Worked in a regulated environment where the components we developed were graded between SIL 0 and SIL 2 safety-integrity levels;
+    - Developed and maintained unit tests using GTEST and GMOCK libraries;
+    - Implemented regression and UI tests using AutoIT and Python languages;
+    - Configured and maintained Jenkins continuous integration system, and developed batch scripts for automatic builds;
+    - Wrote software documentation (use cases, release notes) and testing documentation (test cases);
+    - Actively collaborated with clients and other teams;
+    - Actively attended Scrum meetings;
+    - Supervised summer internship attendees.
+
+    - Other technologies used: IBM Rational Synergy (version control system), IBM Rational DOORS (software documentation), PVCS Merant Tracker (bugs and tickets), Citrix, Oracle VirtualBox (virtualization and working remotely on the client's network), AutoIT (used for UI and regression/integration testing), Parasoft Static Analysis for C and C++.
 
 ---
 
