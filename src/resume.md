@@ -39,7 +39,7 @@ ___
 
 ## Work Experience
 
-### Accenture Romania
+### Accenture Services
 
 - #### **Software Product & Platform Engineering Associate Manager**
 
@@ -90,7 +90,7 @@ ___
 
 - #### **Software Engineer/Team Leader**
 
-    *From August 2019 until November 2020*
+    *From September 2019 until November 2020*
 
     - Participated in the development of cloud-based solutions for clients from the logistics industry.
     - Applied domain-driven design principles to implement new libraries using microservices architecture.
