@@ -140,8 +140,26 @@ And here is another one from Claude:
 Error: {"type":"error","error":{"type":"rate_limit_error","message":"This request would exceed the rate limit for your organization (874899f0-c2de-4906-8802-cc478416bee6) of 20,000 input tokens per minute. For details, refer to: https://docs.anthropic.com/en/api/rate-limits. You can see the response headers for current usage. Please reduce the prompt length or the maximum tokens requested, or try again later. You may also contact sales at https://www.anthropic.com/contact-sales to discuss your options for a rate limit increase."}}
 ```
 
+The problem we may face while working with LLM models, especially if we do tool calls, is that we cannot really control the size our messages and also the rate of our messages. What do I mean by this?
 
+- Depending on the MCP servers we use we might receive short answers that map to a message with a reduced token size;
+- Depending on what the model decides, after a response from an MCP tool call, it can request further tool calls instead of providing an final answer to the initial user query. This will result on more back-and-forth communication between the our client the LLM model racking up more token usage.
 
+The challenge with this is that you, as the MCP client developer, you cannot really intervene here in any of those cases, especially, if you develop general purpose MCP client that meant to be used with any kind of MCP server. 
+
+Possible solutions I could think would be the following:
+
+- Try to somehow shorten/compress large MCP server responses. If your clients somehow knows what to expect from the MCP tool call, and also knows that some parts of the response are irrelevant, you might want to extract only the meaningful part from the response.
+- Try to use another model (probably from another vendor) to do a summary of the response from the MCP. This might introduce a bunch of other issues, like information loss, even more token usage (more $) and way more waiting from a final answer for the initial query.
+- Apply some rate limiting. Aside that this could make the user experience way worse, it could be challenging to implement in case we want to support several models from different providers. Limits can be different for each provider, each of them is using a different tokenizer, limits can and will change over time, etc.
+
+### 4. Let's Talk about $
+
+Limits we talked about in the previous section are there for several reasons: to save you from raking up huge bill and also to save themselves from bad actors. Running an LLM model requires a lot of computing power and lot of energy.
+
+I figured that this would be the time to talk about money from the perspective of a client developer. While developing this client I spent around 30$ on Claude, around 10$ on OpenAI and few buck on both Gemini and Bedrock. Models from Bedrock are barely usable because of their agressive rate limiting, so could not rake up a huge cost there even if I wanted to.
+
+LLM providers are mainly charging based on the number of tokens used. As I mentioned before, if we add MCP tools to the mix, we kind of loose control over how much tokens we eat up with each query. This, I think, is a problem. I my client I display the number of tokens used after each user query, but I have no way to estimate neither the token usage neither the cost beforehand. In the end it is a good thing to have a limit imposed, because I can imagine that we could pretty easily go haywire with a simple query.
 
 ## References
 
