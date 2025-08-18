@@ -220,7 +220,7 @@ ___
     - since September 2020
     - Badge: [verify](https://www.credly.com/badges/3e2a89c1-0ef3-4a45-9e22-ccd54ac6e0ef/public_url)
 - **Microsoft Certified: Azure Developer Associate**
-    - valid between October 2020 and October 2022
+    - valid between October 2020 and October 2025
     - Badge: [verify](https://learn.microsoft.com/en-gb/users/ervinszilagyi-2278/credentials/b2f3afc499fc533c)
 - **Associate Cloud Engineer**
     - valid between August 2022 and August 2024
