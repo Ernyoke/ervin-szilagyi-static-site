@@ -24,7 +24,7 @@ I consider myself an advocate of open-source technology. Some of my open-source 
 - LinkedIn: [in/szilagyiervin](https://www.linkedin.com/in/szilagyiervin/)
 - Twitter: [@ervin_szilagyi](https://twitter.com/ervin_szilagyi)
 - BlueSky: [@ervinszilagyi.dev](https://bsky.app/profile/ervinszilagyi.dev)
-- StackOverflow: [ervin-szilagyi](https://stackoverflow.com/users/7661119/ervin-szilagyi) (15K+ reputation, part of [top 100 Romanian users](https://data.stackexchange.com/stackoverflow/query/1625946/my-position-from-romanian-users))
+- StackOverflow: [ervin-szilagyi](https://stackoverflow.com/users/7661119/ervin-szilagyi) (16K+ reputation, part of [top 100 Romanian users](https://data.stackexchange.com/stackoverflow/query/1625946/my-position-from-romanian-users))
 - DevOps StackExchange: [ervin-szilagyi](https://devops.stackexchange.com/users/27214/ervin-szilagyi)
 - GitHub: [ernyoke](https://github.com/Ernyoke)
 - dev.to: [dev.to/ervin_szilagyi](https://dev.to/ervin_szilagyi)
@@ -39,11 +39,17 @@ ___
 
 ## Work Experience
 
+### Microsoft
+
+- #### Software Engineer
+
+    *From February 2026 until now*
+
 ### Accenture Services
 
 - #### **Software Product & Platform Engineering Associate Manager**
 
-    *From December 2022 until now*
+    *From December 2022 until January 2026*
 
     - *Platform Engineer/Solutions Architect* primarily working on AWS infrastructure within the automotive industry.
     - Main areas of expertise: 
