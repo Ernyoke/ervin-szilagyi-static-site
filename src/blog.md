@@ -1,5 +1,7 @@
 # Blog Posts
 
+RSS/Atom Feed: [atom.xml](articles/atom.xml)
+
 - 2025
     - July 25, 2025 - [Lessons Learned from Building an MCP Client](articles/lessons-learned-from-building-an-mcp-client.md)
     - March 31, 2025 - [Building Super Slim Containerized Lambdas on AWS - Revisited](articles/building-super-slim-containerized-lambdas-revisited.md)

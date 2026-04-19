@@ -9,11 +9,13 @@
             "og:image": "images/cover.png",
             "og:description": "Personal web page and blog.",
             "og:url": "https://ervinszilagyi.dev",
-            "twitter_handle": "@ervin_szilagyi"
+            "twitter_handle": "@ervin_szilagyi",
+            "og:author": "Ervin Szilagyi",
+            "author_email": "ervin_szilagyi[at]outlook.com"
         },
         "matchers": [
             {
-                "file": "src/resume.md",
+                "file": "resume.md",
                 "action": "STATIC",
                 "meta": {
                     "og:title": "Resume",
@@ -22,35 +24,47 @@
                 }
             },
             {
-                "file": "src/index.md",
+                "file": "index.md",
                 "action": "USE_DEFAULT"
             },
             {
-                "file": "src/*.md",
+                "file": "*.md",
                 "action": "TAKE_FROM_CONTENT"
             },
             {
-                "file": "src/articles/*",
+                "file": "articles/*",
                 "action": "TAKE_FROM_CONTENT"
             }
         ]
     },
     "frames": [
         {
-            "file": "src/index.md",
-            "frame": "src/index_frame.html"
+            "file": "index.md",
+            "frame": "index_frame.html"
         },
         {
-            "file": "src/resume.md",
+            "file": "resume.md",
             "frame": "src/resume_frame.html"
         },
         {
-            "file": "src/articles/*.md",
-            "frame": "src/articles/article_frame.html"
+            "file": "articles/*.md",
+            "frame": "articles/article_frame.html"
         },
         {
             "file": "*.md",
-            "frame": "src/frame.html"
+            "frame": "frame.html"
+        }
+    ],
+    "rssFeeds": [
+        {
+            "title": "Blog posts and articles - ervinszilagyi.dev",
+            "description": "Latest blog posts from ervinszilagyi.dev",
+            "link": "https://ervinszilagyi.dev/blog",
+            "feed_url": "https://ervinszilagyi.dev/articles/atom.xml",
+            "language": "en",
+            "matcher": "articles/*.md",
+            "limit": 20,
+            "outputLocation": "articles/atom.xml"
         }
     ]
 }
