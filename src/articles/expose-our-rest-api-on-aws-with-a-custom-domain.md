@@ -1,3 +1,13 @@
+---
+Title:   Expose our REST API on AWS with a Custom Domain
+Summary: A practical guide to exposing an AWS REST API behind a custom domain name with Route 53 and ACM.
+Author:  Ervin Szilagyi
+Email:   ervin_szilagh[at]outlook.com
+Twitter: @ervin_szilagyi
+Date:    2023-05-24T00:00:00.000Z
+Cover:   ../images/cover.png
+---
+
 # Expose our REST API on AWS with a Custom Domain
 
 DNS is hard.

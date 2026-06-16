@@ -1,3 +1,13 @@
+---
+Title:   AWS Lambda Extensions with Rust
+Summary: How to build external AWS Lambda extensions in Rust to hook into the function lifecycle.
+Author:  Ervin Szilagyi
+Email:   ervin_szilagh[at]outlook.com
+Twitter: @ervin_szilagyi
+Date:    2022-12-26T00:00:00.000Z
+Cover:   ../images/cover.png
+---
+
 # AWS Lambda Extensions with Rust
 
 ## What are Lambda Extensions?

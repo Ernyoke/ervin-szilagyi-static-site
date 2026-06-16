@@ -1,3 +1,13 @@
+---
+Title:   How to Build a BlueSky RSS-like Bot with AWS Lambda and Terraform
+Summary: Building a serverless BlueSky bot that reposts RSS feed entries using AWS Lambda and Terraform.
+Author:  Ervin Szilagyi
+Email:   ervin_szilagh[at]outlook.com
+Twitter: @ervin_szilagyi
+Date:    2024-11-20T00:00:00.000Z
+Cover:   img-how-to-build-a-bluesky-rss-like-bot-with-aws-lambda-and-terraform/cover.png
+---
+
 # How to Build a BlueSky RSS-like Bot with AWS Lambda and Terraform
 
 BlueSky, an alternative social media platform to the well-known X (or commonly known as Twitter), is currently experiencing a surge of new users. There are multiple reasons why many people, especially from Twitter, are migrating to BlueSky, but this blog post is not about that. We want to talk about bots, useful bots, not spam/scam bots, obviously.

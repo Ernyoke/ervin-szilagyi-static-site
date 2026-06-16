@@ -1,3 +1,12 @@
+---
+Title:   AI
+Summary: AI Manifesto.
+Author:  Ervin Szilagyi
+Email:   ervin_szilagh[at]outlook.com
+Twitter: @ervin_szilagyi
+Cover:   images/cover.png
+---
+
 # AI
 
 Everything on this website is written by me. I don't use AI to generate content.

@@ -1,3 +1,13 @@
+---
+Title:   Certificate Parsing with domain-recon
+Summary: Using domain-recon, an open-source Rust tool, to enumerate domains and subdomains via SSL certificates.
+Author:  Ervin Szilagyi
+Email:   ervin_szilagh[at]outlook.com
+Twitter: @ervin_szilagyi
+Date:    2022-11-06T00:00:00.000Z
+Cover:   ../images/cover.png
+---
+
 # Certificate Parsing with `domain-recon`
 
 ## What is Certificate Parsing?

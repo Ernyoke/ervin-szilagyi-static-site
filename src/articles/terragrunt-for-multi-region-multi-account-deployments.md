@@ -1,3 +1,13 @@
+---
+Title:   Terragrunt for Multi-Region/Multi-Account Deployments
+Summary: Why and how we adopted Terragrunt to manage Terraform across multiple AWS regions and accounts.
+Author:  Ervin Szilagyi
+Email:   ervin_szilagh[at]outlook.com
+Twitter: @ervin_szilagyi
+Date:    2024-05-08T00:00:00.000Z
+Cover:   ../images/cover.png
+---
+
 # Terragrunt for Multi-Region/Multi-Account Deployments
 
 Since a few years ago I've been working for a company whose products are used by millions. It feels somewhat refreshing to know that my contributions have an impact on the daily lives of so many people. On the other hand, this work also comes with a lot of anxiety in cases when you have to make decisions, even though these decisions are usually made together with a team of other highly experienced individuals.

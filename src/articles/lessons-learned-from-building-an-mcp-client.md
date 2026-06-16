@@ -1,3 +1,13 @@
+---
+Title:   Lessons Learned from Building an MCP Client
+Summary: Takeaways from building a Java-based MCP client and CLI on top of LangChain4J.
+Author:  Ervin Szilagyi
+Email:   ervin_szilagh[at]outlook.com
+Twitter: @ervin_szilagyi
+Date:    2025-07-25T00:00:00.000Z
+Cover:   img-lessons-learned-from-building-an-mcp-client/cover.png
+---
+
 # Lessons Learned from Building an MCP Client
 
 ## Introduction

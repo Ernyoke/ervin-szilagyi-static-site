@@ -1,3 +1,13 @@
+---
+Title:   My Journey to become 5 times AWS Certified
+Summary: My 8-month journey passing all five AWS Associate and Professional certifications.
+Author:  Ervin Szilagyi
+Email:   ervin_szilagh[at]outlook.com
+Twitter: @ervin_szilagyi
+Date:    2021-08-06T00:00:00.000Z
+Cover:   ../images/cover.png
+---
+
 # My Journey to become 5 times AWS Certified
 
 ## Intro

@@ -1,3 +1,13 @@
+---
+Title:   Electrify your NodeJS AWS Lambdas with Rust
+Summary: Speeding up NodeJS Lambda functions by calling Rust native addons via Neon and FFI.
+Author:  Ervin Szilagyi
+Email:   ervin_szilagh[at]outlook.com
+Twitter: @ervin_szilagyi
+Date:    2022-10-02T00:00:00.000Z
+Cover:   ../images/cover.png
+---
+
 # Electrify your NodeJS AWS Lambdas with Rust
 
 ## Introduction

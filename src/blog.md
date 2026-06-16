@@ -1,3 +1,12 @@
+---
+Title:   Blog Posts
+Summary: Blog Posts TOC.
+Author:  Ervin Szilagyi
+Email:   ervin_szilagh[at]outlook.com
+Twitter: @ervin_szilagyi
+Cover:   images/cover.png
+---
+
 # Blog Posts
 
 RSS/Atom Feed: [atom.xml](articles/atom.xml)

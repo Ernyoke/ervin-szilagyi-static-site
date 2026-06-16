@@ -1,3 +1,13 @@
+---
+Title:   About AWS AI Practitioner (Beta) Exam
+Summary: My experience taking the AWS AI Practitioner certification during its beta phase.
+Author:  Ervin Szilagyi
+Email:   ervin_szilagh[at]outlook.com
+Twitter: @ervin_szilagyi
+Date:    2024-09-29T00:00:00.000Z
+Cover:   img-about-ai-practitioner-beta-exam/cover.png
+---
+
 # About AWS AI Practitioner (Beta) Exam
 
 In June this year, AWS announced 2 new certification exams: the AI Practitioner exam and the Machine Learning Engineer Associate exams. At the same time, AWS has the Machine Learning Specialty (MLS-C01) certification. You can still take this exam, and at the point of writing this article, there is no news of being retired. However, we can assume that the Machine Learning Engineer Associate will take its place.

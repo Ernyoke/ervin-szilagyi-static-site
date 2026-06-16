@@ -1,3 +1,13 @@
+---
+Title:   GCP Associate Cloud Engineer Certification Experience
+Summary: My experience preparing for and taking the GCP Associate Cloud Engineer exam online.
+Author:  Ervin Szilagyi
+Email:   ervin_szilagh[at]outlook.com
+Twitter: @ervin_szilagyi
+Date:    2022-08-09T00:00:00.000Z
+Cover:   ../images/cover.png
+---
+
 # GCP Associate Cloud Engineer Certification Experience
 
 ## Intro

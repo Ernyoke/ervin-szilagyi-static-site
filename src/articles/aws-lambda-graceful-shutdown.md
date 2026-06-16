@@ -1,3 +1,13 @@
+---
+Title:   AWS Lambda Graceful Shutdown
+Summary: Implementing graceful shutdown in AWS Lambda to clean up resources like database connections.
+Author:  Ervin Szilagyi
+Email:   ervin_szilagyi[at]outlook.com
+Twitter: @ervin_szilagyi
+Date:    2022-05-21T00:00:00.000Z
+Cover:   ../images/cover.png
+---
+
 # AWS Lambda Graceful Shutdown
 
 ## Intro

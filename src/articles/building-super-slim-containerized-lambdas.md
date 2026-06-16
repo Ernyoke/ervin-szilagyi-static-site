@@ -1,3 +1,13 @@
+---
+Title:   Building Super Slim Containerized Lambdas on AWS
+Summary: Techniques to drastically reduce the size of containerized AWS Lambda images, focused on Rust.
+Author:  Ervin Szilagyi
+Email:   ervin_szilagh[at]outlook.com
+Twitter: @ervin_szilagyi
+Date:    2022-09-14T00:00:00.000Z
+Cover:   ../images/cover.png
+---
+
 # Building Super Slim Containerized Lambdas on AWS
 
 ## Motivation

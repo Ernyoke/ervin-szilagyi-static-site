@@ -1,3 +1,13 @@
+---
+Title:   Containers: Under the Hood
+Summary: A deep dive into what containers really are and the Linux primitives that power them.
+Author:  Ervin Szilagyi
+Email:   ervin_szilagh[at]outlook.com
+Twitter: @ervin_szilagyi
+Date:    2022-10-16T00:00:00.000Z
+Cover:   ../images/cover.png
+---
+
 # Containers: Under the Hood
 
 ## Introduction

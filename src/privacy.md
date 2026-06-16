@@ -1,3 +1,12 @@
+---
+Title:   Privacy Policy
+Summary: Privacy Policy
+Author:  Ervin Szilagyi
+Email:   ervin_szilagh[at]outlook.com
+Twitter: @ervin_szilagyi
+Cover:   images/cover.png
+---
+
 # Privacy Policy
 
 This site is using Plausible Analytics, which is a GDPR, CCPA and cookie law compliant site analytics tool. The information collected by this site is solely used for informative purposes by myself, Ervin Szilágyi. In fact, everything collected is publicly available [here](https://plausible.io/ervinszilagyi.dev).

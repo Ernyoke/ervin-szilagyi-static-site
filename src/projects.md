@@ -1,3 +1,12 @@
+---
+Title:   Projects
+Summary: List of projects that I worked on.
+Author:  Ervin Szilagyi
+Email:   ervin_szilagh[at]outlook.com
+Twitter: @ervin_szilagyi
+Cover:   images/cover.png
+---
+
 # Projects
 
 ## DelaunayImage

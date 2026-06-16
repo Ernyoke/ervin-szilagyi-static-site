@@ -1,3 +1,13 @@
+---
+Title:   Fluent Bit with ECS: Configuration Tips and Tricks
+Summary: Practical Fluent Bit configuration tips learned from running it with ECS in production.
+Author:  Ervin Szilagyi
+Email:   ervin_szilagh[at]outlook.com
+Twitter: @ervin_szilagyi
+Date:    2023-12-26T00:00:00.000Z
+Cover:   img-fluentbit-with-ecs-configuration-tips-and-tricks/cover.avif
+---
+
 # Fluent Bit with ECS: Configuration Tips and Tricks
 
 A while ago I wrote a [blog post](./ecs-custom-logging-with-fluentbit.md) about Fluent Bit integration with containers running in an ECS cluster. According to my statistics, this post is one of the most viewed on my blog, so I was determined to write a follow-up for it. I've been using FluentBit with ECS for more than a year in a business application running in production. During this period I had the chance to make use of and even abuse several features provided by Fluent Bit.

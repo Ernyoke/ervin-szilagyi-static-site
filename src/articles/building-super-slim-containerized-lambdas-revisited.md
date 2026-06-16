@@ -1,3 +1,13 @@
+---
+Title:   Building Super Slim Containerized Lambdas on AWS - Revisited
+Summary: Revisiting techniques for minimizing AWS Lambda container image size, with a sustainability angle.
+Author:  Ervin Szilagyi
+Email:   ervin_szilagh[at]outlook.com
+Twitter: @ervin_szilagyi
+Date:    2025-03-31T00:00:00.000Z
+Cover:   img-building-super-slim-containerized-lambdas-revisited/cover.png
+---
+
 # Building Super Slim Containerized Lambdas on AWS - Revisited
 
 ## Introduction

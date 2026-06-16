@@ -1,3 +1,14 @@
+---
+Title:   Ervin Szilágyi - Résumé
+Summary: My CV/Résumé.
+Author:  Ervin Szilagyi
+Email:   ervin_szilagh[at]outlook.com
+Twitter: @ervin_szilagyi
+Tags:    cv
+         resume
+Cover:   images/cover.png
+---
+
 # Ervin Szilágyi
 
 ## Software Engineer

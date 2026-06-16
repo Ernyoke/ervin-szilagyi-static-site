@@ -1,3 +1,12 @@
+---
+Title:   Ervin Szilágyi - Personal Site
+Summary: Personal web page and blog.
+Author:  Ervin Szilagyi
+Email:   ervin_szilagh[at]outlook.com
+Twitter: @ervin_szilagyi
+Cover:   images/cover.png
+---
+
 ![Glider](images/glider.svg)
 
 # About

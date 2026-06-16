@@ -1,3 +1,13 @@
+---
+Title:   About OCP Exams
+Summary: My experience preparing for and taking the Oracle Certified Professional Java exams.
+Author:  Ervin Szilagyi
+Email:   ervin_szilagh[at]outlook.com
+Twitter: @ervin_szilagyi
+Date:    2023-01-21T00:00:00.000Z
+Cover:   img-about-ocp-exams/cover.png
+---
+
 # About OCP Exams
 
 ## Intro

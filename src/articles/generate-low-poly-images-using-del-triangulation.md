@@ -1,3 +1,13 @@
+---
+Title:   Generate "low poly" images using Delaunay triangulation
+Summary: Generating low poly style images by applying Delaunay triangulation to feature points.
+Author:  Ervin Szilagyi
+Email:   ervin_szilagh[at]outlook.com
+Twitter: @ervin_szilagyi
+Date:    2021-03-28T00:00:00.000Z
+Cover:   ../images/cover.png
+---
+
 # Generate "low poly" images using Delaunay triangulation
 
 ## Intro

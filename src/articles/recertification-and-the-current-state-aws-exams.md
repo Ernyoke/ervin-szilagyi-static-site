@@ -1,3 +1,13 @@
+---
+Title:   Recertification and the Current State of AWS Exams
+Summary: My experience recertifying AWS Professional exams and how the exams have changed.
+Author:  Ervin Szilagyi
+Email:   ervin_szilagh[at]outlook.com
+Twitter: @ervin_szilagyi
+Date:    2024-08-14T00:00:00.000Z
+Cover:   img-recertification-and-the-current-state-aws-exams/cover.png
+---
+
 # Recertification and the Current State of AWS Exams
 
 Three years ago I wrote one of my first blog posts titled "[My Journey to become 5 times AWS Certified](https://ervinszilagyi.dev/articles/my-journey-to-become-5-times-aws-certified.html)". This was right after I received my badge for the Solutions Architect Professional certification. I was happy and relieved back then after I successfully passed one of the most challenging exams.

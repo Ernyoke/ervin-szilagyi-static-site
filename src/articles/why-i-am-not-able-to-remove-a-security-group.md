@@ -1,3 +1,13 @@
+---
+Title:   Why I Am Not Able to Remove a Security Group?
+Summary: Why Terraform sometimes cannot delete a security group attached to a VPC Lambda, and how to handle it.
+Author:  Ervin Szilagyi
+Email:   ervin_szilagh[at]outlook.com
+Twitter: @ervin_szilagyi
+Date:    2023-09-10T00:00:00.000Z
+Cover:   ../images/cover.png
+---
+
 # Why I Am Not Able to Remove a Security Group?
 
 If you have a slightly more extended experience with IaC, more specifically with Terraform, you might have run into the following issue:

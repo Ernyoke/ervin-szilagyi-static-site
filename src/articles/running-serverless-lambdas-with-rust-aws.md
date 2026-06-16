@@ -1,3 +1,13 @@
+---
+Title:   Running Serverless Lambdas with Rust on AWS
+Summary: Building and deploying AWS Lambda functions written in Rust on the custom runtime.
+Author:  Ervin Szilagyi
+Email:   ervin_szilagh[at]outlook.com
+Twitter: @ervin_szilagyi
+Date:    2022-09-05T00:00:00.000Z
+Cover:   ../images/cover.png
+---
+
 # Running Serverless Lambdas with Rust on AWS
 
 ## Intro

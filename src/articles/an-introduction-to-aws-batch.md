@@ -1,3 +1,13 @@
+---
+Title:   An Introduction to AWS Batch
+Summary: An overview of AWS Batch components and how to run containerized batch workloads on AWS.
+Author:  Ervin Szilagyi
+Email:   ervin_szilagh[at]outlook.com
+Twitter: @ervin_szilagyi
+Date:    2023-03-19T00:00:00.000Z
+Cover:   ../images/cover.png
+---
+
 # An Introduction to AWS Batch
 
 AWS Batch[^1] is a fully managed service that helps us developers run batch computing workloads on the cloud. The goal of this service is to effectively provision infrastructure for batch jobs submitted by us while we can focus on writing the code for dealing with business constraints.

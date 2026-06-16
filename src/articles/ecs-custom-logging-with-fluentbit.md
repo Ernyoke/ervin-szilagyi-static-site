@@ -1,3 +1,13 @@
+---
+Title:   ECS Fargate Custom Logging with Fluent Bit
+Summary: Setting up custom log routing for ECS Fargate containers using Fluent Bit as a sidecar.
+Author:  Ervin Szilagyi
+Email:   ervin_szilagh[at]outlook.com
+Twitter: @ervin_szilagyi
+Date:    2022-05-16T00:00:00.000Z
+Cover:   ../images/cover.png
+---
+
 # ECS Fargate Custom Logging with Fluent Bit
 
 ## Motivation
