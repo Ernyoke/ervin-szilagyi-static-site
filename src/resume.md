@@ -166,9 +166,9 @@ ___
 - **AWS Certified Advanced Networking - Specialty** — valid until December 2027 — [verify](https://www.credly.com/badges/8c68b90f-3aeb-4a45-a205-bd9428889702/public_url)
 - **AWS Certified Machine Learning - Specialty** — valid until February 2027 — [verify](https://www.credly.com/badges/f0099e97-f4ab-47c5-a809-eab1e6b8def0/public_url)
 - **AWS Certified AI Practitioner** — valid until September 2027 — [verify](https://www.credly.com/badges/57789cb3-6896-4ab0-be6a-e1b8c19c6f38/public_url)
-- **Microsoft Certified: Azure Fundamentals** — since September 2020 — [verify](https://www.credly.com/badges/3e2a89c1-0ef3-4a45-9e22-ccd54ac6e0ef/public_url)
 - **Microsoft Certified: Azure Solutions Architect Expert** — valid until September 2027 — [verify](https://learn.microsoft.com/api/credentials/share/en-us/ErvinSzilagyi-1230/23D9074950347AE2?sharingId=5C845ABCCE6AA6DA)
 - **Microsoft Certified: Azure Administrator Associate** — valid until September 2027 — [verify](https://learn.microsoft.com/api/credentials/share/en-us/ErvinSzilagyi-1230/58137D2207A92C86?sharingId=5C845ABCCE6AA6DA)
 - **Microsoft Certified: Azure Developer Associate** — valid until October 2027 — [verify](https://learn.microsoft.com/en-gb/users/ervinszilagyi-2278/credentials/b2f3afc499fc533c)
+- **Microsoft Certified: Azure Fundamentals** — since September 2020 — [verify](https://www.credly.com/badges/3e2a89c1-0ef3-4a45-9e22-ccd54ac6e0ef/public_url)
 - **Associate Cloud Engineer (GCP)** — valid between August 2022 and August 2024 — [verify](https://www.credential.net/9056a79b-89f1-4fb7-b824-76b4f752dd57)
 - **Cambridge English: First (FCE)** — since July 2016
