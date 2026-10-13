@@ -15,7 +15,7 @@ Cover:   images/cover.png
 
 ---
 
-<img align="right" style="padding:1em" src="images/small.jpeg">
+<img align="right" style="padding:1em" src="images/small.png">
 
 ## About Me
 
